@@ -2,6 +2,16 @@
 
 Archivo único: **`Capital_Presentacion.html`** (sin dependencias, abre con doble clic).
 Toda la lógica vive en el objeto `CAP` dentro del `<script>`. El HTML solo *muestra*; nada se calcula fuera de `CAP`.
+El logo va **inline** (markup `<svg>` en el `.logo`), no por `<img src>` — funciona en `file://`.
+
+### Estructura narrativa (5 slides) — tesis: *el precio se justifica solo*
+1. **Hero** — "El precio es el número más pequeño de esta propuesta." Dos pruebas, un precio.
+2. **Tiempo (Prueba 1, REAL)** — el tiempo recuperado en Mayo ya cubre el precio, sin supuestos.
+3. **Motor (Prueba 2)** — modelo anual + puente por venta → produce **un** número: ganancia neta por venta.
+4. **Proyección** — ese número × tasas reales × supuestos → ganancia neta/mes. El embudo Mayo va plegado abajo como "Dónde estamos hoy" (reality-check, no slide aparte).
+5. **Close** — el precio y las coberturas.
+
+> Cada slide intermedia existe para alimentar la siguiente: Motor → número por venta → Proyección. No son tangentes.
 
 ---
 
@@ -63,7 +73,7 @@ net_before_fee = gross_gain − marketing
 net_after_fee  = net_before_fee − service_fee      ← número estrella, YA incluye el servicio
 ```
 
-### D. Tiempo recuperado (slide 5 — dato real)
+### D. Tiempo recuperado (slide 2 — dato real, Prueba 1)
 ```
 agent_hourly = utilidad_neta / work_hours_yr       ≈ 192 BOB/h
 time_value   = time_saved_may × agent_hourly       ≈ 3,460 BOB
@@ -75,7 +85,7 @@ ratios contra el precio mensual, no una estimación de meses transcurridos.
 El slide 6 no suma `time_value` y `net_after_fee`: muestra el valor operativo real y
 la ganancia neta proyectada en carriles separados para evitar doble conteo.
 
-### E. Progreso a la 1ª venta (slide 2)
+### E. Progreso a la 1ª venta (slide 4, plegado en "Dónde estamos hoy")
 ```
 leads_for_sale = appts_sale / appt_rate_may        (≈ 354 leads para 1 venta a 1/15)
 ```
@@ -94,7 +104,10 @@ Todo se guarda en **BOB**. El pill arriba (BOB / USD Of. / USD Par.) solo cambia
 
 ## 4. Supuestos vs datos reales (importante para el pitch)
 - **Reales / medidos:** embudo Mayo (`fun_*`), `appt_rate_may`, `time_saved_may`, costos del modelo anual, `cost_lead` (Ene-Mar).
-- **Supuesto (único no medido):** `appts_sale` — citas por venta. Marcado en ámbar en el slide 4 y en el panel (grupo "✦ Editables en diapositiva").
+- **Supuestos (no medidos) — son DOS, ambos declarados:**
+  1. `appts_sale` — citas por venta. Marcado en ámbar en el slide 4 (slider + chain) y en el panel.
+  2. `venta_prom_bob` — venta promedio. No tenemos el valor real; marcado "supuesto" en el puente del slide 3 (Motor) y declarado en la lede del slide 4.
+- El copy NO debe decir "una sola incógnita / único supuesto": son dos. Si se mide alguno, quitar su badge y actualizar la lede del slide 4.
 
 ---
 
@@ -104,6 +117,9 @@ Todo se guarda en **BOB**. El pill arriba (BOB / USD Of. / USD Par.) solo cambia
 - `%` se muestra ×100 (2, no 0.02) y se reconvierte al editar.
 - Inputs se construyen **una vez** (`buildAuditInputs`); en cada render solo se sincroniza el valor de los campos no enfocados (`syncAuditInputs`) — por eso ya no expulsa al tipear.
 - Derivados (`renderDerived`) muestran fórmula `f` + resultado; se reconstruyen en cada render (no tienen campos editables).
+
+### Valores confidenciales del cliente (slide 3 · Motor)
+La columna de valores del modelo anual (P&L personal del cliente) lleva clase `.conf` y va **difuminada por defecto** (`table.fin.hideconf .conf`). El botón ojo `#confToggle` (estado `confShown`) revela/oculta. Los **porcentajes** y la **ganancia neta por venta** quedan siempre visibles. Para presentar en frío: dejarla oculta y revelar solo en un 1:1.
 
 ---
 
