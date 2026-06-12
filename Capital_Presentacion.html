@@ -527,7 +527,7 @@
   <!-- 5 EMBUDO · La tasa cita/lead de la proyección sale de Mayo -->
   <section class="slide"><div class="inner">
     <h2>La tasa cita/lead de la proyección sale de Mayo</h2>
-    <p class="lede">Antes de proyectar ventas, medimos el embudo real de Mayo. De aquí sale la <b>tasa cita/lead</b> y el supuesto de <b>1 venta cada <span id="emb_a2s"></span> citas</b>.</p>
+    <p class="lede">Antes de proyectar ventas, medimos el embudo real de Mayo.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;align-items:start">
       <div class="funnel" id="funnelEl"></div>
       <div class="dualbar">
@@ -811,7 +811,6 @@ function render(){
   ).join('')+`<div class="clink fin"><div class="op">=</div><div class="txt"><b style="color:#fff">Ganancia neta proyectada / mes</b><div class="src">resultado de la cadena</div></div><div class="res num">${fmtMSign(D.net_after_fee)}</div></div>`;
 
   /* EMBUDO · callout */
-  $('#emb_a2s').textContent=money(I.appts_sale);
   $('#embCallout').innerHTML=`La proyección usa <b>${pct(I.appt_rate_may)}</b> como tasa cita/lead medida en Mayo y <b>${money(I.appts_sale)} citas por venta</b> como supuesto declarado.`;
 
   /* SLIDE 2 · Cálculo del Tiempo Recuperado (desglose) */
