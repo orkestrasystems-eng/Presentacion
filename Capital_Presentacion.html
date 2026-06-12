@@ -52,7 +52,7 @@
   .count{position:fixed;bottom:24px;right:22px;font-size:12px;color:var(--slate);z-index:30}
   /* HERO */
   .hero h1{font-size:clamp(34px,5.2vw,62px);line-height:1.04;letter-spacing:-.03em;font-weight:850;max-width:none}
-  .hero h1 em{font-style:normal;color:var(--green-d)}
+  .hero h1 em,h2 em{font-style:normal;color:var(--green-d)}
   .hero h1 .vs{color:var(--slate)}
   /* ===== Slide 1 · Costo vs Retorno ===== */
   .cvr{display:flex;align-items:stretch;gap:16px;margin-top:30px}
@@ -87,6 +87,47 @@
   .cvr-foot svg{width:26px;height:26px;color:var(--green-d);flex:0 0 auto}
   @media(max-width:780px){.cvr{flex-direction:column}.cvr-cost{flex-basis:auto}.cvr-arrow{transform:rotate(90deg)}
     .cvr-cols{grid-template-columns:1fr;gap:16px;margin-top:46px}.cvr-col{border-left:0}}
+  /* ===== Slide 2 · Cálculo del Tiempo Recuperado ===== */
+  .qline{font-size:15px;font-weight:800;color:var(--green-d);margin-top:24px}
+  .tcalc{display:flex;align-items:stretch;gap:10px;margin-top:16px}
+  .tcalc-card{flex:1;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+    padding:20px 16px;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .tcalc-ico{width:54px;height:54px;border-radius:50%;background:#EEF6F0;display:flex;align-items:center;
+    justify-content:center;color:var(--green-d);margin-bottom:14px}
+  .tcalc-ico svg{width:26px;height:26px}
+  .tcalc-t{font-size:14px;font-weight:800;color:var(--ink);line-height:1.25;min-height:36px;display:flex;align-items:center}
+  .tcalc-rule{width:34px;height:2px;background:var(--line);border-radius:1px;margin:10px 0 12px}
+  .tcalc-v{font-size:clamp(28px,3.6vw,40px);font-weight:850;letter-spacing:-.02em;color:var(--green-d);line-height:1}
+  .tcalc-v i{font-size:.55em;font-style:normal;font-weight:800;margin-left:2px}
+  .tcalc-s{font-size:12px;color:var(--slate);margin-top:11px;line-height:1.4}
+  .tcalc-op{display:flex;align-items:center;font-size:26px;font-weight:850;color:var(--slate);flex:0 0 auto}
+  .tcalc-card.res{background:linear-gradient(135deg,var(--green-d),#176444);border-color:transparent;
+    color:#fff;box-shadow:0 12px 28px rgba(31,122,82,.3);justify-content:center}
+  .tcalc-card.res .tcalc-ico{background:rgba(255,255,255,.14);color:#CDEBD9;width:60px;height:60px}
+  .tcalc-card.res .tcalc-ico svg{width:30px;height:30px}
+  .tcalc-card.res .tcalc-v{color:#fff;font-size:clamp(34px,4.6vw,52px)}
+  .tcalc-card.res .tcalc-s{color:#CDEBD9;font-size:13.5px;margin-top:8px}
+  .tcalc-foot{display:flex;align-items:center;gap:11px;margin-top:20px;background:#EEF6F0;border:1px solid #D6E8DC;
+    border-radius:12px;padding:11px 16px;font-size:12.5px;color:var(--slate)}
+  .tcalc-foot b{color:var(--green-d)}.tcalc-foot svg{width:20px;height:20px;color:var(--green-d);flex:0 0 auto}
+  @media(max-width:820px){.tcalc{flex-wrap:wrap}.tcalc-card{flex-basis:42%}}
+  /* ===== Slide 3 · De horas recuperadas a valor económico ===== */
+  .veco{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:16px 12px;align-items:stretch;margin-top:28px}
+  .veco-op{display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:850;color:var(--ink)}
+  .veco-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:18px 20px;display:flex;align-items:center;gap:15px}
+  .veco-ico{width:50px;height:50px;border-radius:50%;background:#EEF6F0;display:flex;align-items:center;
+    justify-content:center;color:var(--green-d);flex:0 0 auto}
+  .veco-ico svg{width:25px;height:25px}
+  .veco-n{font-size:clamp(22px,2.5vw,30px);font-weight:850;letter-spacing:-.02em;color:var(--green-d);line-height:1.05;font-variant-numeric:tabular-nums}
+  .veco-tt{font-size:16px;font-weight:800;color:var(--ink)}
+  .veco-l{font-size:12.5px;color:var(--slate);line-height:1.4;margin-top:3px;display:block}
+  .veco-sub{font-size:11px;color:#9AA8A1;margin-top:2px;display:block}
+  .veco-card.res{background:linear-gradient(135deg,var(--green-d),#176444);border-color:transparent;
+    color:#fff;box-shadow:0 12px 28px rgba(31,122,82,.3)}
+  .veco-card.res .veco-ico{background:rgba(255,255,255,.14);color:#CDEBD9}
+  .veco-card.res .veco-n{color:#fff}.veco-card.res .veco-l{color:#CDEBD9}
+  @media(max-width:820px){.veco{grid-template-columns:1fr auto 1fr;gap:12px}}
   .twin{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:26px}
   @media(max-width:700px){.twin{grid-template-columns:1fr}}
   .vcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;
@@ -334,14 +375,81 @@
     <div class="cvr-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg> Propuesta de valor basada en resultados de Mayo y proyecciones conservadoras</div>
   </div></section>
 
-  <!-- 2 PRUEBA 1 · TIEMPO — deriva el valor; carry-in desde el modelo anual -->
+  <!-- 2 PRUEBA 1 · CÁLCULO DEL TIEMPO RECUPERADO (desglose de las 18 h) -->
   <section class="slide"><div class="inner">
     <div class="eyebrow">Prueba 1 · Real, ya entregado</div>
-    <h2>Solo el tiempo recuperado ya supera el precio.</h2>
-    <p class="lede">Cada mensaje que el bot lee y escribe es tiempo que el agente no gastó — valorizado a su <b>propia tarifa neta por hora</b>. Sin supuestos: esto ya pasó en Mayo.</p>
-    <div class="flow" id="timeFlow"></div>
-    <div class="flowfoot" id="timeFoot"></div>
-    <div class="handoff"><span class="ho-num" id="ho_time"></span><span class="ho-arrow">→</span><span class="ho-to">es la <b>Prueba 1</b>, ya entregada. Ahora la Prueba 2: cuánto produce cada venta.</span></div>
+    <h2>Cálculo del Tiempo Recuperado</h2>
+    <p class="lede">En Mayo, el Asistente IA ahorró tiempo al leer mensajes, escribir respuestas y enviar documentación por el agente.</p>
+    <div class="qline">¿De dónde salen las <span id="tc_total_q"></span>?</div>
+    <div class="tcalc">
+      <div class="tcalc-card">
+        <div class="tcalc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/><path d="M8 9h9M8 12.5h6"/></svg></div>
+        <div class="tcalc-t">Lectura de mensajes</div>
+        <div class="tcalc-rule"></div>
+        <div class="tcalc-v"><span id="tc_read"></span><i>h</i></div>
+        <div class="tcalc-s">Tiempo ahorrado al leer mensajes entrantes</div>
+      </div>
+      <div class="tcalc-op">+</div>
+      <div class="tcalc-card">
+        <div class="tcalc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
+        <div class="tcalc-t">Escritura de respuestas</div>
+        <div class="tcalc-rule"></div>
+        <div class="tcalc-v"><span id="tc_write"></span><i>h</i></div>
+        <div class="tcalc-s">Tiempo ahorrado al escribir respuestas salientes</div>
+      </div>
+      <div class="tcalc-op">+</div>
+      <div class="tcalc-card">
+        <div class="tcalc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></div>
+        <div class="tcalc-t">Brochures y Listas de Precios</div>
+        <div class="tcalc-rule"></div>
+        <div class="tcalc-v"><span id="tc_doc"></span><i>h</i></div>
+        <div class="tcalc-s">Tiempo ahorrado al enviar documentación</div>
+      </div>
+      <div class="tcalc-op">=</div>
+      <div class="tcalc-card res">
+        <div class="tcalc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
+        <div class="tcalc-v"><span id="tc_total"></span><i>h</i></div>
+        <div class="tcalc-s">recuperadas en Mayo</div>
+      </div>
+    </div>
+    <div class="tcalc-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15z"/></svg> <span><b>Supuestos de cálculo:</b> lectura <span id="tc_read_pps"></span> car/s · escritura <span id="tc_type_pps"></span> car/s · documentos <span id="tc_sec_doc"></span> s/envío</span></div>
+  </div></section>
+
+  <!-- 3 PRUEBA 1 · DE HORAS A VALOR ECONÓMICO (tarifa y valor del tiempo) -->
+  <section class="slide"><div class="inner">
+    <div class="eyebrow">Prueba 1 · Valor del tiempo recuperado</div>
+    <h2>De horas recuperadas a <em>valor económico</em></h2>
+    <p class="lede">Convertimos el tiempo que el Asistente IA liberó en valor para el negocio.</p>
+    <div class="veco">
+      <div class="veco-card">
+        <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12v3"/><path d="M3 7v10a2 2 0 0 0 2 2h14v-5"/><path d="M21 12h-4a2 2 0 0 0 0 4h4z"/></svg></div>
+        <div><div class="veco-tt">Utilidad Neta Anual</div><span class="veco-l">beneficio neto del negocio en un año</span></div>
+      </div>
+      <div class="veco-op">÷</div>
+      <div class="veco-card">
+        <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></div>
+        <div><div class="veco-n" id="ve_hours"></div><span class="veco-l">horas laborales / año</span><span class="veco-sub">asumiendo 40 h/semana</span></div>
+      </div>
+      <div class="veco-op">=</div>
+      <div class="veco-card">
+        <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.5v11M14.7 9a2.6 2 0 0 0-2.7-1.5c-1.5 0-2.6.8-2.6 2s1 1.6 2.6 2 2.6.9 2.6 2-1.1 2-2.6 2A2.6 2 0 0 1 9.3 16"/></svg></div>
+        <div><div class="veco-n" id="ve_rate"></div><span class="veco-l">por hora</span></div>
+      </div>
+      <div class="veco-card">
+        <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
+        <div><div class="veco-n"><span id="ve_rate2"></span>/h</div><span class="veco-l">valor de cada hora recuperada</span></div>
+      </div>
+      <div class="veco-op">×</div>
+      <div class="veco-card">
+        <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
+        <div><div class="veco-n" id="ve_hsaved"></div><span class="veco-l">recuperadas en Mayo</span></div>
+      </div>
+      <div class="veco-op">=</div>
+      <div class="veco-card res">
+        <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3h5l-1.3 2.4h-2.4z"/><path d="M13 5.4c3 1.3 5 4.4 5 7.8a6 6 0 0 1-12 0c0-3.4 2-6.5 5-7.8"/><path d="M12 10v5M10.7 11c.3-.5.8-.7 1.3-.7.8 0 1.4.4 1.4 1s-.6.9-1.4 1-1.3.5-1.3 1 .6 1 1.3 1c.5 0 1-.2 1.3-.6"/></svg></div>
+        <div><div class="veco-n" id="ve_val"></div><span class="veco-l">valor del tiempo recuperado en Mayo</span></div>
+      </div>
+    </div>
   </div></section>
 
   <!-- 3 PRUEBA 2 · MOTOR — deriva neto/venta; hand-off a la proyección -->
@@ -492,9 +600,11 @@ const CAP={
     fun_bot:{v:165,unit:"leads",label:"Atendidas por el bot (Mayo)",src:"CTWA con bot, Mayo",g:"embudo"},
     fun_cita:{v:7,unit:"citas",label:"Citas agendadas (Mayo)",src:"Citas Mayo",g:"embudo"},
     appt_rate_may:{v:0.0424,unit:"citas/lead",label:"Tasa cita/lead — Mayo (real)",src:"Conversión medida en Mayo",g:"embudo"},
-    // -- Tiempo recuperado --
-    work_hours_yr:{v:2080,unit:"h/año",label:"Horas laborales / año",src:"Supuesto (editable)",g:"tiempo"},
-    time_saved_may:{v:18,unit:"h/mes",label:"Tiempo ahorrado — Mayo (real)",src:"Mensajes del sistema, Mayo",g:"tiempo"},
+    // -- Tiempo recuperado (Mayo) — el total de 18 h se deriva de estos 3 componentes --
+    t_read_h:{v:1,unit:"h/mes",label:"Tiempo ahorrado — lectura (Mayo)",src:"Lectura de mensajes entrantes, Mayo",g:"tiempo"},
+    t_write_h:{v:13,unit:"h/mes",label:"Tiempo ahorrado — escritura (Mayo)",src:"Escritura de respuestas salientes, Mayo",g:"tiempo"},
+    t_doc_h:{v:4,unit:"h/mes",label:"Tiempo ahorrado — documentos (Mayo)",src:"Brochures y listas de precios, Mayo",g:"tiempo"},
+    work_hours_yr:{v:2080,unit:"h/año",label:"Horas laborales / año",src:"Supuesto (40 h/semana)",g:"tiempo"},
     read_pps:{v:4.33,unit:"pps",label:"Velocidad lectura (estimada)",src:"Estimación conservadora",g:"tiempo"},
     type_pps:{v:1.03,unit:"pps",label:"Velocidad escritura (estimada)",src:"Estimación conservadora",g:"tiempo"},
     sec_doc:{v:32,unit:"s/doc",label:"Segundos por documento (estimado)",src:"Estimación conservadora",g:"tiempo"},
@@ -522,7 +632,8 @@ const CAP={
     {k:"months_per_sale",label:"Meses que paga 1 venta",unit:"meses",f:"neto_por_venta / servicio",fn:(I,D)=>D.net_per_sale/I.service_fee,src:""},
     // --- Tiempo recuperado ---
     {k:"agent_hourly",label:"Valor de 1 hora del agente",unit:"BOB/h",f:"utilidad_neta / horas_año",fn:(I,D)=>D.utilidad_neta/I.work_hours_yr,src:""},
-    {k:"time_value",label:"Valor tiempo devuelto — Mayo",unit:"BOB",f:"horas_ahorradas × valor_hora",fn:(I,D)=>I.time_saved_may*D.agent_hourly,src:""},
+    {k:"time_saved",label:"Tiempo ahorrado total — Mayo",unit:"h/mes",f:"lectura + escritura + documentos",fn:I=>I.t_read_h+I.t_write_h+I.t_doc_h,src:""},
+    {k:"time_value",label:"Valor tiempo devuelto — Mayo",unit:"BOB",f:"horas_ahorradas × valor_hora",fn:(I,D)=>D.time_saved*D.agent_hourly,src:""},
     {k:"leads_for_sale",label:"Leads necesarios para 1ª venta",unit:"leads",f:"citas_por_venta / tasa_cita",fn:I=>I.appts_sale/I.appt_rate_may,src:""},
   ],
 };
@@ -574,7 +685,7 @@ function render(){
   const feeV=I.service_fee*FX.rate;
   $('#cvr_fee').textContent=money(feeV,Math.abs(feeV)<100?2:0);
   $('#cvr_feeunit').textContent=FX.sym;
-  $('#cvr_hours').textContent=money(I.time_saved_may)+' h';
+  $('#cvr_hours').textContent=money(D.time_saved)+' h';
   $('#cvr_timeval').textContent=fmtM(D.time_value);
   $('#cvr_net').textContent=fmtMSign(D.net_after_fee);
 
@@ -664,24 +775,22 @@ function render(){
   /* EVIDENCIA — conecta la tasa de la proyección con el embudo medido */
   $('#embCallout').innerHTML=`La proyección multiplica por <b>${pct(I.appt_rate_may)}</b> — exactamente la tasa cita/lead que medimos acá: <b>${money(I.fun_cita)} citas</b> de <b>${money(I.fun_conv)} conversaciones</b>. Hoy faltan más leads para la primera venta; el modelo muestra el potencial al volumen estándar.`;
 
-  /* TIME — formula flow (deriva el valor del tiempo) */
-  const tf=[
-    {sv:fmtM(D.utilidad_neta),sl:'utilidad neta anual <span class="carryin">← modelo anual</span>'},
-    {op:'÷'},
-    {sv:money(I.work_hours_yr),sl:'horas laborales / año'},
-    {op:'='},
-    {sv:fmtM(D.agent_hourly),sl:'valor de 1 hora del agente'},
-    {op:'×'},
-    {sv:money(I.time_saved_may)+' h',sl:'recuperadas en Mayo'},
-    {op:'='},
-    {sv:fmtM(D.time_value),sl:'valor del tiempo recuperado',res:1},
-  ];
-  $('#timeFlow').innerHTML=tf.map(s=>s.op
-    ?`<div class="op">${s.op}</div>`
-    :`<div class="step${s.res?' res':''}"><div class="sv num">${s.sv}</div><div class="sl">${s.sl}</div></div>`
-  ).join('');
-  $('#timeFoot').innerHTML=`La tarifa es la <b>utilidad neta del propio agente</b> ÷ sus horas — no un costo inventado. Supuestos conservadores de medición: lectura ${money(I.read_pps,2)} pps · escritura ${money(I.type_pps,2)} pps · ${money(I.sec_doc)} s/doc.`;
-  $('#ho_time').textContent=fmtM(D.time_value);
+  /* SLIDE 2 · Cálculo del Tiempo Recuperado (desglose) */
+  $('#tc_read').textContent=money(I.t_read_h);
+  $('#tc_write').textContent=money(I.t_write_h);
+  $('#tc_doc').textContent=money(I.t_doc_h);
+  $('#tc_total').textContent=money(D.time_saved);
+  $('#tc_total_q').textContent=money(D.time_saved)+' h';
+  $('#tc_read_pps').textContent=money(I.read_pps,2);
+  $('#tc_type_pps').textContent=money(I.type_pps,2);
+  $('#tc_sec_doc').textContent=money(I.sec_doc);
+
+  /* SLIDE 3 · De horas a valor económico */
+  $('#ve_hours').textContent=money(I.work_hours_yr);
+  $('#ve_rate').textContent=fmtM(D.agent_hourly);
+  $('#ve_rate2').textContent=fmtM(D.agent_hourly);
+  $('#ve_hsaved').textContent=money(D.time_saved)+' h';
+  $('#ve_val').textContent=fmtM(D.time_value);
 
   /* CLOSE */
   const feeNum=money(I.service_fee*FX.rate,Math.abs(I.service_fee*FX.rate)<100?2:0);

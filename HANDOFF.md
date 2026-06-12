@@ -4,14 +4,17 @@ Archivo único: **`Capital_Presentacion.html`** (sin dependencias, abre con dobl
 Toda la lógica vive en el objeto `CAP` dentro del `<script>`. El HTML solo *muestra*; nada se calcula fuera de `CAP`.
 El logo va **inline** (markup `<svg>` en el `.logo`), no por `<img src>` — funciona en `file://`.
 
-### Estructura narrativa (6 slides) — tesis: *el precio se justifica solo*
-Patrón **Promesa → Prueba → Veredicto**. Las coberturas (×) viven **solo en el cierre** (veredicto); las slides intermedias nunca las repiten.
-1. **Portada / Promesa** — "El precio es el número más pequeño de esta propuesta." Las dos cards (3,459 / +9,803) con barras comparador *valor vs precio* (sin imprimir el ratio — eso es el veredicto). Bookend con la slide 6.
-2. **Prueba 1 · Tiempo (REAL)** — flujo-fórmula que *deriva* el valor del tiempo (utilidad ÷ horas = tarifa × horas = valor).
-3. **Prueba 2 · Motor** — modelo anual (margen, confidencial) + puente → produce **un** número: ganancia neta por venta.
-4. **Prueba 2 · Proyección** — ese número × tasas reales × supuestos → ganancia neta/mes.
-5. **Evidencia · Embudo Mayo** — de dónde sale la tasa real que usa la proyección + dónde estamos hoy.
-6. **Veredicto / Close** — el precio y las coberturas (1.2× / 3.3×). Único lugar con ratios.
+### Estructura narrativa (7 slides) — tesis: *el precio se justifica solo*
+Patrón **Costo vs Retorno → Pruebas → Veredicto**. Las coberturas (×) viven **solo en el cierre**; las slides intermedias no las repiten. Se está rediseñando slide por slide según referencias del cliente (layouts tipo "card + iconos").
+1. **Portada · Costo vs Retorno del Servicio** — card de Costo (`service_fee`) + chevron + card de Retorno con 3 columnas (Tiempo recuperado · Menor pérdida de leads · Ventas asistidas). Iconos SVG inline. IDs `cvr_*`.
+2. **Prueba 1 · Cálculo del Tiempo Recuperado** — desglose de las 18 h en 3 cards (lectura + escritura + documentos) = card resultado. IDs `tc_*`.
+3. **Prueba 1 · De horas a valor económico** — grid fórmula: utilidad ÷ horas = tarifa; tarifa × horas = valor. IDs `ve_*`.
+4. **Prueba 2 · Motor** — modelo anual (margen, confidencial) + puente → ganancia neta por venta. Hand-off `#ho_motor`.
+5. **Prueba 2 · Proyección** — ese número × tasas reales × supuestos → ganancia neta/mes. Hand-off `#ho_rate`, carry-in `← del Motor`.
+6. **Evidencia · Embudo Mayo** — de dónde sale la tasa real que usa la proyección + dónde estamos hoy.
+7. **Veredicto / Close** — el precio y las coberturas (1.2× / 3.3×). Único lugar con ratios.
+
+> Las 18 h NO son un input suelto: `time_saved` es **derivado** = `t_read_h + t_write_h + t_doc_h` (1+13+4). Editar un componente recalcula el total y `time_value`. Slides 4–7 aún tienen el estilo previo (hand-offs/carry-ins); se rediseñarán igual.
 
 ### Spine conectivo (lo que da coherencia — NO romper)
 Cada slide *entrega* su número al siguiente y *recibe* del anterior, visiblemente:
