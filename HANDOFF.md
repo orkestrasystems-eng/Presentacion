@@ -4,14 +4,22 @@ Archivo único: **`Capital_Presentacion.html`** (sin dependencias, abre con dobl
 Toda la lógica vive en el objeto `CAP` dentro del `<script>`. El HTML solo *muestra*; nada se calcula fuera de `CAP`.
 El logo va **inline** (markup `<svg>` en el `.logo`), no por `<img src>` — funciona en `file://`.
 
-### Estructura narrativa (5 slides) — tesis: *el precio se justifica solo*
-1. **Hero** — "El precio es el número más pequeño de esta propuesta." Dos pruebas, un precio.
-2. **Tiempo (Prueba 1, REAL)** — el tiempo recuperado en Mayo ya cubre el precio, sin supuestos.
-3. **Motor (Prueba 2)** — modelo anual + puente por venta → produce **un** número: ganancia neta por venta.
-4. **Proyección** — ese número × tasas reales × supuestos → ganancia neta/mes. El embudo Mayo va plegado abajo como "Dónde estamos hoy" (reality-check, no slide aparte).
-5. **Close** — el precio y las coberturas.
+### Estructura narrativa (6 slides) — tesis: *el precio se justifica solo*
+Patrón **Promesa → Prueba → Veredicto**. Las coberturas (×) viven **solo en el cierre** (veredicto); las slides intermedias nunca las repiten.
+1. **Portada / Promesa** — "El precio es el número más pequeño de esta propuesta." Las dos cards (3,459 / +9,803) con barras comparador *valor vs precio* (sin imprimir el ratio — eso es el veredicto). Bookend con la slide 6.
+2. **Prueba 1 · Tiempo (REAL)** — flujo-fórmula que *deriva* el valor del tiempo (utilidad ÷ horas = tarifa × horas = valor).
+3. **Prueba 2 · Motor** — modelo anual (margen, confidencial) + puente → produce **un** número: ganancia neta por venta.
+4. **Prueba 2 · Proyección** — ese número × tasas reales × supuestos → ganancia neta/mes.
+5. **Evidencia · Embudo Mayo** — de dónde sale la tasa real que usa la proyección + dónde estamos hoy.
+6. **Veredicto / Close** — el precio y las coberturas (1.2× / 3.3×). Único lugar con ratios.
 
-> Cada slide intermedia existe para alimentar la siguiente: Motor → número por venta → Proyección. No son tangentes.
+### Spine conectivo (lo que da coherencia — NO romper)
+Cada slide *entrega* su número al siguiente y *recibe* del anterior, visiblemente:
+- **`.handoff`** (cinta al pie): el número resultante → a dónde va. IDs: `#ho_time`, `#ho_motor`, `#ho_rate`. Números siempre desde `CAP` (vía `fmtM`/`pct`).
+- **`.carryin`** (chip "← origen"): marca un valor que vino de otra slide. Ej.: flujo de Tiempo "← modelo anual"; puente del Motor "← tabla"; cadena de Proyección "← del Motor" (neto/venta) y "medido · Mayo" (tasa).
+- Hilo de datos real: Motor `net_per_sale` (7,482) → es el `× neto/venta` de la cadena; Embudo `appt_rate_may` (4.2%) → es el `× tasa` de la cadena. Las cintas hacen visible esa dependencia que ya existe en `CAP`.
+
+> Regla narrativa: nunca volver a "boxes sueltos". Si agregás una slide, definí qué número entrega y de cuál recibe.
 
 ---
 
@@ -85,7 +93,7 @@ ratios contra el precio mensual, no una estimación de meses transcurridos.
 El slide 6 no suma `time_value` y `net_after_fee`: muestra el valor operativo real y
 la ganancia neta proyectada en carriles separados para evitar doble conteo.
 
-### E. Progreso a la 1ª venta (slide 4, plegado en "Dónde estamos hoy")
+### E. Progreso a la 1ª venta (slide 5 · Evidencia/Embudo)
 ```
 leads_for_sale = appts_sale / appt_rate_may        (≈ 354 leads para 1 venta a 1/15)
 ```

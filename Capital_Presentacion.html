@@ -151,16 +151,39 @@
   .tcard .n{font-size:clamp(22px,3vw,30px);font-weight:850;letter-spacing:-.02em;line-height:1}
   .tcard .l{font-size:11.5px;color:var(--slate);margin-top:4px}
   .tchain{font-size:12.5px;color:var(--slate);margin-top:14px;line-height:1.7}.tchain b{color:var(--ink)}
-  .vsfee{margin-top:16px;background:#E9F4EE;border:1px solid #BFE2CD;border-left:4px solid var(--green);
-    border-radius:11px;padding:13px 16px;font-size:13.5px;color:var(--ink);line-height:1.45}
-  .vsfee b{color:var(--green-d)}.vsfee .x{font-weight:850;color:var(--green-d)}
-  /* "dónde estamos" folded into the projection slide */
-  .wherenow{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
-  .wherenow h4{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--slate)}
-  .wherenow-sub{font-size:12px;color:var(--slate);margin:5px 0 12px;max-width:80ch}
-  .wherenow-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
-  @media(max-width:780px){.wherenow-grid{grid-template-columns:1fr}}
-  .wherenow .funnel{margin-top:0}.wherenow .dualbar{margin-top:0}
+  /* ===== connective spine: hand-off ribbons + carry-in chips ===== */
+  .handoff{display:flex;align-items:center;gap:11px;margin-top:20px;padding:12px 16px;border-radius:12px;
+    background:linear-gradient(90deg,#E9F4EE,#F7F5F0);border:1px solid var(--line);font-size:13px;color:var(--slate)}
+  .handoff .ho-num{font-weight:850;color:var(--green-d);background:#fff;border:1px solid #BFE2CD;
+    border-radius:8px;padding:4px 11px;white-space:nowrap;font-variant-numeric:tabular-nums;flex:0 0 auto}
+  .handoff .ho-arrow{color:var(--green);font-weight:850;font-size:16px;flex:0 0 auto}
+  .handoff .ho-to{line-height:1.35}.handoff .ho-to b{color:var(--ink)}
+  .carryin{display:inline-flex;align-items:center;font-size:9.5px;font-weight:800;text-transform:uppercase;
+    letter-spacing:.03em;color:var(--green-d);background:#E9F4EE;border:1px solid #BFE2CD;border-radius:4px;
+    padding:1px 5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+  /* promise comparator bars (hero cards) */
+  .cmp{margin-top:11px;display:flex;flex-direction:column;gap:6px}
+  .cmp .crow{display:flex;align-items:center;gap:9px;font-size:10.5px}
+  .cmp .clab{width:52px;flex:0 0 auto;text-align:right;color:var(--slate)}
+  .cmp .ctrack{flex:1;height:10px;background:#ECE8DE;border-radius:5px;overflow:hidden}
+  .cmp .cfill{height:100%;border-radius:5px}
+  .cmp .cfill.price{background:#CFC9BC}
+  .cmp .cfill.val{background:linear-gradient(90deg,var(--green),var(--green-d))}
+  .cmp .cnum{width:84px;flex:0 0 auto;text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+  /* tiempo formula flow */
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:9px;margin-top:20px}
+  .flow .step{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 17px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center;min-width:118px}
+  .flow .step .sv{font-size:clamp(18px,2.2vw,25px);font-weight:850;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+  .flow .step .sl{font-size:11px;color:var(--slate);margin-top:5px;line-height:1.3}
+  .flow .step.res{background:var(--green-d);border-color:var(--green-d)}
+  .flow .step.res .sv{color:#fff}.flow .step.res .sl{color:#CDEBD9}
+  .flow .op{display:flex;align-items:center;font-size:19px;font-weight:850;color:var(--slate)}
+  .flowfoot{font-size:11.5px;color:var(--slate);margin-top:16px;line-height:1.6;max-width:82ch}
+  /* connection callout (evidence slide) */
+  .callout{margin-top:16px;background:#E9F4EE;border:1px solid #BFE2CD;border-left:4px solid var(--green);
+    border-radius:12px;padding:13px 17px;font-size:13px;color:var(--ink);line-height:1.5}
+  .callout b{color:var(--green-d)}
   /* CLOSE */
   .closebox{background:linear-gradient(135deg,var(--ink),#16382C);color:#EAF3EE;border-radius:20px;
     padding:clamp(26px,4.5vw,50px);text-align:center}
@@ -230,77 +253,66 @@
 
 <div class="deck" id="deck">
 
-  <!-- 1 HERO -->
+  <!-- 1 PORTADA · la promesa (bookend con el veredicto del cierre) -->
   <section class="slide hero active"><div class="inner">
     <div class="eyebrow">Propuesta de valor · Capital Real Estate Solutions</div>
     <h1>El precio es el número <em>más pequeño</em> de esta propuesta.</h1>
-    <p class="lede">El tiempo que ya recuperaste lo cubre. Las ventas que vienen lo multiplican. Dos pruebas, un precio.</p>
+    <p class="lede">El tiempo que ya recuperaste lo cubre. Las ventas que vienen lo multiplican. <b>Dos pruebas, un precio</b> — y al final, el veredicto.</p>
     <div class="twin">
       <div class="vcard">
         <span class="tag real">Prueba 1 · Real, ya entregado</span>
         <div class="lab">Tiempo recuperado al agente — Mayo</div>
         <div class="big num pos" id="h_time"></div>
         <div class="sub"><span id="h_hours"></span> h/mes devueltas · <span id="h_rate"></span>/h valor del agente</div>
+        <div class="cmp" id="h_time_cmp"></div>
       </div>
       <div class="vcard proj">
         <span class="tag proj">Prueba 2 · Proyección al volumen estándar</span>
         <div class="lab">Ganancia neta proyectada / mes</div>
         <div class="big num" id="h_net"></div>
         <div class="sub">700 leads/mes · 1 venta cada <span id="h_a2s"></span> citas · supuesto pesimista</div>
+        <div class="cmp" id="h_net_cmp"></div>
         <div class="incl">✓ incluye el costo del servicio ya descontado</div>
       </div>
     </div>
   </div></section>
 
-  <!-- 2 TIEMPO · PRUEBA 1 (real, sin supuestos) -->
+  <!-- 2 PRUEBA 1 · TIEMPO — deriva el valor; carry-in desde el modelo anual -->
   <section class="slide"><div class="inner">
     <div class="eyebrow">Prueba 1 · Real, ya entregado</div>
-    <h2>Solo con el tiempo recuperado, ya se paga.</h2>
-    <p class="lede">Cada mensaje que el bot lee y escribe es tiempo que el agente no gastó — valorizado a su propia tarifa neta por hora. Sin supuestos, sin proyecciones: esto ya pasó en Mayo.</p>
-    <div class="tg">
-      <div class="tcard"><div class="n num pos" id="t_hours"></div><div class="l">horas devueltas en Mayo</div></div>
-      <div class="tcard"><div class="n num" id="t_rate"></div><div class="l">valor de 1 hora del agente</div></div>
-      <div class="tcard"><div class="n num pos" id="t_val"></div><div class="l">valor del tiempo recuperado</div></div>
-    </div>
-    <div class="vsfee" id="t_vsfee"></div>
-    <div class="tchain">
-      Cadena: utilidad neta anual <b id="t_annual"></b> ÷ <b id="t_wh"></b> h laborales = <b id="t_rate2"></b>/h × <b id="t_hours2"></b> h = <b class="pos" id="t_val2"></b>.<br>
-      <span style="font-size:11.5px">Supuestos conservadores: lectura <span id="t_read"></span> pps · escritura <span id="t_type"></span> pps · <span id="t_doc"></span> s/doc.</span>
-    </div>
+    <h2>Solo el tiempo recuperado ya supera el precio.</h2>
+    <p class="lede">Cada mensaje que el bot lee y escribe es tiempo que el agente no gastó — valorizado a su <b>propia tarifa neta por hora</b>. Sin supuestos: esto ya pasó en Mayo.</p>
+    <div class="flow" id="timeFlow"></div>
+    <div class="flowfoot" id="timeFoot"></div>
+    <div class="handoff"><span class="ho-num" id="ho_time"></span><span class="ho-arrow">→</span><span class="ho-to">es la <b>Prueba 1</b>, ya entregada. Ahora la Prueba 2: cuánto produce cada venta.</span></div>
   </div></section>
 
-  <!-- 3 MOTOR · cuánto deja una venta (el número que alimenta la proyección) -->
+  <!-- 3 PRUEBA 2 · MOTOR — deriva neto/venta; hand-off a la proyección -->
   <section class="slide"><div class="inner">
     <div class="eyebrow">Prueba 2 · El motor</div>
     <h2>Cuánto deja una sola venta</h2>
-    <p class="lede">Con <b>los números reales del cliente</b>, una venta produce un solo número — la <b>ganancia neta por venta</b> — y ese número alimenta toda la proyección. Los costos <b>fijos</b> definen el margen; el marketing es <b>variable</b> y se resta aparte.</p>
+    <p class="lede">El <b>modelo anual del cliente</b> (derecha) define el margen; el puente (izquierda) lo convierte en <b>un solo número</b>: la ganancia neta por venta. Ese número es el que multiplica la proyección.</p>
     <div class="grid2">
       <div class="wf">
         <div class="wf-h">
-          <h4>Modelo anual — costos fijos (clic en <span style="color:var(--green-d)">▸</span> para detalle)</h4>
+          <h4>Modelo anual — de dónde sale el margen (clic en <span style="color:var(--green-d)">▸</span> para detalle)</h4>
           <button class="eyebtn" id="confToggle" type="button" aria-label="Mostrar u ocultar valores confidenciales del cliente"></button>
         </div>
         <table class="fin hideconf" id="annualTable"><tbody id="annualTbl"></tbody></table>
       </div>
-      <div class="wf" style="display:flex;flex-direction:column;justify-content:flex-start;gap:0">
+      <div class="wf" style="display:flex;flex-direction:column;justify-content:center">
         <h4>Puente: de venta a ganancia neta</h4>
         <div class="bridge" id="bridgeEl"></div>
-        <div style="margin-top:10px;font-size:12px;color:var(--slate)">
-          Marketing (<b>variable</b>): Ene-Mar <span id="mk_spend"></span>&nbsp;BOB / <span id="mk_leads"></span> leads = <b><span id="mk_perlead"></span>&nbsp;BOB/lead</b>.
-          No entra en el margen — se resta por separado en el modelo mensual.
-        </div>
-        <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--slate)">
-          Una venta paga <b class="num" style="color:var(--ink)" id="s_months"></b> meses de servicio.
-        </div>
       </div>
     </div>
+    <div class="handoff"><span class="ho-num" id="ho_motor"></span><span class="ho-arrow">→</span><span class="ho-to">entra a la <b>Proyección</b> como el multiplicador de cada venta.</span></div>
   </div></section>
 
-  <!-- 4 PROYECCION + dónde estamos hoy (embudo Mayo plegado adentro) -->
+  <!-- 4 PRUEBA 2 · PROYECCION — recibe del Motor (neto/venta) y del Embudo (tasa) -->
   <section class="slide"><div class="inner">
-    <div class="eyebrow">Proyección mensual · al volumen estándar</div>
-    <h2>De leads a ganancia — con tasas reales</h2>
-    <p class="lede">Las tasas de conversión son <b>reales</b> (Mayo). Dos supuestos declarados: <b>1 venta cada <span id="r_a2s"></span> citas</b> y la <b>venta promedio</b>. Todo lo demás está medido.</p>
+    <div class="eyebrow">Prueba 2 · Proyección mensual</div>
+    <h2>Cuánto produce el sistema al mes</h2>
+    <p class="lede">Tasas de conversión <b>reales</b> (Mayo). Dos supuestos declarados: <b>1 venta cada <span id="r_a2s"></span> citas</b> y la <b>venta promedio</b>. Todo lo demás está medido.</p>
     <div class="roiwrap">
       <div class="chain" id="chainEl"></div>
       <div class="controls">
@@ -314,28 +326,35 @@
           <input type="range" id="sl_vol" min="191" max="1555" step="5">
           <div class="ticks"><span>191 real</span><span>700 est.</span><span>1,555 techo</span></div>
         </div>
-        <div class="cnote">Las tasas de conversión son <b>reales</b>. Los únicos supuestos son <b>citas por venta</b> y <b>venta promedio</b> — todo lo demás es medido.</div>
+        <div class="cnote">Marketing (variable): Ene-Mar <span id="mk_spend"></span> BOB / <span id="mk_leads"></span> leads = <b><span id="mk_perlead"></span> BOB/lead</b>. Único supuesto además de citas/venta: la <b>venta promedio</b>.</div>
       </div>
     </div>
-    <div class="wherenow">
-      <h4>Dónde estamos hoy · Mayo (real)</h4>
-      <p class="wherenow-sub">El modelo proyecta al volumen estándar. Hoy estamos más temprano en la curva — el embudo ya convierte a la tasa real; falta volumen para la primera venta.</p>
-      <div class="wherenow-grid">
-        <div class="funnel" id="funnelEl"></div>
-        <div class="dualbar">
-          <div class="prow">
-            <div class="prow-top"><b>Leads CTWA — Mayo</b><span id="prog_leads_label"></span></div>
-            <div class="track"><div class="track-fill" id="tf_leads"></div><div class="track-target-line" id="tl_leads"></div></div>
-            <div class="prow-note" id="prog_leads_note"></div>
-          </div>
-          <div class="prow">
-            <div class="prow-top"><b>Citas agendadas — Mayo</b><span id="prog_citas_label"></span></div>
-            <div class="track"><div class="track-fill" id="tf_citas"></div><div class="track-target-line" id="tl_citas"></div></div>
-            <div class="prow-note" id="prog_citas_note"></div>
-          </div>
+    <div class="handoff"><span class="ho-num">tasa <span id="ho_rate"></span></span><span class="ho-arrow">→</span><span class="ho-to">no es un supuesto: la <b>medimos en Mayo</b>. Veámoslo.</span></div>
+  </div></section>
+
+  <!-- 5 EVIDENCIA · EMBUDO MAYO — de aquí sale la tasa real que usa la proyección -->
+  <section class="slide"><div class="inner">
+    <div class="eyebrow">La evidencia · Mayo 2026</div>
+    <h2>Las tasas de la proyección no son inventadas</h2>
+    <p class="lede">El embudo de Mayo es real y medido. De acá sale la <b>tasa cita/lead</b> que usa la proyección — y muestra honestamente dónde estamos hoy.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px;align-items:start">
+      <div class="funnel" id="funnelEl"></div>
+      <div class="dualbar">
+        <h4>Progreso hacia la primera venta</h4>
+        <div class="prow">
+          <div class="prow-top"><b>Leads CTWA — Mayo</b><span id="prog_leads_label"></span></div>
+          <div class="track"><div class="track-fill" id="tf_leads"></div><div class="track-target-line" id="tl_leads"></div></div>
+          <div class="prow-note" id="prog_leads_note"></div>
+        </div>
+        <div class="prow">
+          <div class="prow-top"><b>Citas agendadas — Mayo</b><span id="prog_citas_label"></span></div>
+          <div class="track"><div class="track-fill" id="tf_citas"></div><div class="track-target-line" id="tl_citas"></div></div>
+          <div class="prow-note" id="prog_citas_note"></div>
         </div>
       </div>
     </div>
+    <div class="callout" id="embCallout"></div>
+    <div class="handoff"><span class="ho-num">2 pruebas</span><span class="ho-arrow">→</span><span class="ho-to">entregadas. El <b>veredicto</b> y el precio, a continuación.</span></div>
   </div></section>
 
   <!-- 6 CLOSE -->
@@ -501,6 +520,15 @@ function render(){
   $('#h_net').textContent=fmtMSign(D.net_after_fee);
   $('#h_net').className='big num '+(D.net_after_fee>=0?'pos':'negc');
   $('#h_a2s').textContent=money(I.appts_sale);
+  // promise comparators: cada valor vs el precio del servicio (sin imprimir el ratio — eso es el veredicto)
+  const cmpBars=(valBob,label)=>{
+    const price=I.service_fee, max=Math.max(valBob,price)*1.18;
+    const pw=Math.min(100,price/max*100), vw=Math.min(100,valBob/max*100);
+    return `<div class="crow"><span class="clab">precio</span><span class="ctrack"><span class="cfill price" style="width:${pw}%"></span></span><span class="cnum" style="color:var(--slate)">${fmtM(price)}</span></div>`+
+           `<div class="crow"><span class="clab">${label}</span><span class="ctrack"><span class="cfill val" style="width:${vw}%"></span></span><span class="cnum pos">${fmtM(valBob)}</span></div>`;
+  };
+  $('#h_time_cmp').innerHTML=cmpBars(D.time_value,'recuperado');
+  $('#h_net_cmp').innerHTML=cmpBars(D.net_after_fee,'ganancia');
 
   /* FUNNEL */
   const fe=$('#funnelEl');fe.innerHTML='';
@@ -557,7 +585,7 @@ function render(){
   const bridgeSteps=[
     {op:'•',l:'Precio de venta promedio <span class="asup">supuesto</span>',v:I.venta_prom_bob},
     {op:'×',l:'Comisión 1 punta ('+pct(I.comision_pct)+')',v:D.comision_bob},
-    {op:'×',l:'Margen neto ('+pct(D.margen_neto)+') — del modelo anual',v:null},
+    {op:'×',l:'Margen neto ('+pct(D.margen_neto)+') <span class="carryin">← tabla</span>',v:null},
   ];
   let bHtml=bridgeSteps.map(s=>`<div class="bstep"><span class="bop">${s.op}</span><span class="bl">${s.l}</span>${s.v!=null?`<span class="bv num">${fmtM(s.v)}</span>`:''}</div>`).join('');
   bHtml+=`<div class="bresult"><div class="n num">${fmtM(D.net_per_sale)}</div><div class="u">${FX.sym} netos por venta</div></div>`;
@@ -565,7 +593,7 @@ function render(){
   $('#mk_spend').textContent=money(I.mkt_spend,2);
   $('#mk_leads').textContent=money(I.mkt_leads);
   $('#mk_perlead').textContent=money(I.cost_lead,2);
-  $('#s_months').textContent=money(D.months_per_sale,1);
+  $('#ho_motor').textContent=fmtM(D.net_per_sale)+'/venta';
 
   /* CHAIN slide 4 */
   $('#r_a2s').textContent=money(I.appts_sale);
@@ -574,29 +602,38 @@ function render(){
   $('#sl_a2s').value=I.appts_sale; $('#sl_vol').value=I.vol_leads;
   const links=[
     ['•',`<b>${money(I.vol_leads)} leads/mes</b><div class="src">volumen estándar proyectado</div>`,money(I.vol_leads)+' leads',''],
-    ['×',`tasa cita/lead <b>${pct(I.appt_rate_may)}</b><div class="src">real Mayo · Historic!P18</div>`,money(D.citas_mes,1)+' citas',''],
+    ['×',`tasa cita/lead <b>${pct(I.appt_rate_may)}</b><span class="carryin">medido · Mayo</span><div class="src">embudo real, slide siguiente</div>`,money(D.citas_mes,1)+' citas',''],
     ['÷',`<b>${money(I.appts_sale)}</b> citas/venta<span class="asup">supuesto</span><div class="src">supuesto · aún no medido</div>`,money(D.sales_qty,2)+' ventas',''],
-    ['×',`<b>${fmtM(D.net_per_sale)}</b> neto/venta<div class="src">del Motor · incl. venta promedio supuesta</div>`,'+'+fmtM(D.gross_gain),''],
+    ['×',`<b>${fmtM(D.net_per_sale)}</b> neto/venta<span class="carryin">← del Motor</span><div class="src">incl. venta promedio supuesta</div>`,'+'+fmtM(D.gross_gain),''],
     ['-',`marketing <b>${fmtM(D.marketing)}</b><div class="src">Ene-Mar ${money(I.mkt_spend,2)} BOB / ${money(I.mkt_leads)} leads = ${money(I.cost_lead,2)} BOB/lead</div>`,'-'+fmtM(D.marketing),'negr'],
     ['-',`servicio Capital <b>${fmtM(I.service_fee)}</b><div class="src">precio mensual</div>`,'-'+fmtM(I.service_fee),'negr'],
   ];
   $('#chainEl').innerHTML=links.map(([op,txt,res,cl])=>
     `<div class="clink ${cl}"><div class="op">${op}</div><div class="txt">${txt}</div><div class="res num">${res}</div></div>`
   ).join('')+`<div class="clink fin"><div class="op">=</div><div class="txt"><b style="color:#fff">Ganancia neta proyectada / mes</b><div class="src">resultado de la cadena</div></div><div class="res num">${fmtMSign(D.net_after_fee)}</div></div>`;
+  $('#ho_rate').textContent=pct(I.appt_rate_may);
 
-  /* TIME */
-  $('#t_hours').textContent=money(I.time_saved_may)+' h';
-  $('#t_hours2').textContent=money(I.time_saved_may);
-  $('#t_rate').textContent=fmtM(D.agent_hourly);
-  $('#t_rate2').textContent=fmtM(D.agent_hourly);
-  $('#t_val').textContent=fmtM(D.time_value);
-  $('#t_val2').textContent=fmtM(D.time_value);
-  $('#t_annual').textContent=fmtM(D.utilidad_neta);
-  $('#t_vsfee').innerHTML=`Valor recuperado <b>${fmtM(D.time_value)}</b> vs. precio del servicio <b>${fmtM(I.service_fee)}/mes</b> — ya lo cubre <span class="x">${money(D.time_value/I.service_fee,1)}×</span>, antes de hablar de una sola venta.`;
-  $('#t_wh').textContent=money(I.work_hours_yr);
-  $('#t_read').textContent=money(I.read_pps,2);
-  $('#t_type').textContent=money(I.type_pps,2);
-  $('#t_doc').textContent=money(I.sec_doc);
+  /* EVIDENCIA — conecta la tasa de la proyección con el embudo medido */
+  $('#embCallout').innerHTML=`La proyección multiplica por <b>${pct(I.appt_rate_may)}</b> — exactamente la tasa cita/lead que medimos acá: <b>${money(I.fun_cita)} citas</b> de <b>${money(I.fun_conv)} conversaciones</b>. Hoy faltan más leads para la primera venta; el modelo muestra el potencial al volumen estándar.`;
+
+  /* TIME — formula flow (deriva el valor del tiempo) */
+  const tf=[
+    {sv:fmtM(D.utilidad_neta),sl:'utilidad neta anual <span class="carryin">← modelo anual</span>'},
+    {op:'÷'},
+    {sv:money(I.work_hours_yr),sl:'horas laborales / año'},
+    {op:'='},
+    {sv:fmtM(D.agent_hourly),sl:'valor de 1 hora del agente'},
+    {op:'×'},
+    {sv:money(I.time_saved_may)+' h',sl:'recuperadas en Mayo'},
+    {op:'='},
+    {sv:fmtM(D.time_value),sl:'valor del tiempo recuperado',res:1},
+  ];
+  $('#timeFlow').innerHTML=tf.map(s=>s.op
+    ?`<div class="op">${s.op}</div>`
+    :`<div class="step${s.res?' res':''}"><div class="sv num">${s.sv}</div><div class="sl">${s.sl}</div></div>`
+  ).join('');
+  $('#timeFoot').innerHTML=`La tarifa es la <b>utilidad neta del propio agente</b> ÷ sus horas — no un costo inventado. Supuestos conservadores de medición: lectura ${money(I.read_pps,2)} pps · escritura ${money(I.type_pps,2)} pps · ${money(I.sec_doc)} s/doc.`;
+  $('#ho_time').textContent=fmtM(D.time_value);
 
   /* CLOSE */
   const feeNum=money(I.service_fee*FX.rate,Math.abs(I.service_fee*FX.rate)<100?2:0);
