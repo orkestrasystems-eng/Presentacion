@@ -4,25 +4,21 @@ Archivo único: **`Capital_Presentacion.html`** (sin dependencias, abre con dobl
 Toda la lógica vive en el objeto `CAP` dentro del `<script>`. El HTML solo *muestra*; nada se calcula fuera de `CAP`.
 El logo va **inline** (markup `<svg>` en el `.logo`), no por `<img src>` — funciona en `file://`.
 
-### Estructura narrativa (7 slides) — tesis: *el precio se justifica solo*
-Patrón **Costo vs Retorno → Pruebas → Veredicto**. Las coberturas (×) viven **solo en el cierre**; las slides intermedias no las repiten. Se está rediseñando slide por slide según referencias del cliente (layouts tipo "card + iconos").
-1. **Portada · Costo vs Retorno del Servicio** — card de Costo (`service_fee`) + chevron + card de Retorno con 3 columnas (Tiempo recuperado · Menor pérdida de leads · Ventas asistidas). Iconos SVG inline. IDs `cvr_*`.
-2. **Prueba 1 · Cálculo del Tiempo Recuperado** — desglose de las 18 h en 3 cards (lectura + escritura + documentos) = card resultado. IDs `tc_*`.
-3. **Prueba 1 · De horas a valor económico** — grid fórmula: utilidad ÷ horas = tarifa; tarifa × horas = valor. IDs `ve_*`.
-4. **Prueba 2 · Motor** — modelo anual (margen, confidencial) + puente → ganancia neta por venta. Hand-off `#ho_motor`.
-5. **Prueba 2 · Proyección** — ese número × tasas reales × supuestos → ganancia neta/mes. Hand-off `#ho_rate`, carry-in `← del Motor`.
-6. **Evidencia · Embudo Mayo** — de dónde sale la tasa real que usa la proyección + dónde estamos hoy.
-7. **Veredicto / Close** — el precio y las coberturas (1.2× / 3.3×). Único lugar con ratios.
+### Estructura narrativa (7 slides) · flujo: margen → conversión → cálculo → precio
+Rediseñado slide por slide con referencias del cliente (layouts "card + iconos"). **Sin eyebrows** (rótulos chiquitos arriba) y **sin cintas hand-off / chips carry-in** — se quitaron por pedido (eran del viejo armado "Pruebas"). Único rótulo que queda: "El precio" dentro del closebox.
+1. **Portada · Costo vs Retorno del Servicio** — card Costo (`service_fee`) + chevron + card Retorno con 3 columnas. IDs `cvr_*`.
+2. **Cálculo del Tiempo Recuperado** — 18 h = lectura+escritura+documentos en 3 cards + resultado. IDs `tc_*`. (`time_saved` derivado = `t_read_h+t_write_h+t_doc_h`.)
+3. **De horas a valor económico** — grid fórmula utilidad ÷ horas = tarifa; tarifa × horas = valor. IDs `ve_*`.
+4. **Motor · Cuánto deja una venta asistida** — 2 cards: (1) Margen neto anual con %s + line-items SIN montos ("oculto por confidencialidad") → 53.5%; (2) venta promedio × comisión × margen → 7,482. IDs `m_*`. **Ya no hay tabla anual con eye-toggle en la slide** (los montos confidenciales solo viven en el panel Auditar datos).
+5. **Embudo · La tasa cita/lead sale de Mayo** — funnel verde sólido + progreso + callout. IDs `funnelEl`, `tf_*`, `emb_*`.
+6. **Proyección · Cuánto produce el sistema al mes** — cadena leads→ganancia + sliders. IDs `chainEl`, `sl_*`.
+7. **Close** — el precio y las coberturas (1.2× / 3.3×).
 
-> Las 18 h NO son un input suelto: `time_saved` es **derivado** = `t_read_h + t_write_h + t_doc_h` (1+13+4). Editar un componente recalcula el total y `time_value`. Slides 4–7 aún tienen el estilo previo (hand-offs/carry-ins); se rediseñarán igual.
+> Velocidades (`read_pps`=15, `type_pps`=5, `sec_doc`=30) son solo informativas en el footer del slide 2 — no entran en ningún cálculo.
+> Pendiente (slide 2): conteos x/y de mensajes leídos/escritos en las cajas (faltan datos del cliente; z=documentos derivable = 480).
 
-### Spine conectivo (lo que da coherencia — NO romper)
-Cada slide *entrega* su número al siguiente y *recibe* del anterior, visiblemente:
-- **`.handoff`** (cinta al pie): el número resultante → a dónde va. IDs: `#ho_time`, `#ho_motor`, `#ho_rate`. Números siempre desde `CAP` (vía `fmtM`/`pct`).
-- **`.carryin`** (chip "← origen"): marca un valor que vino de otra slide. Ej.: flujo de Tiempo "← modelo anual"; puente del Motor "← tabla"; cadena de Proyección "← del Motor" (neto/venta) y "medido · Mayo" (tasa).
-- Hilo de datos real: Motor `net_per_sale` (7,482) → es el `× neto/venta` de la cadena; Embudo `appt_rate_may` (4.2%) → es el `× tasa` de la cadena. Las cintas hacen visible esa dependencia que ya existe en `CAP`.
-
-> Regla narrativa: nunca volver a "boxes sueltos". Si agregás una slide, definí qué número entrega y de cuál recibe.
+### Conexión entre slides (sin cintas)
+Las cintas `.handoff` y los chips `.carryin` se **eliminaron** (pedido del cliente). La coherencia ahora vive en el ORDEN: Motor produce el margen/venta (7,482) → Embudo muestra la conversión real (tasa 4.2%, supuesto 15 citas) → Proyección combina ambos en la cadena leads→ganancia. El hilo de datos sigue existiendo en `CAP` (`net_per_sale` y `appt_rate_may` alimentan la cadena), solo que ya no se rotula en pantalla.
 
 ---
 
@@ -129,8 +125,8 @@ Todo se guarda en **BOB**. El pill arriba (BOB / USD Of. / USD Par.) solo cambia
 - Inputs se construyen **una vez** (`buildAuditInputs`); en cada render solo se sincroniza el valor de los campos no enfocados (`syncAuditInputs`) — por eso ya no expulsa al tipear.
 - Derivados (`renderDerived`) muestran fórmula `f` + resultado; se reconstruyen en cada render (no tienen campos editables).
 
-### Valores confidenciales del cliente (slide 3 · Motor)
-La columna de valores del modelo anual (P&L personal del cliente) lleva clase `.conf` y va **difuminada por defecto** (`table.fin.hideconf .conf`). El botón ojo `#confToggle` (estado `confShown`) revela/oculta. Los **porcentajes** y la **ganancia neta por venta** quedan siempre visibles. Para presentar en frío: dejarla oculta y revelar solo en un 1:1.
+### Valores confidenciales del cliente (slide 4 · Motor)
+El rediseño del Motor **ya no muestra montos** del P&L en la slide: solo %s (oficina/REMAX/impuestos) y los nombres de los costos fijos, con la nota "Detalle de montos oculto por confidencialidad". Los montos absolutos solo se ven en el panel **Auditar datos** (para el presentador). Se quitó la tabla anual con eye-toggle (`#confToggle`, `annualRows`, `toggleDet` quedaron como código muerto sin uso).
 
 ---
 
