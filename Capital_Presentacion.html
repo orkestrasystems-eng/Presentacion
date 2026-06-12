@@ -30,7 +30,8 @@
     gap:12px;padding:0 20px;z-index:30;background:rgba(247,245,240,.9);backdrop-filter:blur(8px);
     border-bottom:1px solid var(--line)}
   .logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}
-  .logo svg{width:25px;height:25px;display:block}
+  .logo .mk{width:20px;height:20px;border-radius:6px;background:var(--green);
+    box-shadow:inset 0 0 0 3px rgba(247,245,240,.9)}
   .sp{flex:1}
   .pill3{display:flex;background:#ECE8DE;border-radius:8px;padding:3px;gap:1px}
   .pill3 button{border:0;background:transparent;font:inherit;font-size:12px;font-weight:650;
@@ -144,13 +145,20 @@
   .closebox{background:linear-gradient(135deg,var(--ink),#16382C);color:#EAF3EE;border-radius:20px;
     padding:clamp(26px,4.5vw,50px);text-align:center}
   .closebox .big{font-size:clamp(36px,7vw,72px);font-weight:850;letter-spacing:-.03em;line-height:1}
+  .closebox .lede{color:#A9C6BA;margin:12px auto 0;font-size:clamp(13px,1.4vw,15.5px)}
   .closebox .row{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:22px}
-  .closebox .row div{font-size:13px;color:#A9C6BA;min-width:220px}
-  .closebox .row b{display:block;font-size:22px;color:#fff;font-weight:850}
-  .closebox .coverage-row{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;margin-top:16px;
-    padding-top:14px;border-top:1px solid rgba(255,255,255,.12)}
-  .closebox .coverage-row div{font-size:11px;color:#86A99A;min-width:150px}
-  .closebox .coverage-row b{display:inline-block;margin-left:7px;color:#D9EEE4;font-size:15px}
+  .closebox .row div{font-size:13px;color:#A9C6BA}.closebox .row b{display:block;font-size:22px;color:#fff;font-weight:850}
+  .close5{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+  @media(max-width:820px){.close5{grid-template-columns:repeat(2,1fr)}}
+  .c5card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;
+    padding:14px 12px;text-align:center}
+  .c5tag{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    padding:2px 7px;border-radius:4px;margin-bottom:8px}
+  .c5tag.real{background:rgba(45,153,100,.3);color:#8FE3B6}
+  .c5tag.proj{background:rgba(185,120,26,.3);color:#F5C97A}
+  .c5n{font-size:clamp(18px,2.4vw,26px);font-weight:850;letter-spacing:-.02em;color:#fff;
+    font-variant-numeric:tabular-nums;line-height:1.1}
+  .c5l{font-size:11px;color:#A9C6BA;margin-top:5px;line-height:1.3}
   /* AUDIT */
   .scrim{position:fixed;inset:0;background:rgba(15,42,34,.4);opacity:0;pointer-events:none;transition:.2s;z-index:50}
   .scrim.open{opacity:1;pointer-events:auto}
@@ -190,7 +198,7 @@
 </head>
 <body>
 <div class="chrome">
-  <span class="logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 661 661"><g transform="translate(0,661) scale(0.1,-0.1)" fill="#0f7c67" stroke="none"><path d="M3080 6108 c-232 -32 -340 -49 -366 -58 -16 -5 -65 -19 -109 -30 -208 -51 -519 -186 -715 -310 -8 -5 -35 -21 -60 -36 -58 -35 -267 -194 -339 -258 -121 -107 -216 -206 -305 -316 -91 -113 -226 -303 -226 -319 0 -5 -7 -14 -15 -21 -8 -7 -24 -31 -35 -54 -12 -22 -29 -57 -40 -76 -16 -31 -78 -166 -131 -286 -9 -22 -25 -65 -34 -95 -9 -30 -23 -72 -30 -94 -45 -132 -89 -345 -115 -561 -17 -131 -8 -543 14 -669 27 -157 57 -299 67 -317 5 -10 9 -24 9 -33 0 -21 57 -199 85 -265 13 -30 34 -82 47 -115 12 -33 25 -62 29 -65 3 -3 27 -47 53 -99 56 -111 167 -293 230 -376 55 -73 156 -196 186 -225 19 -19 49 -51 66 -70 29 -32 76 -77 165 -155 247 -218 587 -416 909 -528 336 -117 554 -152 945 -151 385 2 553 29 915 150 128 43 520 228 520 245 0 4 9 10 19 14 38 12 215 136 301 212 8 8 33 27 55 44 195 147 595 642 595 735 0 26 -5 34 -27 43 -16 6 -42 20 -59 30 -17 10 -60 35 -95 54 -35 19 -144 81 -241 137 -104 60 -184 100 -192 97 -16 -6 -38 -36 -105 -140 -20 -32 -59 -85 -86 -118 -62 -74 -281 -296 -315 -318 -14 -9 -59 -41 -100 -72 -212 -157 -508 -288 -765 -339 -347 -69 -833 -44 -1070 55 -16 7 -52 20 -80 30 -259 90 -530 263 -745 476 -97 96 -212 233 -238 285 -11 22 -28 46 -36 53 -9 8 -16 18 -16 24 0 6 -6 18 -14 26 -44 51 -146 275 -204 446 -35 106 -76 290 -67 305 4 6 90 10 229 10 242 0 250 -2 259 -55 27 -172 184 -506 306 -649 107 -125 230 -245 316 -304 27 -19 57 -41 66 -48 49 -43 252 -139 389 -184 182 -59 277 -74 490 -73 185 0 278 11 420 50 30 8 72 19 93 24 21 5 45 13 55 19 9 5 53 25 97 45 91 41 256 137 275 160 7 8 18 15 26 15 7 0 19 8 26 18 7 9 31 30 53 47 60 44 164 154 230 242 32 43 72 95 87 116 46 60 37 91 -37 133 -33 19 -67 37 -75 41 -8 3 -32 17 -52 29 -20 13 -69 41 -110 62 -86 46 -133 72 -185 105 -21 13 -58 34 -81 46 -43 22 -45 22 -64 4 -11 -10 -37 -43 -58 -73 -60 -88 -188 -196 -305 -257 -136 -71 -275 -99 -445 -90 -146 8 -246 39 -389 119 -78 44 -249 200 -279 255 -94 175 -125 263 -142 408 -14 110 -11 151 17 270 24 99 25 100 80 210 70 138 152 231 283 319 120 81 213 117 368 141 162 26 330 0 487 -75 35 -17 66 -30 70 -30 4 0 24 -14 44 -30 136 -114 188 -165 223 -222 32 -53 47 -51 170 23 58 35 371 215 432 249 63 35 71 51 46 83 -11 14 -20 28 -20 32 0 22 -198 254 -263 306 -29 24 -57 48 -63 55 -18 22 -196 137 -269 175 -371 192 -807 231 -1220 108 -38 -12 -90 -30 -115 -41 -89 -39 -215 -103 -218 -110 -2 -5 -7 -8 -12 -8 -4 0 -44 -24 -88 -52 -181 -120 -377 -336 -495 -546 -45 -81 -117 -249 -117 -275 0 -7 -6 -21 -12 -30 -12 -15 -41 -17 -253 -18 -236 -1 -240 0 -243 20 -7 43 91 347 138 431 5 8 22 42 39 75 16 33 55 98 86 144 30 46 55 85 55 87 0 21 173 218 290 330 102 98 346 274 379 274 4 0 27 13 49 30 23 17 48 30 56 30 8 0 17 4 21 9 9 15 252 106 345 129 282 70 454 89 665 73 181 -14 241 -24 410 -67 258 -66 483 -172 680 -319 22 -16 42 -32 45 -35 3 -3 23 -17 45 -32 43 -30 204 -184 270 -258 52 -59 119 -150 175 -238 26 -41 54 -73 67 -76 16 -4 63 18 170 80 81 47 217 125 300 172 84 48 153 93 153 101 0 32 -149 251 -273 401 -119 143 -304 321 -442 426 -88 67 -241 174 -248 174 -3 0 -34 18 -68 40 -35 22 -71 43 -79 46 -14 6 -67 30 -220 102 -151 70 -401 143 -625 182 -218 37 -581 51 -745 28z"/></g></svg>Capital</span>
+  <span class="logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 661 661" style="height:28px;width:auto;display:block"><g transform="translate(0,661) scale(0.1,-0.1)" fill="#0f7c67" stroke="none"><path d="M3080 6108 c-232 -32 -340 -49 -366 -58 -16 -5 -65 -19 -109 -30 -208 -51 -519 -186 -715 -310 -8 -5 -35 -21 -60 -36 -58 -35 -267 -194 -339 -258 -121 -107 -216 -206 -305 -316 -91 -113 -226 -303 -226 -319 0 -5 -7 -14 -15 -21 -8 -7 -24 -31 -35 -54 -12 -22 -29 -57 -40 -76 -16 -31 -78 -166 -131 -286 -9 -22 -25 -65 -34 -95 -9 -30 -23 -72 -30 -94 -45 -132 -89 -345 -115 -561 -17 -131 -8 -543 14 -669 27 -157 57 -299 67 -317 5 -10 9 -24 9 -33 0 -21 57 -199 85 -265 13 -30 34 -82 47 -115 12 -33 25 -62 29 -65 3 -3 27 -47 53 -99 56 -111 167 -293 230 -376 55 -73 156 -196 186 -225 19 -19 49 -51 66 -70 29 -32 76 -77 165 -155 247 -218 587 -416 909 -528 336 -117 554 -152 945 -151 385 2 553 29 915 150 128 43 520 228 520 245 0 4 9 10 19 14 38 12 215 136 301 212 8 8 33 27 55 44 195 147 595 642 595 735 0 26 -5 34 -27 43 -16 6 -42 20 -59 30 -17 10 -60 35 -95 54 -35 19 -144 81 -241 137 -104 60 -184 100 -192 97 -16 -6 -38 -36 -105 -140 -20 -32 -59 -85 -86 -118 -62 -74 -281 -296 -315 -318 -14 -9 -59 -41 -100 -72 -212 -157 -508 -288 -765 -339 -347 -69 -833 -44 -1070 55 -16 7 -52 20 -80 30 -259 90 -530 263 -745 476 -97 96 -212 233 -238 285 -11 22 -28 46 -36 53 -9 8 -16 18 -16 24 0 6 -6 18 -14 26 -44 51 -146 275 -204 446 -35 106 -76 290 -67 305 4 6 90 10 229 10 242 0 250 -2 259 -55 27 -172 184 -506 306 -649 107 -125 230 -245 316 -304 27 -19 57 -41 66 -48 49 -43 252 -139 389 -184 182 -59 277 -74 490 -73 185 0 278 11 420 50 30 8 72 19 93 24 21 5 45 13 55 19 9 5 53 25 97 45 91 41 256 137 275 160 7 8 18 15 26 15 7 0 19 8 26 18 7 9 31 30 53 47 60 44 164 154 230 242 32 43 72 95 87 116 46 60 37 91 -37 133 -33 19 -67 37 -75 41 -8 3 -32 17 -52 29 -20 13 -69 41 -110 62 -86 46 -133 72 -185 105 -21 13 -58 34 -81 46 -43 22 -45 22 -64 4 -11 -10 -37 -43 -58 -73 -60 -88 -188 -196 -305 -257 -136 -71 -275 -99 -445 -90 -146 8 -246 39 -389 119 -78 44 -249 200 -279 255 -94 175 -125 263 -142 408 -14 110 -11 151 17 270 24 99 25 100 80 210 70 138 152 231 283 319 120 81 213 117 368 141 162 26 330 0 487 -75 35 -17 66 -30 70 -30 4 0 24 -14 44 -30 136 -114 188 -165 223 -222 32 -53 47 -51 170 23 58 35 371 215 432 249 63 35 71 51 46 83 -11 14 -20 28 -20 32 0 22 -198 254 -263 306 -29 24 -57 48 -63 55 -18 22 -196 137 -269 175 -371 192 -807 231 -1220 108 -38 -12 -90 -30 -115 -41 -89 -39 -215 -103 -218 -110 -2 -5 -7 -8 -12 -8 -4 0 -44 -24 -88 -52 -181 -120 -377 -336 -495 -546 -45 -81 -117 -249 -117 -275 0 -7 -6 -21 -12 -30 -12 -15 -41 -17 -253 -18 -236 -1 -240 0 -243 20 -7 43 91 347 138 431 5 8 22 42 39 75 16 33 55 98 86 144 30 46 55 85 55 87 0 21 173 218 290 330 102 98 346 274 379 274 4 0 27 13 49 30 23 17 48 30 56 30 8 0 17 4 21 9 9 15 252 106 345 129 282 70 454 89 665 73 181 -14 241 -24 410 -67 258 -66 483 -172 680 -319 22 -16 42 -32 45 -35 3 -3 23 -17 45 -32 43 -30 204 -184 270 -258 52 -59 119 -150 175 -238 26 -41 54 -73 67 -76 16 -4 63 18 170 80 81 47 217 125 300 172 84 48 153 93 153 101 0 32 -149 251 -273 401 -119 143 -304 321 -442 426 -88 67 -241 174 -248 174 -3 0 -34 18 -68 40 -35 22 -71 43 -79 46 -14 6 -67 30 -220 102 -151 70 -401 143 -625 182 -218 37 -581 51 -745 28z"/></g></svg></span>
   <span class="sp"></span>
   <div class="pill3" id="fxPill">
     <button data-fx="bob" class="on">BOB</button>
@@ -266,8 +274,7 @@
           No entra en el margen — se resta por separado en el modelo mensual.
         </div>
         <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--slate)">
-          Una venta deja <b class="num" style="color:var(--ink)" id="s_sale_value"></b> netos:
-          cubre <b class="num" style="color:var(--ink)" id="s_sale_coverage"></b> el precio mensual del servicio.
+          Una venta paga <b class="num" style="color:var(--ink)" id="s_months"></b> meses de servicio.
         </div>
       </div>
     </div>
@@ -317,13 +324,28 @@
     <div class="closebox">
       <div class="eyebrow" style="color:#8FE3B6">El precio</div>
       <div class="big" id="c_fee_big"></div>
-      <div class="row">
-        <div>Tiempo recuperado · Mayo<b class="num" id="c_time"></b></div>
-        <div>Ganancia neta proyectada / mes<b class="num" id="c_net"></b></div>
-      </div>
-      <div class="coverage-row">
-        <div>Cobertura por tiempo<b class="num" id="c_time_coverage"></b></div>
-        <div>Cobertura por 1 venta<b class="num" id="c_sale_coverage"></b></div>
+      <p class="lede">El asistente ya devuelve más de lo que cuesta. El volumen hace el resto.</p>
+      <div class="close5">
+        <div class="c5card">
+          <div class="c5tag real">Real · Mayo</div>
+          <div class="c5n" id="c_time"></div>
+          <div class="c5l">Tiempo recuperado</div>
+        </div>
+        <div class="c5card">
+          <div class="c5tag" style="background:rgba(255,255,255,.1);color:#A9C6BA">Cubre</div>
+          <div class="c5n" id="c_time_x"></div>
+          <div class="c5l">veces el costo del servicio</div>
+        </div>
+        <div class="c5card">
+          <div class="c5tag proj">Proyección</div>
+          <div class="c5n" id="c_net"></div>
+          <div class="c5l">Ganancia neta / mes</div>
+        </div>
+        <div class="c5card">
+          <div class="c5tag" style="background:rgba(255,255,255,.1);color:#A9C6BA">Cubre</div>
+          <div class="c5n" id="c_net_x"></div>
+          <div class="c5l">veces el costo del servicio</div>
+        </div>
       </div>
     </div>
   </div></section>
@@ -395,7 +417,6 @@ const CAP={
     // --- Economía por venta ---
     {k:"comision_bob",label:"Comisión por venta",unit:"BOB",f:"venta × comisión%",fn:I=>I.venta_prom_bob*I.comision_pct,src:""},
     {k:"net_per_sale",label:"Ganancia neta por venta",unit:"BOB",f:"comisión × margen_neto",fn:(I,D)=>D.comision_bob*D.margen_neto,src:""},
-    {k:"sale_fee_coverage",label:"Cobertura del servicio por 1 venta",unit:"× servicio",f:"neto_por_venta / precio_servicio",fn:(I,D)=>D.net_per_sale/I.service_fee,src:""},
     // --- Modelo mensual (proyección) ---
     {k:"marketing",label:"Marketing / mes (variable)",unit:"BOB",f:"vol_leads × costo_lead",fn:I=>I.vol_leads*I.cost_lead,src:""},
     {k:"citas_mes",label:"Citas proyectadas / mes",unit:"citas",f:"vol_leads × tasa_cita",fn:I=>I.vol_leads*I.appt_rate_may,src:""},
@@ -403,10 +424,10 @@ const CAP={
     {k:"gross_gain",label:"Ganancia de ventas / mes",unit:"BOB",f:"ventas × neto_por_venta",fn:(I,D)=>D.sales_qty*D.net_per_sale,src:""},
     {k:"net_before_fee",label:"Neto antes del servicio",unit:"BOB",f:"ganancia_ventas - marketing",fn:(I,D)=>D.gross_gain-D.marketing,src:""},
     {k:"net_after_fee",label:"Ganancia neta proyectada / mes",unit:"BOB",f:"neto_antes - servicio",fn:(I,D)=>D.net_before_fee-I.service_fee,src:""},
+    {k:"months_per_sale",label:"Meses que paga 1 venta",unit:"meses",f:"neto_por_venta / servicio",fn:(I,D)=>D.net_per_sale/I.service_fee,src:""},
     // --- Tiempo recuperado ---
     {k:"agent_hourly",label:"Valor de 1 hora del agente",unit:"BOB/h",f:"utilidad_neta / horas_año",fn:(I,D)=>D.utilidad_neta/I.work_hours_yr,src:""},
     {k:"time_value",label:"Valor tiempo devuelto — Mayo",unit:"BOB",f:"horas_ahorradas × valor_hora",fn:(I,D)=>I.time_saved_may*D.agent_hourly,src:""},
-    {k:"time_fee_coverage",label:"Cobertura del servicio por tiempo",unit:"× servicio",f:"valor_tiempo / precio_servicio",fn:(I,D)=>D.time_value/I.service_fee,src:""},
     {k:"leads_for_sale",label:"Leads necesarios para 1ª venta",unit:"leads",f:"citas_por_venta / tasa_cita",fn:I=>I.appts_sale/I.appt_rate_may,src:""},
   ],
 };
@@ -417,19 +438,18 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let FX={rate:1,sym:'BOB',id:'bob'};
 const FX_MAP={
   bob:{rate:1,sym:'BOB',tc:1},
-  uof:{rate:1/7,sym:'USD\u00a0Of.',tc:7},
-  upar:{rate:1/10,sym:'USD\u00a0Par.',tc:10},
+  uof:{rate:1/7,sym:'USD Of.',tc:7},
+  upar:{rate:1/10,sym:'USD Par.',tc:10},
 };
 
 const nfUS=new Intl.NumberFormat('en-US');
 function money(n,d=0){return new Intl.NumberFormat('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n);}
-function fmtMValue(bob){
+function fmtM(bob){
   const v=bob*FX.rate;
   const d=Math.abs(v)<100?2:0;
-  return money(v,d);
+  return money(v,d)+' '+FX.sym;
 }
-function fmtM(bob){return fmtMValue(bob)+'\u00a0'+FX.sym;}
-function fmtMSign(bob){const v=bob*FX.rate;const d=Math.abs(v)<100?2:0;return (v>=0?'+':'-')+money(Math.abs(v),d)+'\u00a0'+FX.sym;}
+function fmtMSign(bob){const v=bob*FX.rate;const d=Math.abs(v)<100?2:0;return (v>=0?'+':'-')+money(Math.abs(v),d)+' '+FX.sym;}
 function pct(n){return money(Math.round(n*10000)/100,1)+'%';}
 
 function compute(){
@@ -526,8 +546,7 @@ function render(){
   $('#mk_spend').textContent=money(I.mkt_spend,2);
   $('#mk_leads').textContent=money(I.mkt_leads);
   $('#mk_perlead').textContent=money(I.cost_lead,2);
-  $('#s_sale_value').textContent=fmtM(D.net_per_sale);
-  $('#s_sale_coverage').textContent=money(D.sale_fee_coverage,1)+'×';
+  $('#s_months').textContent=money(D.months_per_sale,1);
 
   /* CHAIN slide 4 */
   $('#r_a2s').textContent=money(I.appts_sale);
@@ -560,12 +579,12 @@ function render(){
   $('#t_doc').textContent=money(I.sec_doc);
 
   /* CLOSE */
-  $('#c_fee_big').innerHTML=fmtMValue(I.service_fee)+'<span style="font-size:.4em;color:#A9C6BA"> '+FX.sym+'/mes</span>';
-  $('#c_net').textContent=fmtMSign(D.net_after_fee);
-  $('#c_net').className='num '+(D.net_after_fee>=0?'':'negc');
+  const feeNum=money(I.service_fee*FX.rate,Math.abs(I.service_fee*FX.rate)<100?2:0);
+  $('#c_fee_big').innerHTML=feeNum+'<span style="font-size:.38em;color:#A9C6BA"> '+FX.sym+'/mes</span>';
   $('#c_time').textContent=fmtM(D.time_value);
-  $('#c_time_coverage').textContent=money(D.time_fee_coverage,1)+'×';
-  $('#c_sale_coverage').textContent=money(D.sale_fee_coverage,1)+'×';
+  $('#c_time_x').textContent=money(D.time_value/I.service_fee,1)+'×';
+  $('#c_net').textContent=fmtMSign(D.net_after_fee);
+  $('#c_net_x').textContent=money(D.net_after_fee/I.service_fee,1)+'×';
 
   audit(I,D);
 }
@@ -621,7 +640,7 @@ function filterAudit(q){
 }
 function renderDerived(D){
   $('#auditDerived').innerHTML=CAP.derived.map(d=>{
-    const dec=['sales_qty','citas_mes','leads_for_sale'].includes(d.k)?2:(['sale_fee_coverage','time_fee_coverage','agent_hourly'].includes(d.k)?1:0);
+    const dec=['sales_qty','citas_mes','leads_for_sale'].includes(d.k)?2:(['months_per_sale','agent_hourly'].includes(d.k)?1:0);
     return`<tr><td class="k">${d.label}<div class="f">${d.f}</div></td>
       <td class="ares">${money(D[d.k],dec)}<div class="aunit">${d.unit}</div></td></tr>`;
   }).join('');
