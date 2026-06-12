@@ -564,7 +564,6 @@
           <input type="range" id="sl_vol" min="191" max="1555" step="5">
           <div class="ticks"><span>191 real</span><span>700 est.</span><span>1,555 techo</span></div>
         </div>
-        <div class="cnote">Marketing (variable): Ene-Mar <span id="mk_spend"></span> BOB / <span id="mk_leads"></span> leads = <b><span id="mk_perlead"></span> BOB/lead</b>. Único supuesto además de citas/venta: la <b>venta promedio</b>.</div>
       </div>
     </div>
   </div></section>
@@ -788,23 +787,18 @@ function render(){
   $('#m_calc').innerHTML=`${fmtM(D.comision_bob)} × ${pct(D.margen_neto)} = <span class="mres">${fmtM(D.net_per_sale)}</span>`;
   $('#m_net').textContent=fmtM(D.net_per_sale);
 
-  /* Marketing (mostrado en Proyección) */
-  $('#mk_spend').textContent=money(I.mkt_spend,2);
-  $('#mk_leads').textContent=money(I.mkt_leads);
-  $('#mk_perlead').textContent=money(I.cost_lead,2);
-
   /* CHAIN · Proyección */
   $('#r_a2s').textContent=money(I.appts_sale);
   $('#lab_a2s').textContent=money(I.appts_sale);
   $('#lab_vol').textContent=money(I.vol_leads);
   $('#sl_a2s').value=I.appts_sale; $('#sl_vol').value=I.vol_leads;
   const links=[
-    ['•',`<b>${money(I.vol_leads)} leads/mes</b><div class="src">volumen estándar proyectado</div>`,money(I.vol_leads)+' leads',''],
-    ['×',`tasa cita/lead <b>${pct(I.appt_rate_may)}</b><div class="src">medida en Mayo</div>`,money(D.citas_mes,1)+' citas',''],
-    ['÷',`<b>${money(I.appts_sale)}</b> citas/venta<span class="asup">supuesto</span><div class="src">aún no medido</div>`,money(D.sales_qty,2)+' ventas',''],
-    ['×',`<b>${fmtM(D.net_per_sale)}</b> neto/venta<div class="src">del Motor</div>`,'+'+fmtM(D.gross_gain),''],
-    ['-',`marketing <b>${fmtM(D.marketing)}</b><div class="src">Ene-Mar ${money(I.mkt_spend,2)} BOB / ${money(I.mkt_leads)} leads = ${money(I.cost_lead,2)} BOB/lead</div>`,'-'+fmtM(D.marketing),'negr'],
-    ['-',`servicio Capital <b>${fmtM(I.service_fee)}</b><div class="src">precio mensual</div>`,'-'+fmtM(I.service_fee),'negr'],
+    ['•',`<b>${money(I.vol_leads)} leads/mes</b><div class="src">Volumen estándar proyectado</div>`,money(I.vol_leads)+' leads',''],
+    ['×',`Tasa cita/lead <b>${pct(I.appt_rate_may)}</b><div class="src">Medida en Mayo</div>`,money(D.citas_mes,1)+' citas',''],
+    ['÷',`<b>${money(I.appts_sale)}</b> citas/venta<span class="asup">supuesto</span><div class="src">Aún no medido</div>`,money(D.sales_qty,2)+' ventas',''],
+    ['×',`<b>${fmtM(D.net_per_sale)}</b> neto/venta<div class="src">Utilidad neta por venta asistida</div>`,'+'+fmtM(D.gross_gain),''],
+    ['-',`Marketing <b>${fmtM(D.marketing)}</b><div class="src">${money(I.cost_lead,2)} BOB/lead</div>`,'-'+fmtM(D.marketing),'negr'],
+    ['-',`Servicio Capital <b>${fmtM(I.service_fee)}</b><div class="src">Precio mensual</div>`,'-'+fmtM(I.service_fee),'negr'],
   ];
   $('#chainEl').innerHTML=links.map(([op,txt,res,cl])=>
     `<div class="clink ${cl}"><div class="op">${op}</div><div class="txt">${txt}</div><div class="res num">${res}</div></div>`
