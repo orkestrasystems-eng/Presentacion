@@ -40,6 +40,15 @@
   .abtn{border:1px solid var(--line);background:var(--card);font:inherit;font-size:12.5px;
     font-weight:650;padding:6px 12px;border-radius:8px;cursor:pointer;color:var(--ink)}
   .abtn:hover{border-color:var(--green)}
+  /* toggle Registrado/Proyección (tiempo recuperado) */
+  .tmode-pill{display:inline-flex;background:#ECE8DE;border-radius:9px;padding:3px;gap:2px;margin-top:16px}
+  .tmode-pill button{border:0;background:transparent;font:inherit;font-size:12px;font-weight:700;color:var(--slate);
+    padding:6px 13px;border-radius:7px;cursor:pointer;white-space:nowrap}
+  .tmode-pill button.on{background:var(--card);color:var(--green-d);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .tmode-pill b{font-weight:850;font-variant-numeric:tabular-nums}
+  .closebox .tmode-pill{background:rgba(255,255,255,.1)}
+  .closebox .tmode-pill button{color:#A9C6BA}
+  .closebox .tmode-pill button.on{background:rgba(255,255,255,.16);color:#fff}
   /* nav */
   .nav{position:fixed;bottom:18px;left:0;right:0;display:flex;align-items:center;
     justify-content:center;gap:16px;z-index:30}
@@ -392,6 +401,7 @@
   <section class="slide hero active"><div class="inner">
     <h1>Costo <span class="vs">vs</span> <em>Retorno</em> del Servicio</h1>
     <p class="lede">El Asistente IA recupera tiempo, reduce la pérdida de leads al responder mientras la intención comercial sigue activa, y genera reuniones que conducen a ventas asistidas.</p>
+    <div class="tmode-pill"><button type="button" data-tm="rec">Registrado · <b class="tm-rec"></b></button><button type="button" data-tm="proj">Proyección · <b class="tm-proj"></b></button></div>
     <div class="cvr">
       <div class="cvr-cost">
         <span class="cvr-pill cost">Costo del servicio</span>
@@ -432,6 +442,7 @@
   <section class="slide"><div class="inner">
     <h2>Cálculo del Tiempo Recuperado</h2>
     <p class="lede">En Mayo, el Asistente IA ahorró tiempo al leer mensajes, escribir respuestas y enviar documentación por el agente.</p>
+    <div class="tmode-pill"><button type="button" data-tm="rec">Registrado · <b class="tm-rec"></b></button><button type="button" data-tm="proj">Proyección · <b class="tm-proj"></b></button></div>
     <div class="qline">¿De dónde salen las <span id="tc_total_q"></span>?</div>
     <div class="tcalc">
       <div class="tcalc-card">
@@ -471,6 +482,7 @@
   <section class="slide"><div class="inner">
     <h2>De horas recuperadas a <em>valor económico</em></h2>
     <p class="lede">Convertimos el tiempo que el Asistente IA liberó en valor para el negocio.</p>
+    <div class="tmode-pill"><button type="button" data-tm="rec">Registrado · <b class="tm-rec"></b></button><button type="button" data-tm="proj">Proyección · <b class="tm-proj"></b></button></div>
     <div class="veco">
       <div class="veco-card">
         <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12v3"/><path d="M3 7v10a2 2 0 0 0 2 2h14v-5"/><path d="M21 12h-4a2 2 0 0 0 0 4h4z"/></svg></div>
@@ -589,6 +601,7 @@
       <div class="eyebrow" style="color:#8FE3B6">El precio</div>
       <div class="big" id="c_fee_big"></div>
       <p class="lede">El asistente ya devuelve más de lo que cuesta. El volumen hace el resto.</p>
+      <div class="tmode-pill"><button type="button" data-tm="rec">Registrado · <b class="tm-rec"></b></button><button type="button" data-tm="proj">Proyección · <b class="tm-proj"></b></button></div>
       <div class="close5">
         <div class="c5card">
           <div class="c5tag real">Real · Mayo</div>
@@ -703,6 +716,9 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 
 /* ===== FX state ===== */
 let FX={rate:1,sym:'BOB',id:'bob'};
+/* Tiempo recuperado: false = registrado (Mayo, ~191 leads) · true = proyección (700 leads).
+   Escala SOLO las métricas de tiempo por (vol_leads / fun_conv). No toca ventas ni el resto. */
+let timeProj=false;
 const FX_MAP={
   bob:{rate:1,sym:'BOB',tc:1},
   uof:{rate:1/7,sym:'USD Of.',tc:7},
@@ -742,12 +758,19 @@ function annualRows(I,D){return[
 function render(){
   const {I,D}=compute();
 
+  /* Escala de tiempo recuperado (registrado vs proyección) */
+  const tScale=timeProj?(I.vol_leads/I.fun_conv):1;
+  const hrs=v=>money(v,timeProj?1:0).replace(/\.0$/,'');
+  $$('.tm-rec').forEach(e=>e.textContent=money(I.fun_conv)+' leads');
+  $$('.tm-proj').forEach(e=>e.textContent=money(I.vol_leads)+' leads');
+  $$('.tmode-pill button').forEach(b=>b.classList.toggle('on',(b.dataset.tm==='proj')===timeProj));
+
   /* HERO · Costo vs Retorno (números desde CAP, sensibles a la moneda) */
   const feeV=I.service_fee*FX.rate;
   $('#cvr_fee').textContent=money(feeV,Math.abs(feeV)<100?2:0);
   $('#cvr_feeunit').textContent=FX.sym;
-  $('#cvr_hours').textContent=money(D.time_saved)+' h';
-  $('#cvr_timeval').textContent=fmtM(D.time_value);
+  $('#cvr_hours').textContent=hrs(D.time_saved*tScale)+' h';
+  $('#cvr_timeval').textContent=fmtM(D.time_value*tScale);
   $('#cvr_net').textContent=fmtMSign(D.net_after_fee);
 
   /* FUNNEL */
@@ -821,11 +844,11 @@ function render(){
 
 
   /* SLIDE 2 · Cálculo del Tiempo Recuperado (desglose) */
-  $('#tc_read').textContent=money(I.t_read_h);
-  $('#tc_write').textContent=money(I.t_write_h);
-  $('#tc_doc').textContent=money(I.t_doc_h);
-  $('#tc_total').textContent=money(D.time_saved);
-  $('#tc_total_q').textContent=money(D.time_saved)+' h';
+  $('#tc_read').textContent=hrs(I.t_read_h*tScale);
+  $('#tc_write').textContent=hrs(I.t_write_h*tScale);
+  $('#tc_doc').textContent=hrs(I.t_doc_h*tScale);
+  $('#tc_total').textContent=hrs(D.time_saved*tScale);
+  $('#tc_total_q').textContent=hrs(D.time_saved*tScale)+' h';
   $('#tc_read_pps').textContent=money(I.read_pps);
   $('#tc_type_pps').textContent=money(I.type_pps);
   $('#tc_sec_doc').textContent=money(I.sec_doc);
@@ -834,14 +857,14 @@ function render(){
   $('#ve_hours').textContent=money(I.work_hours_yr);
   $('#ve_rate').textContent=fmtM(D.agent_hourly);
   $('#ve_rate2').textContent=fmtM(D.agent_hourly);
-  $('#ve_hsaved').textContent=money(D.time_saved)+' h';
-  $('#ve_val').textContent=fmtM(D.time_value);
+  $('#ve_hsaved').textContent=hrs(D.time_saved*tScale)+' h';
+  $('#ve_val').textContent=fmtM(D.time_value*tScale);
 
   /* CLOSE */
   const feeNum=money(I.service_fee*FX.rate,Math.abs(I.service_fee*FX.rate)<100?2:0);
   $('#c_fee_big').innerHTML=feeNum+'<span style="font-size:.38em;color:#A9C6BA"> '+FX.sym+'/mes</span>';
-  $('#c_time').textContent=fmtM(D.time_value);
-  $('#c_time_x').textContent=money(D.time_value/I.service_fee,1)+'×';
+  $('#c_time').textContent=fmtM(D.time_value*tScale);
+  $('#c_time_x').textContent=money(D.time_value*tScale/I.service_fee,1)+'×';
   $('#c_net').textContent=fmtMSign(D.net_after_fee);
   $('#c_net_x').textContent=money(D.net_after_fee/I.service_fee,1)+'×';
 
@@ -934,6 +957,8 @@ const cp=()=>{$('#panel').classList.remove('open');$('#scrim').classList.remove(
 $('#closeAudit').onclick=cp;$('#scrim').onclick=cp;
 $('#auditSearch').addEventListener('input',e=>filterAudit(e.target.value));
 $('#resetBtn').onclick=()=>{CAP.inputs=JSON.parse(JSON.stringify(ORIG));auditBuilt=false;$('#auditSearch').value='';render();};
+/* Toggle tiempo recuperado: registrado (191) ↔ proyección (700), en cada slide que lo muestra */
+document.addEventListener('click',e=>{const b=e.target.closest('.tmode-pill button[data-tm]');if(!b)return;timeProj=(b.dataset.tm==='proj');render();});
 
 render();go(0);
 </script>
