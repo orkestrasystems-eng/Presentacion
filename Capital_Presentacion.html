@@ -82,6 +82,7 @@
   .cvr-ct{font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:11px;letter-spacing:.01em}
   .cvr-cv{font-size:19px;font-weight:850;color:var(--green-d);line-height:1.15;letter-spacing:-.01em}
   .cvr-cs{font-size:12.5px;color:var(--slate);margin-top:9px;line-height:1.4}
+  .cvr-money{color:var(--green-d);font-weight:850;font-variant-numeric:tabular-nums}
   .cvr-foot{display:flex;align-items:center;gap:11px;margin-top:24px;font-size:13px;color:var(--slate)}
   .cvr-foot svg{width:26px;height:26px;color:var(--green-d);flex:0 0 auto}
   @media(max-width:780px){.cvr{flex-direction:column}.cvr-cost{flex-basis:auto}.cvr-arrow{transform:rotate(90deg)}
@@ -313,7 +314,7 @@
             <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
             <div class="cvr-ct">Tiempo recuperado</div>
             <div class="cvr-cv"><span id="cvr_hours"></span> de responder leads</div>
-            <div class="cvr-cs">Equivalente a <span id="cvr_timeval"></span> en horas de trabajo</div>
+            <div class="cvr-cs">Equivalente a <b class="cvr-money" id="cvr_timeval"></b> en horas de trabajo</div>
           </div>
           <div class="cvr-col">
             <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.7a3 3 0 0 1 0 5.6"/><path d="M20.5 19a5.5 5.5 0 0 0-3.2-5"/></svg></div>
