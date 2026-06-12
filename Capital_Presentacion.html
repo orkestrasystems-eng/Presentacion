@@ -201,6 +201,16 @@
   .track-target-line{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--amber);border-radius:1px}
   .prow-note{font-size:11.5px;color:var(--slate);margin-top:5px}
   .prow-note b{color:var(--green-d)}
+  /* solo (1 elemento por slide tras separar el embudo) */
+  .funnel-solo{max-width:860px;margin:30px auto 0}
+  .funnel-solo .fbar{height:64px;font-size:16.5px}
+  .funnel-solo .fbar .n{font-size:24px}
+  .funnel-solo .fconv{font-size:13px;padding:8px 18px}
+  .dualbar-solo{max-width:800px;margin:28px auto 0;padding:24px 28px}
+  .dualbar-solo .prow{margin-bottom:26px}
+  .dualbar-solo .prow:last-of-type{margin-bottom:0}
+  .dualbar-solo .prow-top{font-size:14px;margin-bottom:8px}
+  .dualbar-solo .track{height:24px}
   /* SALE ECONOMICS */
   .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-top:16px;align-items:stretch}
   @media(max-width:780px){.grid2{grid-template-columns:1fr}}
@@ -524,27 +534,29 @@
     </div>
   </div></section>
 
-  <!-- 5 EMBUDO · La tasa cita/lead de la proyección sale de Mayo -->
+  <!-- 5 EMBUDO · conversión (funnel) -->
   <section class="slide"><div class="inner">
     <h2>La tasa cita/lead de la proyección sale de Mayo</h2>
     <p class="lede">Antes de proyectar ventas, medimos el embudo real de Mayo.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;align-items:start">
-      <div class="funnel" id="funnelEl"></div>
-      <div class="dualbar">
-        <h4>Progreso hacia la primera venta</h4>
-        <div class="prow">
-          <div class="prow-top"><b>Leads CTWA — Mayo</b><span id="prog_leads_label"></span></div>
-          <div class="track"><div class="track-fill" id="tf_leads"></div><div class="track-target-line" id="tl_leads"></div></div>
-          <div class="prow-note" id="prog_leads_note"></div>
-        </div>
-        <div class="prow">
-          <div class="prow-top"><b>Citas agendadas — Mayo</b><span id="prog_citas_label"></span></div>
-          <div class="track"><div class="track-fill" id="tf_citas"></div><div class="track-target-line" id="tl_citas"></div></div>
-          <div class="prow-note" id="prog_citas_note"></div>
-        </div>
+    <div class="funnel funnel-solo" id="funnelEl"></div>
+  </div></section>
+
+  <!-- 6 PROGRESO hacia la primera venta -->
+  <section class="slide"><div class="inner">
+    <h2>Progreso hacia la primera venta</h2>
+    <p class="lede">Dónde estamos hoy frente al umbral que proyecta el modelo.</p>
+    <div class="dualbar dualbar-solo">
+      <div class="prow">
+        <div class="prow-top"><b>Leads CTWA — Mayo</b><span id="prog_leads_label"></span></div>
+        <div class="track"><div class="track-fill" id="tf_leads"></div><div class="track-target-line" id="tl_leads"></div></div>
+        <div class="prow-note" id="prog_leads_note"></div>
+      </div>
+      <div class="prow">
+        <div class="prow-top"><b>Citas agendadas — Mayo</b><span id="prog_citas_label"></span></div>
+        <div class="track"><div class="track-fill" id="tf_citas"></div><div class="track-target-line" id="tl_citas"></div></div>
+        <div class="prow-note" id="prog_citas_note"></div>
       </div>
     </div>
-    <div class="callout" id="embCallout"></div>
   </div></section>
 
   <!-- 6 PROYECCION · Cuánto produce el sistema al mes -->
@@ -804,8 +816,6 @@ function render(){
     `<div class="clink ${cl}"><div class="op">${op}</div><div class="txt">${txt}</div><div class="res num">${res}</div></div>`
   ).join('')+`<div class="clink fin"><div class="op">=</div><div class="txt"><b style="color:#fff">Ganancia neta proyectada / mes</b><div class="src">resultado de la cadena</div></div><div class="res num">${fmtMSign(D.net_after_fee)}</div></div>`;
 
-  /* EMBUDO · callout */
-  $('#embCallout').innerHTML=`La proyección usa <b>${pct(I.appt_rate_may)}</b> como tasa cita/lead medida en Mayo y <b>${money(I.appts_sale)} citas por venta</b> como supuesto declarado.`;
 
   /* SLIDE 2 · Cálculo del Tiempo Recuperado (desglose) */
   $('#tc_read').textContent=money(I.t_read_h);
