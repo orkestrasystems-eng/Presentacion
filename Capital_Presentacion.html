@@ -102,6 +102,16 @@
     border-bottom:1px dashed var(--green-d)}
   .fin-det-row{display:none;font-size:11px;color:var(--green-d);padding:3px 0 3px 12px;background:#f0fbf5;border-radius:4px;margin:2px 0}
   .fin-det-row.show{display:block}
+  /* confidential client P&L — masked until the eye toggle reveals it */
+  .conf{transition:filter .18s ease}
+  table.fin.hideconf .conf{filter:blur(7px);-webkit-user-select:none;user-select:none;pointer-events:none}
+  .wf-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .wf-h h4{margin:0}
+  .eyebtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);
+    border-radius:8px;padding:4px 10px;cursor:pointer;font:inherit;font-size:11px;font-weight:700;
+    color:var(--slate);white-space:nowrap;flex:0 0 auto}
+  .eyebtn:hover{border-color:var(--green);color:var(--green-d)}
+  .eyebtn svg{width:14px;height:14px;flex:0 0 auto}
   /* per-sale bridge */
   .bridge{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
   .bstep{display:flex;align-items:center;gap:9px;font-size:13px}
@@ -263,8 +273,11 @@
     <p class="lede">Los costos <b>fijos</b> del agente determinan el margen neto. El marketing es <b>variable</b> y se resta aparte en el modelo mensual.</p>
     <div class="grid2">
       <div class="wf">
-        <h4>Modelo anual — costos fijos (clic en <span style="color:var(--green-d)">▸</span> para detalle)</h4>
-        <table class="fin"><tbody id="annualTbl"></tbody></table>
+        <div class="wf-h">
+          <h4>Modelo anual — costos fijos (clic en <span style="color:var(--green-d)">▸</span> para detalle)</h4>
+          <button class="eyebtn" id="confToggle" type="button" aria-label="Mostrar u ocultar valores confidenciales del cliente"></button>
+        </div>
+        <table class="fin hideconf" id="annualTable"><tbody id="annualTbl"></tbody></table>
       </div>
       <div class="wf" style="display:flex;flex-direction:column;justify-content:flex-start;gap:0">
         <h4>Puente: de venta a utilidad neta</h4>
@@ -530,8 +543,8 @@ function render(){
     const vStr=(row.bob<0?'- ':'')+money(Math.abs(v),d);
     const neg=row.bob<0?' style="color:var(--neg)"':'';
     const detBtn=row.det?` <span class="fin-det" onclick="toggleDet(${i})">▸</span>`:'';
-    const detRow=row.det?`<tr><td colspan="3"><div class="fin-det-row" id="det_${i}">${row.det}</div></td></tr>`:'';
-    return `<tr class="${row.t}"><td class="pc">${row.p}</td><td>${row.l}${detBtn}</td><td class="r"${neg}>${vStr}</td></tr>${detRow}`;
+    const detRow=row.det?`<tr><td colspan="3"><div class="fin-det-row conf" id="det_${i}">${row.det}</div></td></tr>`:'';
+    return `<tr class="${row.t}"><td class="pc">${row.p}</td><td>${row.l}${detBtn}</td><td class="r conf"${neg}>${vStr}</td></tr>${detRow}`;
   }).join('');
 
   /* Per-sale bridge */
@@ -674,6 +687,18 @@ const cp=()=>{$('#panel').classList.remove('open');$('#scrim').classList.remove(
 $('#closeAudit').onclick=cp;$('#scrim').onclick=cp;
 $('#auditSearch').addEventListener('input',e=>filterAudit(e.target.value));
 $('#resetBtn').onclick=()=>{CAP.inputs=JSON.parse(JSON.stringify(ORIG));auditBuilt=false;$('#auditSearch').value='';render();};
+
+/* Confidential client P&L — hidden by default, revealed on demand during a 1:1 */
+const EYE_OPEN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+let confShown=false;
+function renderConfBtn(){
+  $('#annualTable').classList.toggle('hideconf',!confShown);
+  $('#confToggle').innerHTML=(confShown?EYE_OPEN:EYE_OFF)+'<span>'+(confShown?'Ocultar':'Ver valores')+'</span>';
+}
+$('#confToggle').onclick=()=>{confShown=!confShown;renderConfBtn();};
+renderConfBtn();
+
 render();go(0);
 </script>
 </body>
