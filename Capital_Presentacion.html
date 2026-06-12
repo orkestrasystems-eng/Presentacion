@@ -55,13 +55,13 @@
   .hero h1 em{font-style:normal;color:var(--green-d)}
   .twin{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:26px}
   @media(max-width:700px){.twin{grid-template-columns:1fr}}
-  .vcard{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:20px;
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;
     box-shadow:var(--shadow);position:relative;overflow:hidden}
-  .vcard:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}
+  .vcard:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--green)}
   .vcard.proj:before{background:var(--amber)}
-  .vcard .lab{font-size:12px;color:var(--slate);font-weight:600}
-  .vcard .big{font-size:clamp(26px,3.8vw,42px);font-weight:850;letter-spacing:-.03em;line-height:1.05;margin:5px 0 2px}
-  .vcard .sub{font-size:11.5px;color:var(--slate);line-height:1.5}
+  .vcard .lab{font-size:12.5px;color:var(--slate);font-weight:600;margin-top:2px}
+  .vcard .big{font-size:clamp(30px,4.2vw,46px);font-weight:850;letter-spacing:-.03em;line-height:1.04;margin:7px 0 3px}
+  .vcard .sub{font-size:12px;color:var(--slate);line-height:1.5}
   .incl{font-size:11px;color:var(--green-d);font-weight:700;background:#E9F4EE;display:inline-block;
     padding:2px 8px;border-radius:4px;margin-top:6px}
   /* FUNNEL */
@@ -92,14 +92,14 @@
   .wf{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px;box-shadow:var(--shadow)}
   .wf h4{font-size:11px;color:var(--slate);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
   table.fin{width:100%;border-collapse:collapse;font-size:12.5px}
-  table.fin td{padding:5px 3px;border-bottom:1px dashed var(--line);vertical-align:top}
+  table.fin td{padding:4.5px 3px;border-bottom:1px solid #F1EDE4;vertical-align:top}
   table.fin td.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   table.fin td.pc{color:var(--slate);font-size:11px;width:34px}
   table.fin tr.sub td{color:var(--slate);font-size:11.5px}
   table.fin tr.st td{font-weight:750;border-bottom:1px solid var(--line)}
   table.fin tr.tot td{font-weight:850;font-size:14px;border-top:2px solid var(--ink);border-bottom:0;color:var(--green-d)}
   .fin-det{font-size:10.5px;color:var(--green-d);cursor:pointer;display:inline-block;
-    border-bottom:1px dashed var(--green-d)}
+    border-bottom:1px solid #BFE2CD}
   .fin-det-row{display:none;font-size:11px;color:var(--green-d);padding:3px 0 3px 12px;background:#f0fbf5;border-radius:4px;margin:2px 0}
   .fin-det-row.show{display:block}
   /* confidential client P&L — masked until the eye toggle reveals it */
@@ -113,26 +113,30 @@
   .eyebtn:hover{border-color:var(--green);color:var(--green-d)}
   .eyebtn svg{width:14px;height:14px;flex:0 0 auto}
   /* per-sale bridge */
-  .bridge{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
-  .bstep{display:flex;align-items:center;gap:9px;font-size:13px}
-  .bstep .bl{flex:1;color:var(--slate)}.bstep .bv{font-weight:750;font-variant-numeric:tabular-nums}
-  .bstep .bop{width:20px;text-align:center;color:var(--slate);font-weight:800}
-  .bresult{background:var(--green-d);color:#fff;border-radius:10px;padding:12px 16px;text-align:center;margin-top:4px}
-  .bresult .n{font-size:clamp(34px,5vw,50px);font-weight:850;letter-spacing:-.02em;line-height:1}
-  .bresult .u{font-size:12px;opacity:.85;margin-top:3px}
+  .bridge{display:flex;flex-direction:column;gap:2px;margin-bottom:16px}
+  .bstep{display:flex;align-items:center;gap:11px;font-size:13.5px;padding:7px 0;border-bottom:1px solid #F1EDE4}
+  .bstep:last-child{border-bottom:0}
+  .bstep .bl{flex:1;color:var(--slate)}.bstep .bv{font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .bstep .bop{width:22px;height:22px;border-radius:6px;background:#EFF5F1;display:flex;align-items:center;
+    justify-content:center;color:var(--green-d);font-weight:800;font-size:13px;flex:0 0 auto}
+  .bresult{background:linear-gradient(135deg,var(--green-d),#176444);color:#fff;border-radius:16px;
+    padding:18px 16px;text-align:center;margin-top:8px;box-shadow:0 10px 26px rgba(31,122,82,.28)}
+  .bresult .n{font-size:clamp(36px,5.2vw,52px);font-weight:850;letter-spacing:-.02em;line-height:1}
+  .bresult .u{font-size:12px;opacity:.88;margin-top:4px;letter-spacing:.02em}
   /* CHAIN */
   .roiwrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:12px;align-items:start}
   @media(max-width:780px){.roiwrap{grid-template-columns:1fr}}
-  .chain{display:flex;flex-direction:column;gap:5px}
-  .clink{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
-    border-radius:9px;padding:9px 13px;box-shadow:var(--shadow)}
-  .clink .op{width:28px;height:28px;border-radius:6px;background:#ECE8DE;display:flex;align-items:center;
-    justify-content:center;font-weight:800;color:var(--slate);font-size:13px;flex:0 0 auto}
-  .clink .txt{flex:1;font-size:12.5px;line-height:1.3}.clink .txt b{color:var(--ink)}
-  .clink .src{font-size:10px;color:var(--slate)}
-  .clink .res{font-weight:850;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap}
-  .clink.fin{background:var(--ink);color:#EAF3EE;border-color:var(--ink)}
-  .clink.fin .res{color:#8FE3B6}.clink.fin .src{color:#9FBDB0}.clink.fin .op{background:rgba(255,255,255,.1);color:#8FE3B6}
+  .chain{display:flex;flex-direction:column;gap:6px}
+  .clink{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:12px 16px;box-shadow:var(--shadow)}
+  .clink .op{width:30px;height:30px;border-radius:8px;background:#EFF5F1;display:flex;align-items:center;
+    justify-content:center;font-weight:800;color:var(--green-d);font-size:15px;flex:0 0 auto}
+  .clink .txt{flex:1;font-size:13px;line-height:1.35}.clink .txt b{color:var(--ink)}
+  .clink .src{font-size:10.5px;color:var(--slate);margin-top:1px}
+  .clink .res{font-weight:850;font-variant-numeric:tabular-nums;font-size:15.5px;white-space:nowrap}
+  .clink.fin{background:var(--ink);color:#EAF3EE;border-color:var(--ink);padding:15px 16px;margin-top:2px}
+  .clink.fin .res{color:#8FE3B6;font-size:19px}.clink.fin .src{color:#9FBDB0}.clink.fin .op{background:rgba(255,255,255,.12);color:#8FE3B6}
+  .clink.fin .txt b{font-size:14px}
   .clink.negr .res{color:var(--neg)}
   .asup{font-size:9.5px;color:var(--amber);font-weight:800;text-transform:uppercase;letter-spacing:.04em;
     background:#FBF3E3;padding:1px 5px;border-radius:3px;display:inline-block;margin-left:3px}
@@ -161,15 +165,18 @@
   .carryin{display:inline-flex;align-items:center;font-size:9.5px;font-weight:800;text-transform:uppercase;
     letter-spacing:.03em;color:var(--green-d);background:#E9F4EE;border:1px solid #BFE2CD;border-radius:4px;
     padding:1px 5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
-  /* promise comparator bars (hero cards) */
-  .cmp{margin-top:11px;display:flex;flex-direction:column;gap:6px}
-  .cmp .crow{display:flex;align-items:center;gap:9px;font-size:10.5px}
-  .cmp .clab{width:52px;flex:0 0 auto;text-align:right;color:var(--slate)}
-  .cmp .ctrack{flex:1;height:10px;background:#ECE8DE;border-radius:5px;overflow:hidden}
-  .cmp .cfill{height:100%;border-radius:5px}
-  .cmp .cfill.price{background:#CFC9BC}
-  .cmp .cfill.val{background:linear-gradient(90deg,var(--green),var(--green-d))}
-  .cmp .cnum{width:84px;flex:0 0 auto;text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+  /* promise comparator: one bar, a price threshold marker — el valor cruza la línea del precio */
+  .cmp{margin-top:26px}
+  .cmpbar{position:relative;height:14px;background:#ECE8DE;border-radius:8px}
+  .cmpfill{position:absolute;left:0;top:0;height:100%;border-radius:8px;
+    background:linear-gradient(90deg,var(--green),var(--green-d));transition:width .5s cubic-bezier(.4,0,.2,1)}
+  .vcard.proj .cmpfill{background:linear-gradient(90deg,#E0A23E,var(--amber))}
+  .cmpmark{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--ink);opacity:.45;border-radius:1px}
+  .cmpmark:after{content:attr(data-l);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
+    font-size:9.5px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--slate);white-space:nowrap}
+  .cmplabels{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;margin-top:10px;color:var(--slate)}
+  .cmplabels b{font-size:13px;font-weight:850;font-variant-numeric:tabular-nums}
+  .vcard .cmplabels b{color:var(--green-d)}.vcard.proj .cmplabels b{color:var(--amber)}
   /* tiempo formula flow */
   .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:9px;margin-top:20px}
   .flow .step{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 17px;
@@ -291,7 +298,7 @@
   <section class="slide"><div class="inner">
     <div class="eyebrow">Prueba 2 · El motor</div>
     <h2>Cuánto deja una sola venta</h2>
-    <p class="lede">El <b>modelo anual del cliente</b> (derecha) define el margen; el puente (izquierda) lo convierte en <b>un solo número</b>: la ganancia neta por venta. Ese número es el que multiplica la proyección.</p>
+    <p class="lede">El <b>modelo anual</b> (derecha) define el margen. El puente (izquierda) lo convierte en <b>un solo número</b> — la ganancia neta por venta, que multiplica la proyección.</p>
     <div class="grid2">
       <div class="wf">
         <div class="wf-h">
@@ -520,15 +527,15 @@ function render(){
   $('#h_net').textContent=fmtMSign(D.net_after_fee);
   $('#h_net').className='big num '+(D.net_after_fee>=0?'pos':'negc');
   $('#h_a2s').textContent=money(I.appts_sale);
-  // promise comparators: cada valor vs el precio del servicio (sin imprimir el ratio — eso es el veredicto)
-  const cmpBars=(valBob,label)=>{
-    const price=I.service_fee, max=Math.max(valBob,price)*1.18;
-    const pw=Math.min(100,price/max*100), vw=Math.min(100,valBob/max*100);
-    return `<div class="crow"><span class="clab">precio</span><span class="ctrack"><span class="cfill price" style="width:${pw}%"></span></span><span class="cnum" style="color:var(--slate)">${fmtM(price)}</span></div>`+
-           `<div class="crow"><span class="clab">${label}</span><span class="ctrack"><span class="cfill val" style="width:${vw}%"></span></span><span class="cnum pos">${fmtM(valBob)}</span></div>`;
+  // promise comparator: una barra, con la línea del precio marcada (el ratio explícito vive en el cierre)
+  const cmpBar=(valBob,leftLabel)=>{
+    const price=I.service_fee, max=valBob*1.16;
+    const vw=Math.min(100,valBob/max*100), pm=Math.min(96,price/max*100);
+    return `<div class="cmpbar"><div class="cmpfill" style="width:${vw}%"></div><div class="cmpmark" style="left:${pm}%" data-l="precio ${fmtM(price)}"></div></div>`+
+           `<div class="cmplabels"><span>${leftLabel}</span><b>${fmtM(valBob)}</b></div>`;
   };
-  $('#h_time_cmp').innerHTML=cmpBars(D.time_value,'recuperado');
-  $('#h_net_cmp').innerHTML=cmpBars(D.net_after_fee,'ganancia');
+  $('#h_time_cmp').innerHTML=cmpBar(D.time_value,'cubre el precio y sobra');
+  $('#h_net_cmp').innerHTML=cmpBar(D.net_after_fee,'cubre el precio y sobra');
 
   /* FUNNEL */
   const fe=$('#funnelEl');fe.innerHTML='';
