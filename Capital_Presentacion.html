@@ -423,7 +423,7 @@
     <div class="veco">
       <div class="veco-card">
         <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12v3"/><path d="M3 7v10a2 2 0 0 0 2 2h14v-5"/><path d="M21 12h-4a2 2 0 0 0 0 4h4z"/></svg></div>
-        <div><div class="veco-tt">Utilidad Neta Anual</div><span class="veco-l">beneficio neto del negocio en un año</span></div>
+        <div><div class="veco-tt">Utilidad Neta Anual</div><span class="veco-l">beneficio neto del agente en un año</span></div>
       </div>
       <div class="veco-op">÷</div>
       <div class="veco-card">
@@ -605,9 +605,9 @@ const CAP={
     t_write_h:{v:13,unit:"h/mes",label:"Tiempo ahorrado — escritura (Mayo)",src:"Escritura de respuestas salientes, Mayo",g:"tiempo"},
     t_doc_h:{v:4,unit:"h/mes",label:"Tiempo ahorrado — documentos (Mayo)",src:"Brochures y listas de precios, Mayo",g:"tiempo"},
     work_hours_yr:{v:2080,unit:"h/año",label:"Horas laborales / año",src:"Supuesto (40 h/semana)",g:"tiempo"},
-    read_pps:{v:4.33,unit:"pps",label:"Velocidad lectura (estimada)",src:"Estimación conservadora",g:"tiempo"},
-    type_pps:{v:1.03,unit:"pps",label:"Velocidad escritura (estimada)",src:"Estimación conservadora",g:"tiempo"},
-    sec_doc:{v:32,unit:"s/doc",label:"Segundos por documento (estimado)",src:"Estimación conservadora",g:"tiempo"},
+    read_pps:{v:15,unit:"car/s",label:"Velocidad de lectura",src:"Medición (consulta Supabase)",g:"tiempo"},
+    type_pps:{v:5,unit:"car/s",label:"Velocidad de escritura",src:"Medición (consulta Supabase)",g:"tiempo"},
+    sec_doc:{v:30,unit:"s/doc",label:"Segundos por documento",src:"Medición (consulta Supabase)",g:"tiempo"},
   },
   // Etiquetas de grupo para el panel
   groups:{slide:"✦ Editables en diapositiva",venta:"Venta y comisiones",fijos:"Costos fijos anuales (agente)",svc:"Servicio",mkt:"Marketing (variable)",embudo:"Embudo Mayo",tiempo:"Tiempo recuperado"},
@@ -781,8 +781,8 @@ function render(){
   $('#tc_doc').textContent=money(I.t_doc_h);
   $('#tc_total').textContent=money(D.time_saved);
   $('#tc_total_q').textContent=money(D.time_saved)+' h';
-  $('#tc_read_pps').textContent=money(I.read_pps,2);
-  $('#tc_type_pps').textContent=money(I.type_pps,2);
+  $('#tc_read_pps').textContent=money(I.read_pps);
+  $('#tc_type_pps').textContent=money(I.type_pps);
   $('#tc_sec_doc').textContent=money(I.sec_doc);
 
   /* SLIDE 3 · De horas a valor económico */
