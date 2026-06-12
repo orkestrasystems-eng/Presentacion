@@ -51,8 +51,41 @@
   .dots i.on{background:var(--green);transform:scale(1.3)}
   .count{position:fixed;bottom:24px;right:22px;font-size:12px;color:var(--slate);z-index:30}
   /* HERO */
-  .hero h1{font-size:clamp(26px,4.4vw,50px);line-height:1.05;letter-spacing:-.03em;font-weight:850;max-width:18ch}
+  .hero h1{font-size:clamp(34px,5.2vw,62px);line-height:1.04;letter-spacing:-.03em;font-weight:850;max-width:none}
   .hero h1 em{font-style:normal;color:var(--green-d)}
+  .hero h1 .vs{color:var(--slate)}
+  /* ===== Slide 1 · Costo vs Retorno ===== */
+  .cvr{display:flex;align-items:stretch;gap:16px;margin-top:30px}
+  .cvr-cost,.cvr-return{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+  .cvr-cost{flex:0 0 25%;border-left:5px solid var(--green);padding:24px 22px;display:flex;
+    flex-direction:column;align-items:center;text-align:center;justify-content:center}
+  .cvr-pill{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 13px;border-radius:8px;display:inline-block}
+  .cvr-pill.cost{background:#E9F4EE;color:var(--green-d)}
+  .cvr-pill.ret{background:#FBF0DE;color:var(--amber)}
+  .cvr-icon{width:60px;height:60px;border-radius:50%;background:#EEF6F0;display:flex;align-items:center;
+    justify-content:center;color:var(--green-d);margin:20px 0 16px}
+  .cvr-icon svg{width:30px;height:30px}
+  .cvr-big{font-size:clamp(40px,5.6vw,60px);font-weight:850;letter-spacing:-.03em;color:var(--green-d);line-height:1;font-variant-numeric:tabular-nums}
+  .cvr-unit{font-size:15px;font-weight:850;color:var(--green-d);margin-top:7px}
+  .cvr-cap{font-size:13px;color:var(--slate);margin-top:9px}
+  .cvr-arrow{align-self:center;flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:var(--green-d);
+    color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(31,122,82,.3)}
+  .cvr-arrow svg{width:20px;height:20px}
+  .cvr-return{flex:1;position:relative;padding:24px 10px 24px}
+  .cvr-return .cvr-pill{position:absolute;top:18px;left:50%;transform:translateX(-50%)}
+  .cvr-cols{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:42px}
+  .cvr-col{padding:6px 20px;text-align:center;border-left:1px solid var(--line);display:flex;flex-direction:column;align-items:center}
+  .cvr-col:first-child{border-left:0}
+  .cvr-ico{width:54px;height:54px;border-radius:50%;background:#EEF6F0;display:flex;align-items:center;
+    justify-content:center;color:var(--green-d);margin-bottom:13px}
+  .cvr-ico svg{width:27px;height:27px}
+  .cvr-ct{font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:11px;letter-spacing:.01em}
+  .cvr-cv{font-size:19px;font-weight:850;color:var(--green-d);line-height:1.15;letter-spacing:-.01em}
+  .cvr-cs{font-size:12.5px;color:var(--slate);margin-top:9px;line-height:1.4}
+  .cvr-foot{display:flex;align-items:center;gap:11px;margin-top:24px;font-size:13px;color:var(--slate)}
+  .cvr-foot svg{width:26px;height:26px;color:var(--green-d);flex:0 0 auto}
+  @media(max-width:780px){.cvr{flex-direction:column}.cvr-cost{flex-basis:auto}.cvr-arrow{transform:rotate(90deg)}
+    .cvr-cols{grid-template-columns:1fr;gap:16px;margin-top:46px}.cvr-col{border-left:0}}
   .twin{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:26px}
   @media(max-width:700px){.twin{grid-template-columns:1fr}}
   .vcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;
@@ -260,28 +293,44 @@
 
 <div class="deck" id="deck">
 
-  <!-- 1 PORTADA · la promesa (bookend con el veredicto del cierre) -->
+  <!-- 1 PORTADA · Costo vs Retorno del Servicio -->
   <section class="slide hero active"><div class="inner">
-    <div class="eyebrow">Propuesta de valor · Capital Real Estate Solutions</div>
-    <h1>El precio es el número <em>más pequeño</em> de esta propuesta.</h1>
-    <p class="lede">El tiempo que ya recuperaste lo cubre. Las ventas que vienen lo multiplican. <b>Dos pruebas, un precio</b> — y al final, el veredicto.</p>
-    <div class="twin">
-      <div class="vcard">
-        <span class="tag real">Prueba 1 · Real, ya entregado</span>
-        <div class="lab">Tiempo recuperado al agente — Mayo</div>
-        <div class="big num pos" id="h_time"></div>
-        <div class="sub"><span id="h_hours"></span> h/mes devueltas · <span id="h_rate"></span>/h valor del agente</div>
-        <div class="cmp" id="h_time_cmp"></div>
+    <h1>Costo <span class="vs">vs</span> <em>Retorno</em> del Servicio</h1>
+    <p class="lede">El Asistente IA recupera tiempo, reduce la pérdida de leads al responder mientras la intención comercial sigue activa, y genera reuniones que conducen a ventas asistidas.</p>
+    <div class="cvr">
+      <div class="cvr-cost">
+        <span class="cvr-pill cost">Costo del servicio</span>
+        <div class="cvr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.3"/></svg></div>
+        <div class="cvr-big" id="cvr_fee"></div>
+        <div class="cvr-unit"><span id="cvr_feeunit"></span> / mes</div>
+        <div class="cvr-cap">Costo mensual fijo</div>
       </div>
-      <div class="vcard proj">
-        <span class="tag proj">Prueba 2 · Proyección al volumen estándar</span>
-        <div class="lab">Ganancia neta proyectada / mes</div>
-        <div class="big num" id="h_net"></div>
-        <div class="sub">700 leads/mes · 1 venta cada <span id="h_a2s"></span> citas · supuesto pesimista</div>
-        <div class="cmp" id="h_net_cmp"></div>
-        <div class="incl">✓ incluye el costo del servicio ya descontado</div>
+      <div class="cvr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+      <div class="cvr-return">
+        <span class="cvr-pill ret">Retorno del servicio</span>
+        <div class="cvr-cols">
+          <div class="cvr-col">
+            <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
+            <div class="cvr-ct">Tiempo recuperado</div>
+            <div class="cvr-cv"><span id="cvr_hours"></span> de responder leads</div>
+            <div class="cvr-cs">Equivalente a <span id="cvr_timeval"></span> en horas de trabajo</div>
+          </div>
+          <div class="cvr-col">
+            <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.7a3 3 0 0 1 0 5.6"/><path d="M20.5 19a5.5 5.5 0 0 0-3.2-5"/></svg></div>
+            <div class="cvr-ct">Menor pérdida de leads</div>
+            <div class="cvr-cv">Respuestas inmediatas</div>
+            <div class="cvr-cs">Mayor probabilidad de conservar el interés inicial</div>
+          </div>
+          <div class="cvr-col">
+            <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
+            <div class="cvr-ct">Ventas asistidas</div>
+            <div class="cvr-cv"><span id="cvr_net"></span> proyectados</div>
+            <div class="cvr-cs">en ventas asistidas por IA</div>
+          </div>
+        </div>
       </div>
     </div>
+    <div class="cvr-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg> Propuesta de valor basada en resultados de Mayo y proyecciones conservadoras</div>
   </div></section>
 
   <!-- 2 PRUEBA 1 · TIEMPO — deriva el valor; carry-in desde el modelo anual -->
@@ -520,22 +569,13 @@ function annualRows(I,D){return[
 function render(){
   const {I,D}=compute();
 
-  /* HERO */
-  $('#h_time').textContent=fmtM(D.time_value);
-  $('#h_hours').textContent=money(I.time_saved_may);
-  $('#h_rate').textContent=fmtM(D.agent_hourly);
-  $('#h_net').textContent=fmtMSign(D.net_after_fee);
-  $('#h_net').className='big num '+(D.net_after_fee>=0?'pos':'negc');
-  $('#h_a2s').textContent=money(I.appts_sale);
-  // promise comparator: una barra, con la línea del precio marcada (el ratio explícito vive en el cierre)
-  const cmpBar=(valBob,leftLabel)=>{
-    const price=I.service_fee, max=valBob*1.16;
-    const vw=Math.min(100,valBob/max*100), pm=Math.min(96,price/max*100);
-    return `<div class="cmpbar"><div class="cmpfill" style="width:${vw}%"></div><div class="cmpmark" style="left:${pm}%" data-l="precio ${fmtM(price)}"></div></div>`+
-           `<div class="cmplabels"><span>${leftLabel}</span><b>${fmtM(valBob)}</b></div>`;
-  };
-  $('#h_time_cmp').innerHTML=cmpBar(D.time_value,'cubre el precio y sobra');
-  $('#h_net_cmp').innerHTML=cmpBar(D.net_after_fee,'cubre el precio y sobra');
+  /* HERO · Costo vs Retorno (números desde CAP, sensibles a la moneda) */
+  const feeV=I.service_fee*FX.rate;
+  $('#cvr_fee').textContent=money(feeV,Math.abs(feeV)<100?2:0);
+  $('#cvr_feeunit').textContent=FX.sym;
+  $('#cvr_hours').textContent=money(I.time_saved_may)+' h';
+  $('#cvr_timeval').textContent=fmtM(D.time_value);
+  $('#cvr_net').textContent=fmtMSign(D.net_after_fee);
 
   /* FUNNEL */
   const fe=$('#funnelEl');fe.innerHTML='';
