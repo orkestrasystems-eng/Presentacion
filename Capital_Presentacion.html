@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -17,7 +17,7 @@
   .slide{position:absolute;inset:0;padding:58px 6vw 84px;display:flex;flex-direction:column;
     justify-content:center;opacity:0;visibility:hidden;transform:translateX(36px);
     transition:opacity .36s ease,transform .36s ease,visibility .36s;overflow:auto}
-  .slide.active{opacity:1;visibility:visible;transform:none}.slide.prev{transform:translateX(-36px)}
+  .slide.active{opacity:1;visibility:visible;transform:none;z-index:2;background:var(--paper)}.slide.prev{transform:translateX(-36px)}
   .inner{max-width:1020px;margin:auto;width:100%}
   .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--green-d);font-weight:800;margin-bottom:11px}
   h2{font-size:clamp(21px,3vw,34px);line-height:1.13;letter-spacing:-.02em;font-weight:780}
@@ -37,18 +37,11 @@
   .pill3 button{border:0;background:transparent;font:inherit;font-size:12px;font-weight:650;
     color:var(--slate);padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap}
   .pill3 button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .topctrl{display:flex;align-items:center;gap:6px}
+  .toplbl{font-size:11px;font-weight:800;color:var(--slate);text-transform:uppercase;letter-spacing:.06em}
   .abtn{border:1px solid var(--line);background:var(--card);font:inherit;font-size:12.5px;
     font-weight:650;padding:6px 12px;border-radius:8px;cursor:pointer;color:var(--ink)}
   .abtn:hover{border-color:var(--green)}
-  /* toggle Registrado/Proyección (tiempo recuperado) */
-  .tmode-pill{display:inline-flex;background:#ECE8DE;border-radius:9px;padding:3px;gap:2px;margin-top:16px}
-  .tmode-pill button{border:0;background:transparent;font:inherit;font-size:12px;font-weight:700;color:var(--slate);
-    padding:6px 13px;border-radius:7px;cursor:pointer;white-space:nowrap}
-  .tmode-pill button.on{background:var(--card);color:var(--green-d);box-shadow:0 1px 2px rgba(0,0,0,.08)}
-  .tmode-pill b{font-weight:850;font-variant-numeric:tabular-nums}
-  .closebox .tmode-pill{background:rgba(255,255,255,.1)}
-  .closebox .tmode-pill button{color:#A9C6BA}
-  .closebox .tmode-pill button.on{background:rgba(255,255,255,.16);color:#fff}
   /* nav */
   .nav{position:fixed;bottom:18px;left:0;right:0;display:flex;align-items:center;
     justify-content:center;gap:16px;z-index:30}
@@ -61,65 +54,78 @@
   .count{position:fixed;bottom:24px;right:22px;font-size:12px;color:var(--slate);z-index:30}
   /* HERO */
   .hero h1{font-size:clamp(34px,5.2vw,62px);line-height:1.04;letter-spacing:-.03em;font-weight:850;max-width:none}
+  .hero .lede{max-width:none;white-space:nowrap}
   .hero h1 em,h2 em{font-style:normal;color:var(--green-d)}
   .hero h1 .vs{color:var(--slate)}
-  /* ===== Slide 1 · Costo vs Retorno ===== */
-  .cvr{display:flex;align-items:stretch;gap:16px;margin-top:30px}
-  .cvr-cost,.cvr-return{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
-  .cvr-cost{flex:0 0 25%;border-left:5px solid var(--green);padding:24px 22px;display:flex;
-    flex-direction:column;align-items:center;text-align:center;justify-content:center}
+  /* ===== Slide 1 · Retorno proyectado ===== */
+  .cvr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:34px}
+  .cvr-card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--green);
+    border-radius:20px;box-shadow:var(--shadow);padding:30px 26px;display:grid;grid-template-columns:58px 1fr;
+    align-items:center;gap:18px;min-height:210px}
   .cvr-pill{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 13px;border-radius:8px;display:inline-block}
-  .cvr-pill.cost{background:#E9F4EE;color:var(--green-d)}
-  .cvr-pill.ret{background:#FBF0DE;color:var(--amber)}
-  .cvr-icon{width:60px;height:60px;border-radius:50%;background:#EEF6F0;display:flex;align-items:center;
-    justify-content:center;color:var(--green-d);margin:20px 0 16px}
-  .cvr-icon svg{width:30px;height:30px}
-  .cvr-big{font-size:clamp(40px,5.6vw,60px);font-weight:850;letter-spacing:-.03em;color:var(--green-d);line-height:1;font-variant-numeric:tabular-nums}
-  .cvr-unit{font-size:15px;font-weight:850;color:var(--green-d);margin-top:7px}
-  .cvr-cap{font-size:13px;color:var(--slate);margin-top:9px}
-  .cvr-arrow{align-self:center;flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:var(--green-d);
-    color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(31,122,82,.3)}
-  .cvr-arrow svg{width:20px;height:20px}
-  .cvr-return{flex:1;position:relative;padding:24px 10px 24px}
-  .cvr-return .cvr-pill{position:absolute;top:18px;left:50%;transform:translateX(-50%)}
-  .cvr-cols{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:42px}
-  .cvr-col{padding:6px 20px;text-align:center;border-left:1px solid var(--line);display:flex;flex-direction:column;align-items:center}
-  .cvr-col:first-child{border-left:0}
   .cvr-ico{width:54px;height:54px;border-radius:50%;background:#EEF6F0;display:flex;align-items:center;
-    justify-content:center;color:var(--green-d);margin-bottom:13px}
-  .cvr-ico svg{width:27px;height:27px}
-  .cvr-ct{font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:11px;letter-spacing:.01em}
-  .cvr-cv{font-size:19px;font-weight:850;color:var(--green-d);line-height:1.15;letter-spacing:-.01em}
-  .cvr-cs{font-size:12.5px;color:var(--slate);margin-top:9px;line-height:1.4}
-  .cvr-money{color:var(--green-d);font-weight:850;font-variant-numeric:tabular-nums}
+    justify-content:center;color:var(--green-d)}
+  .cvr-ico svg{width:28px;height:28px}
+  .cvr-ct{font-size:17px;font-weight:850;color:var(--ink);margin-bottom:12px;letter-spacing:.01em}
+  .cvr-cv{font-size:clamp(34px,4.4vw,54px);font-weight:850;color:var(--green-d);line-height:.95;letter-spacing:-.04em}
+  .cvr-cv .unit{font-size:.42em;letter-spacing:-.01em;margin-left:5px}
+  .cvr-cs{font-size:17px;color:var(--slate);margin-top:12px;line-height:1.35}
   .cvr-foot{display:flex;align-items:center;gap:11px;margin-top:24px;font-size:13px;color:var(--slate)}
   .cvr-foot svg{width:26px;height:26px;color:var(--green-d);flex:0 0 auto}
-  @media(max-width:780px){.cvr{flex-direction:column}.cvr-cost{flex-basis:auto}.cvr-arrow{transform:rotate(90deg)}
-    .cvr-cols{grid-template-columns:1fr;gap:16px;margin-top:46px}.cvr-col{border-left:0}}
+  @media(max-width:900px){.cvr{grid-template-columns:1fr}.cvr-card{min-height:0;padding:24px;grid-template-columns:56px 1fr}}
   /* ===== Slide 2 · Cálculo del Tiempo Recuperado ===== */
-  .qline{font-size:15px;font-weight:800;color:var(--green-d);margin-top:24px}
-  .tcalc{display:flex;align-items:stretch;gap:10px;margin-top:16px}
-  .tcalc-card{flex:1;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
-    padding:20px 16px;display:flex;flex-direction:column;align-items:center;text-align:center}
-  .tcalc-ico{width:54px;height:54px;border-radius:50%;background:#EEF6F0;display:flex;align-items:center;
-    justify-content:center;color:var(--green-d);margin-bottom:14px}
-  .tcalc-ico svg{width:26px;height:26px}
-  .tcalc-t{font-size:14px;font-weight:800;color:var(--ink);line-height:1.25;min-height:36px;display:flex;align-items:center}
-  .tcalc-rule{width:34px;height:2px;background:var(--line);border-radius:1px;margin:10px 0 12px}
-  .tcalc-v{font-size:clamp(28px,3.6vw,40px);font-weight:850;letter-spacing:-.02em;color:var(--green-d);line-height:1}
-  .tcalc-v i{font-size:.55em;font-style:normal;font-weight:800;margin-left:2px}
-  .tcalc-s{font-size:12px;color:var(--slate);margin-top:11px;line-height:1.4}
-  .tcalc-op{display:flex;align-items:center;font-size:26px;font-weight:850;color:var(--slate);flex:0 0 auto}
-  .tcalc-card.res{background:linear-gradient(135deg,var(--green-d),#176444);border-color:transparent;
-    color:#fff;box-shadow:0 12px 28px rgba(31,122,82,.3);justify-content:center}
-  .tcalc-card.res .tcalc-ico{background:rgba(255,255,255,.14);color:#CDEBD9;width:60px;height:60px}
-  .tcalc-card.res .tcalc-ico svg{width:30px;height:30px}
-  .tcalc-card.res .tcalc-v{color:#fff;font-size:clamp(34px,4.6vw,52px)}
-  .tcalc-card.res .tcalc-s{color:#CDEBD9;font-size:13.5px;margin-top:8px}
-  .tcalc-foot{display:flex;align-items:center;gap:11px;margin-top:20px;background:#EEF6F0;border:1px solid #D6E8DC;
-    border-radius:12px;padding:11px 16px;font-size:12.5px;color:var(--slate)}
-  .tcalc-foot b{color:var(--green-d)}.tcalc-foot svg{width:20px;height:20px;color:var(--green-d);flex:0 0 auto}
-  @media(max-width:820px){.tcalc{flex-wrap:wrap}.tcalc-card{flex-basis:42%}}
+  .time-slide{padding-top:56px;padding-bottom:74px;justify-content:flex-start}
+  .time-slide .inner{max-width:1120px}
+  .time-slide h2{font-size:clamp(31px,3.4vw,42px);line-height:1.05;letter-spacing:-.03em}
+  .time-slide .lede{font-size:clamp(17px,1.7vw,20px);max-width:none;margin-top:10px}
+  .time-slide .lede em{font-style:normal;color:var(--green-d)}
+  .time-head{display:block}
+  .timeflow{margin-top:40px}
+  .time-row{display:grid;grid-template-columns:60px 46px minmax(320px,1fr) minmax(240px,1.08fr) 150px;
+    align-items:center;gap:14px;padding:10px 22px 10px 0;border-bottom:1px solid var(--line)}
+  .time-row:first-child{padding-top:0}
+  .time-ico{width:52px;height:52px;border-radius:50%;background:#EEF6F0;color:var(--ink);
+    display:flex;align-items:center;justify-content:center}
+  .time-ico svg{width:29px;height:29px}
+  .time-step{width:38px;height:38px;border-radius:50%;background:var(--green-d);
+    color:#fff;font-size:23px;font-weight:850;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 18px rgba(31,122,82,.22)}
+  .time-title{font-size:clamp(21px,2vw,24px);font-weight:850;letter-spacing:-.02em;line-height:1.1;color:var(--ink)}
+  .time-sub{font-size:14.5px;color:var(--slate);line-height:1.3;margin-top:4px}
+  .time-bar{height:34px;border-left:1px solid var(--line);display:flex;align-items:center;padding-left:24px}
+  .time-bar-fill{height:34px;border-radius:7px;background:linear-gradient(90deg,var(--green-d),var(--green));
+    min-width:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+  .time-val{text-align:right;padding-left:0;justify-self:end;width:150px;padding-right:18px}
+  .time-val b{display:inline-flex;align-items:baseline;justify-content:flex-end;gap:.08em;font-size:clamp(28px,3vw,38px);font-weight:850;letter-spacing:-.03em;line-height:.95;color:var(--ink);white-space:nowrap}
+  .time-val > span{display:none}
+  .time-total{display:grid;grid-template-columns:66px 1fr 150px;align-items:center;gap:16px;margin:14px -10px 0 0;
+    background:#EEF6F0;border:1px solid #DCEADD;border-radius:10px;padding:13px 22px 13px 16px}
+  .time-total .time-ico{background:transparent;width:48px;height:48px}
+  .time-total-title{font-size:26px;font-weight:850;letter-spacing:-.02em;color:var(--ink)}
+  .time-total-val{justify-self:end;text-align:right;width:150px;padding-right:18px}
+  .time-total-val b{display:inline-flex;align-items:baseline;justify-content:flex-end;gap:.08em;font-size:clamp(28px,3vw,38px);font-weight:850;color:var(--ink);line-height:.95;white-space:nowrap}
+  .time-total-val b span{display:inline;font-size:inherit;color:inherit;margin:0;white-space:nowrap}
+  .time-total-val > span{display:block;font-size:12.5px;color:var(--slate);margin-top:4px;white-space:nowrap}
+  .tcalc-foot{margin-top:13px;font-size:12.5px;color:var(--slate);line-height:1.3}
+  .tcalc-foot b{color:var(--ink)}
+  @media(max-width:820px){
+    .time-slide{padding:54px 6vw 82px}
+    .time-slide h2{font-size:clamp(24px,5.3vw,32px);line-height:1.04}
+    .time-slide .lede{font-size:15px;margin-top:8px}
+    .time-head{display:block}
+    .timeflow{margin-top:22px}
+    .time-row{grid-template-columns:32px 28px minmax(0,1fr) 58px;gap:8px;padding:7px 0}
+    .time-ico{width:32px;height:32px}.time-ico svg{width:20px;height:20px}
+    .time-step{width:26px;height:26px;font-size:16px}
+    .time-title{font-size:16.5px}.time-sub{font-size:11px;margin-top:2px;line-height:1.25}
+    .time-bar{display:none}
+    .time-val{padding-left:0;text-align:right;width:58px;padding-right:0}
+    .time-val b{font-size:22px}.time-val > span{display:none}
+    .time-total{grid-template-columns:34px 1fr 78px;gap:9px;margin-top:9px;padding:8px 10px}
+    .time-total .time-ico{width:32px;height:32px}.time-total-title{font-size:20px}
+    .time-total-val{width:78px;padding-right:0}.time-total-val b{font-size:24px}.time-total-val > span{font-size:11px;white-space:normal}
+    .tcalc-foot{font-size:11px;margin-top:8px;line-height:1.25}
+  }
   /* ===== Slide 3 · De horas recuperadas a valor económico ===== */
   .veco{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:16px 12px;align-items:stretch;margin-top:28px}
   .veco-op{display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:850;color:var(--ink)}
@@ -157,6 +163,9 @@
   .mrow-l{flex:1;font-size:13.5px;color:var(--ink)}
   .mrow-v{font-weight:850;font-variant-numeric:tabular-nums;font-size:13.5px;color:var(--ink);background:#F3F0E8;padding:3px 11px;border-radius:7px}
   .mrows.num .mrow-v{background:none;padding:0;font-size:14.5px}
+  .mselect{font:inherit;font-size:13.5px;font-weight:850;color:var(--ink);background:#F3F0E8;border:1px solid var(--line);
+    border-radius:7px;padding:3px 8px;cursor:pointer}
+  .mselect:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 2px rgba(45,153,100,.15)}
   .mbadge{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--green-d);
     background:#E9F4EE;padding:3px 9px;border-radius:6px}
   .mlock{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--slate);margin:14px 0;justify-content:center}
@@ -188,41 +197,8 @@
   .vcard .sub{font-size:12px;color:var(--slate);line-height:1.5}
   .incl{font-size:11px;color:var(--green-d);font-weight:700;background:#E9F4EE;display:inline-block;
     padding:2px 8px;border-radius:4px;margin-top:6px}
-  /* FUNNEL */
-  .funnel{display:flex;flex-direction:column;margin-top:14px;max-width:640px}
-  .fbar{height:54px;border-radius:11px;display:flex;align-items:center;justify-content:space-between;
-    padding:0 18px;color:#fff;font-weight:700;
-    background:var(--green-d);transition:transform .15s;font-size:14.5px}
-  .frow:hover .fbar{transform:translateX(3px)}.fbar .n{font-size:19px;font-weight:850}
-  .fconv{font-size:12px;color:var(--slate);padding:5px 16px;display:flex;gap:6px;align-items:center}
-  .fconv .pill{background:#fff;border:1px solid var(--line);border-radius:20px;padding:1px 8px;font-weight:700;color:var(--ink)}
-  /* DUAL PROGRESS */
-  .dualbar{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:16px 20px;box-shadow:var(--shadow);max-width:640px}
-  .dualbar h4{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--slate);margin-bottom:12px}
-  .prow{margin-bottom:14px}.prow:last-of-type{margin-bottom:0}
-  .prow-top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
-  .prow-top b{color:var(--ink)}.prow-top span{color:var(--slate)}
-  .track{position:relative;height:20px;background:#ECE8DE;border-radius:10px}
-  .track-fill{position:absolute;left:0;top:0;height:100%;border-radius:10px;
-    background:linear-gradient(90deg,var(--green),var(--green-d));transition:width .45s ease;max-width:100%}
-  .track-fill.ov{background:linear-gradient(90deg,#1F7A52,#0D5A3C)}
-  .track-target-line{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--amber);border-radius:1px}
-  .prow-note{font-size:11.5px;color:var(--slate);margin-top:5px}
-  .prow-note b{color:var(--green-d)}
-  /* solo (1 elemento por slide tras separar el embudo) */
-  .funnel-solo{max-width:860px;margin:30px auto 0}
-  .funnel-solo .fbar{height:64px;font-size:16.5px}
-  .funnel-solo .fbar .n{font-size:24px}
-  .funnel-solo .fconv{font-size:13px;padding:8px 18px}
-  .dualbar-solo{max-width:800px;margin:28px auto 0;padding:24px 28px}
-  .dualbar-solo .prow{margin-bottom:26px}
-  .dualbar-solo .prow:last-of-type{margin-bottom:0}
-  .dualbar-solo .prow-top{font-size:14px;margin-bottom:8px}
-  .dualbar-solo .track{height:24px}
   .scenter .inner{text-align:center}
   .scenter .lede{margin-left:auto;margin-right:auto}
-  .scenter .prow-top,.scenter .prow-note{text-align:left}
   /* SALE ECONOMICS */
   .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-top:16px;align-items:stretch}
   @media(max-width:780px){.grid2{grid-template-columns:1fr}}
@@ -260,9 +236,52 @@
     padding:18px 16px;text-align:center;margin-top:8px;box-shadow:0 10px 26px rgba(31,122,82,.28)}
   .bresult .n{font-size:clamp(36px,5.2vw,52px);font-weight:850;letter-spacing:-.02em;line-height:1}
   .bresult .u{font-size:12px;opacity:.88;margin-top:4px;letter-spacing:.02em}
-  /* CHAIN */
-  .roiwrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:12px;align-items:start}
-  @media(max-width:780px){.roiwrap{grid-template-columns:1fr}}
+  /* MONTHLY PROJECTION */
+  .roiwrap{margin-top:28px}
+  .calcgrid{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr) 34px minmax(0,1fr);gap:18px 10px;align-items:stretch}
+  .calc-card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+    min-height:104px;padding:18px 18px;display:grid;grid-template-columns:46px minmax(0,1fr);gap:15px;align-items:center;overflow:hidden}
+  .calc-ico{width:46px;height:46px;border-radius:50%;background:#EEF6F0;color:var(--green-d);
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .calc-ico svg{width:23px;height:23px}
+  .calc-n{font-size:clamp(24px,2.7vw,34px);font-weight:850;letter-spacing:-.025em;color:var(--green-d);line-height:.98;font-variant-numeric:tabular-nums}
+  .calc-l{font-size:14px;color:var(--slate);line-height:1.22;margin-top:6px}
+  .calc-s{font-size:12px;color:#889890;margin-top:5px}
+  .calc-op{display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:850;color:var(--ink)}
+  .calc-card.res{background:linear-gradient(135deg,var(--green-d),#176444);border-color:transparent;color:#fff}
+  .calc-card.res .calc-ico{background:rgba(255,255,255,.14);color:#CDEBD9}
+  .calc-card.res .calc-n{color:#fff}.calc-card.res .calc-l{color:#E5F4EC}
+  .calc-edit{width:74px;border:0;background:transparent;color:var(--green-d);font:inherit;font-size:clamp(24px,2.7vw,34px);
+    font-weight:850;letter-spacing:-.03em;line-height:.95;font-variant-numeric:tabular-nums;padding:0}
+  .calc-edit:focus{outline:2px solid rgba(45,153,100,.22);outline-offset:4px;border-radius:7px;background:#F7FBF8}
+  .calc-note{margin-top:28px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.46);
+    padding:16px 22px;font-size:14px;color:var(--slate);display:flex;align-items:center;gap:14px}
+  .calc-note b{color:var(--green-d)}
+  .calc-note .calc-info{width:26px;height:26px;border-radius:50%;border:2px solid var(--green-d);color:var(--green-d);
+    display:flex;align-items:center;justify-content:center;font-weight:850;flex:0 0 auto}
+  .calc-card.res .calc-n{font-size:clamp(25px,2.65vw,34px);white-space:nowrap}
+  @media(max-width:900px){.calcgrid{grid-template-columns:1fr}.calc-op{min-height:18px}.calc-card{min-height:0}}
+  /* NET MONTHLY RESULT */
+  .net-slide .inner{max-width:1180px}
+  .netcalc{display:grid;grid-template-columns:minmax(300px,1fr) 28px minmax(300px,1fr) 28px minmax(330px,1.05fr);
+    gap:14px;align-items:center;margin-top:38px}
+  .net-stack{display:grid;gap:10px}
+  .net-card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    padding:18px 20px;display:grid;grid-template-columns:48px minmax(0,1fr);gap:14px;align-items:center;min-height:108px;overflow:hidden}
+  .net-ico{width:48px;height:48px;border-radius:50%;background:#EEF6F0;color:var(--green-d);
+    display:flex;align-items:center;justify-content:center}
+  .net-ico svg{width:26px;height:26px}
+  .net-n{font-size:clamp(25px,2.45vw,32px);font-weight:850;letter-spacing:-.02em;color:var(--green-d);
+    line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .net-l{font-size:15px;color:var(--ink);line-height:1.2;margin-top:7px}
+  .net-s{font-size:12.5px;color:var(--slate);line-height:1.3;margin-top:4px}
+  .net-op{font-size:30px;font-weight:850;color:var(--ink);text-align:center}
+  .net-card.res{background:linear-gradient(135deg,var(--green-d),#176444);border-color:transparent;color:#fff;
+    min-height:140px;box-shadow:0 14px 28px rgba(31,122,82,.28)}
+  .net-card.res .net-ico{background:rgba(255,255,255,.14);color:#CDEBD9}
+  .net-card.res .net-n{color:#fff;font-size:clamp(28px,2.85vw,38px)}
+  .net-card.res .net-l{color:#fff;font-weight:800;white-space:nowrap}.net-card.res .net-s{color:#CDEBD9}
+  @media(max-width:900px){.netcalc{grid-template-columns:1fr;gap:12px;margin-top:28px}.net-op{font-size:28px}.net-card{min-height:0}}
   .chain{display:flex;flex-direction:column;gap:6px}
   .clink{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);
     border-radius:12px;padding:12px 16px;box-shadow:var(--shadow)}
@@ -277,6 +296,8 @@
   .clink.negr .res{color:var(--neg)}
   .asup{font-size:9.5px;color:var(--amber);font-weight:800;text-transform:uppercase;letter-spacing:.04em;
     background:#FBF3E3;padding:1px 5px;border-radius:3px;display:inline-block;margin-left:3px}
+  .source-tag{font-size:10px;color:var(--amber);font-weight:800;letter-spacing:0;background:#FBF3E3;
+    padding:1px 5px;border-radius:3px;display:inline-block;margin-left:3px;white-space:nowrap}
   .controls{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:var(--shadow)}
   .ctl{margin-bottom:13px}.ctl:last-child{margin-bottom:0}
   .ctl label{display:flex;justify-content:space-between;font-size:12.5px;font-weight:650;margin-bottom:5px}
@@ -362,9 +383,10 @@
   table.aud td{padding:9px 5px;border-bottom:1px solid var(--line);vertical-align:middle}
   table.aud .k{font-weight:650;line-height:1.35}.src{color:var(--slate);font-size:10.5px;font-weight:400}
   table.aud td.aval{text-align:right;white-space:nowrap}
-  table.aud input{width:92px;text-align:right;font:inherit;font-variant-numeric:tabular-nums;
+  table.aud input,table.aud select{width:92px;text-align:right;font:inherit;font-variant-numeric:tabular-nums;
     border:1px solid var(--line);border-radius:6px;padding:5px 7px;color:var(--ink);font-weight:700;background:var(--card)}
-  table.aud input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 2px rgba(45,153,100,.15)}
+  table.aud select{width:104px;text-align:left;cursor:pointer}
+  table.aud input:focus,table.aud select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 2px rgba(45,153,100,.15)}
   .aunit{display:inline-block;min-width:54px;text-align:left;color:var(--slate);font-size:10.5px;margin-left:6px}
   table.aud td.ares .aunit{margin-left:0;display:block;text-align:right}
   .f{color:var(--green-d);font-size:11px;font-family:ui-monospace,Menlo,Consolas,monospace}
@@ -381,51 +403,8 @@
   mark{background:#FBE6AE;color:inherit;padding:0 1px;border-radius:2px}
   .reset{margin-top:16px;border:1px solid var(--line);background:var(--card);font:inherit;font-size:12.5px;
     font-weight:650;padding:8px 13px;border-radius:8px;cursor:pointer}
-  /* DIFERENCIACION — compacto: entra en una sola pantalla sin scroll. Scopeado a .diff-slide */
-  .diff-slide{padding-top:54px;padding-bottom:84px;justify-content:flex-start}
-  .diff-slide .eyebrow{margin-bottom:8px}
-  .diff-slide h2{font-size:clamp(23px,3vw,34px);line-height:1.1}
-  .diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;align-items:stretch}
-  @media(max-width:780px){.diff-grid{grid-template-columns:1fr}}
-  .diff-card{display:flex;flex-direction:column;padding:23px 25px;min-height:238px}
-  .diff-card .tag{font-size:11px;padding:4px 10px;margin-bottom:7px}
-  .diff-card .ct{font-size:clamp(19px,2.15vw,22px);font-weight:850;letter-spacing:-.01em;
-    line-height:1.14;margin:5px 0 13px;color:var(--ink)}
-  .diff-card ul{list-style:none;display:flex;flex-direction:column;gap:10px}
-  .diff-card li{position:relative;padding-left:23px;font-size:16.3px;color:var(--ink);line-height:1.34}
-  .diff-card li:before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%}
-  .diff-card.win li:before{background:var(--green)}
-  .diff-card.win{border-color:var(--green)}
-  /* Banda "Exclusivo de Capital" — clímax de la slide de Diferenciación */
-  .diff-excl{margin-top:18px;background:linear-gradient(135deg,var(--ink),#16382C);border-radius:20px;
-    padding:19px clamp(24px,3vw,34px);color:#EAF3EE}
-  .diff-excl-h{font-size:11.8px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;
-    color:#8FE3B6;margin-bottom:15px;text-align:center}
-  .diff-excl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-  @media(max-width:780px){.diff-excl-grid{grid-template-columns:1fr;gap:16px}}
-  .excl-item{display:flex;gap:14px;align-items:center}
-  .excl-ico{width:52px;height:52px;border-radius:14px;background:rgba(143,227,182,.14);color:#8FE3B6;
-    display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-  .excl-ico svg{width:28px;height:28px}
-  .excl-t{font-size:17px;font-weight:850;letter-spacing:-.01em;color:#fff;line-height:1.08}
-  .excl-d{font-size:13.5px;line-height:1.32;color:#B9D4C7;margin-top:5px}
-  /* DATOS DE MERCADO — compacto: entra en una sola pantalla. Todo scopeado a .mkt-slide */
-  .mkt-slide{padding-top:52px;padding-bottom:84px;justify-content:flex-start}
-  .mkt-slide .eyebrow{margin-bottom:6px}
-  .mkt-slide h2{font-size:clamp(23px,3vw,34px);line-height:1.1}
-  .mkt-slide .lede{margin-top:6px}
-  .mkt-grid{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:16px;margin-top:18px;align-items:stretch}
-  @media(max-width:820px){.mkt-grid{grid-template-columns:1fr;grid-auto-rows:auto}}
-  .mkt-card{display:flex;flex-direction:column;padding:24px 26px;min-height:0}
-  .mkt-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
-  .mkt-cat{font-size:16px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink);font-weight:850;line-height:1.12}
-  .mkt-num{font-size:clamp(38px,4.5vw,50px);font-weight:850;letter-spacing:-.03em;line-height:1;
-    color:var(--green-d);white-space:nowrap}
-  .mkt-txt{font-size:17px;color:var(--ink);line-height:1.42;margin-top:14px}
-  .mkt-src{font-size:11.7px;color:var(--slate);margin-top:auto;padding-top:13px;letter-spacing:.01em;opacity:.85}
-  /* Tesis de apertura (arriba de las KPI cards) — alineada a la izquierda con el título */
-  .mkt-thesis{margin-top:10px;font-size:clamp(17px,2vw,20px);font-weight:800;color:var(--ink);
-    letter-spacing:-.01em;line-height:1.3;max-width:80ch}
+
+
 </style>
 </head>
 <body>
@@ -437,125 +416,134 @@
     <button data-fx="uof">USD Of.</button>
     <button data-fx="upar">USD Par.</button>
   </div>
+  <div class="topctrl">
+    <span class="toplbl">Rango</span>
+    <div class="pill3" id="rangePill">
+      <button data-com="0.2" class="on">80%</button>
+      <button data-com="0.3">70%</button>
+    </div>
+  </div>
   <button class="abtn" id="openAudit">Auditar datos</button>
 </div>
 
 <div class="deck" id="deck">
 
-  <!-- 1 PORTADA · Costo vs Retorno del Servicio -->
-  <section class="slide hero active"><div class="inner">
-    <h1>Costo <span class="vs">vs</span> <em>Retorno</em> del Servicio</h1>
-    <p class="lede">El Asistente IA recupera tiempo, reduce la pérdida de leads al responder mientras la intención comercial sigue activa, y genera reuniones que conducen a ventas asistidas.</p>
-    <div class="tmode-pill"><button type="button" data-tm="rec">Registrado · <b class="tm-rec"></b></button><button type="button" data-tm="proj">Proyección · <b class="tm-proj"></b></button></div>
+  <!-- 1 BLANK -->
+  <!-- 1 BLANK -->
+  <section class="slide blank active"><div class="inner"></div></section>
+
+  <!-- 2 BLANK -->
+  <section class="slide blank"><div class="inner"></div></section>
+
+  <!-- 1 PORTADA · Retorno proyectado -->
+  <section class="slide hero"><div class="inner">
+    <h1>Retorno mensual estimado del <em>Asistente IA</em></h1>
     <div class="cvr">
-      <div class="cvr-cost">
-        <span class="cvr-pill cost">Costo del servicio</span>
-        <div class="cvr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.3"/></svg></div>
-        <div class="cvr-big" id="cvr_fee"></div>
-        <div class="cvr-unit"><span id="cvr_feeunit"></span> / mes</div>
-        <div class="cvr-cap">Costo mensual fijo</div>
+      <div class="cvr-card">
+        <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
+        <div>
+          <div class="cvr-ct">Tiempo recuperado</div>
+          <div class="cvr-cv"><span id="cvr_hours"></span><span class="unit">h</span></div>
+          <div class="cvr-cs">en gestión de leads</div>
+        </div>
       </div>
-      <div class="cvr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-      <div class="cvr-return">
-        <span class="cvr-pill ret">Retorno del servicio</span>
-        <div class="cvr-cols">
-          <div class="cvr-col">
-            <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
-            <div class="cvr-ct">Tiempo recuperado</div>
-            <div class="cvr-cv"><span id="cvr_hours"></span> de responder leads</div>
-            <div class="cvr-cs">Equivalente a <b class="cvr-money" id="cvr_timeval"></b> en horas de trabajo</div>
-          </div>
-          <div class="cvr-col">
-            <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.7a3 3 0 0 1 0 5.6"/><path d="M20.5 19a5.5 5.5 0 0 0-3.2-5"/></svg></div>
-            <div class="cvr-ct">Menor pérdida de leads</div>
-            <div class="cvr-cv">Respuestas inmediatas</div>
-            <div class="cvr-cs">Mayor probabilidad de conservar el interés inicial</div>
-          </div>
-          <div class="cvr-col">
-            <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
-            <div class="cvr-ct">Ventas asistidas</div>
-            <div class="cvr-cv"><span id="cvr_net"></span> proyectados</div>
-            <div class="cvr-cs">en ventas asistidas por IA</div>
-          </div>
+      <div class="cvr-card">
+        <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 10h16M9 15l2 2 4-5"/></svg></div>
+        <div>
+          <div class="cvr-ct">Citas agendadas</div>
+          <div class="cvr-cv"><span id="cvr_appts"></span><span class="unit">citas</span></div>
+          <div class="cvr-cs"></div>
+        </div>
+      </div>
+      <div class="cvr-card">
+        <div class="cvr-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
+        <div>
+          <div class="cvr-ct">Ventas asistidas</div>
+          <div class="cvr-cv"><span id="cvr_sales"></span><span class="unit">ventas</span></div>
+          <div class="cvr-cs"></div>
         </div>
       </div>
     </div>
-    <div class="cvr-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg> Propuesta de valor basada en resultados de Mayo y proyecciones conservadoras</div>
+    <div class="cvr-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg> Proyección basada en tasas reales observadas en Junio y proyección de 700 leads interactuados</div>
   </div></section>
 
-  <!-- 2 CÁLCULO DEL TIEMPO RECUPERADO (desglose de las 18 h) -->
-  <section class="slide"><div class="inner">
-    <h2>Cálculo del Tiempo Recuperado</h2>
-    <p class="lede">En Mayo, el Asistente IA ahorró tiempo al leer mensajes, escribir respuestas y enviar documentación por el agente.</p>
-    <div class="tmode-pill"><button type="button" data-tm="rec">Registrado · <b class="tm-rec"></b></button><button type="button" data-tm="proj">Proyección · <b class="tm-proj"></b></button></div>
-    <div class="qline">¿De dónde salen las <span id="tc_total_q"></span>?</div>
-    <div class="tcalc">
-      <div class="tcalc-card">
-        <div class="tcalc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/><path d="M8 9h9M8 12.5h6"/></svg></div>
-        <div class="tcalc-t">Lectura de mensajes</div>
-        <div class="tcalc-rule"></div>
-        <div class="tcalc-v"><span id="tc_read"></span><i>h</i></div>
-        <div class="tcalc-s">Tiempo ahorrado al leer mensajes entrantes</div>
-      </div>
-      <div class="tcalc-op">+</div>
-      <div class="tcalc-card">
-        <div class="tcalc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
-        <div class="tcalc-t">Escritura de respuestas</div>
-        <div class="tcalc-rule"></div>
-        <div class="tcalc-v"><span id="tc_write"></span><i>h</i></div>
-        <div class="tcalc-s">Tiempo ahorrado al escribir respuestas salientes</div>
-      </div>
-      <div class="tcalc-op">+</div>
-      <div class="tcalc-card">
-        <div class="tcalc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></div>
-        <div class="tcalc-t">Brochures y Listas de Precios</div>
-        <div class="tcalc-rule"></div>
-        <div class="tcalc-v"><span id="tc_doc"></span><i>h</i></div>
-        <div class="tcalc-s">Tiempo ahorrado al enviar documentación</div>
-      </div>
-      <div class="tcalc-op">=</div>
-      <div class="tcalc-card res">
-        <div class="tcalc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
-        <div class="tcalc-v"><span id="tc_total"></span><i>h</i></div>
-        <div class="tcalc-s">recuperadas en Mayo</div>
+  <!-- 2 TIEMPO RECUPERADO POR PROCESO -->
+  <section class="slide time-slide"><div class="inner">
+    <div class="time-head">
+      <div>
+        <h2>Dónde libera tiempo la IA en el <em>proceso comercial</em></h2>
       </div>
     </div>
-    <div class="tcalc-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15z"/></svg> <span><b>Supuestos de cálculo:</b> lectura <span id="tc_read_pps"></span> car/s · escritura <span id="tc_type_pps"></span> car/s · documentos <span id="tc_sec_doc"></span> s/envío</span></div>
+    <div class="timeflow">
+      <div class="time-row">
+        <div class="time-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H9l-4 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></div>
+        <div class="time-step">1</div>
+        <div><div class="time-title">Conversa con el prospecto</div><div class="time-sub">Lee mensajes · escribe respuestas · envía documentación</div></div>
+        <div class="time-bar"><div class="time-bar-fill" id="tb_bot"></div></div>
+        <div class="time-val"><b><span id="tc_bot"></span><span class="hunit">h</span></b><span>Conversaciones del bot</span></div>
+      </div>
+      <div class="time-row">
+        <div class="time-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></div>
+        <div class="time-step">2</div>
+        <div><div class="time-title">Recomienda las mejores opciones</div><div class="time-sub">Busca opciones válidas en listas de precio</div></div>
+        <div class="time-bar"><div class="time-bar-fill" id="tb_sugg"></div></div>
+        <div class="time-val"><b><span id="tc_sugg"></span><span class="hunit">h</span></b><span>Recomendación de opciones</span></div>
+      </div>
+      <div class="time-row">
+        <div class="time-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg></div>
+        <div class="time-step">3</div>
+        <div><div class="time-title">Aclara dudas sobre las opciones</div><div class="time-sub">Verifica detalles en brochure o lista de precios</div></div>
+        <div class="time-bar"><div class="time-bar-fill" id="tb_details"></div></div>
+        <div class="time-val"><b><span id="tc_details"></span><span class="hunit">h</span></b><span>Detalles de proyectos y unidades</span></div>
+      </div>
+      <div class="time-row">
+        <div class="time-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 10h16M9 15l2 2 4-5"/></svg></div>
+        <div class="time-step">4</div>
+        <div><div class="time-title">Coordina y agenda citas</div><div class="time-sub">Revisa disponibilidad y confirma horarios</div></div>
+        <div class="time-bar"><div class="time-bar-fill" id="tb_sched"></div></div>
+        <div class="time-val"><b><span id="tc_sched"></span><span class="hunit">h</span></b><span>Coordinación de citas</span></div>
+      </div>
+    </div>
+    <div class="time-total">
+      <div class="time-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M18 6l2-2M6 6 4 4"/></svg></div>
+      <div class="time-total-title">En total</div>
+      <div class="time-total-val"><b><span id="tc_total"></span><span class="hunit">h</span></b><span id="tc_perlead"></span></div>
+    </div>
+    <div class="tcalc-foot"><b>Datos de Referencia:</b> recomendaciones <span id="tc_sugg_sec"></span> por búsqueda · dudas <span id="tc_details_sec"></span> por consulta · agenda <span id="tc_sched_sec"></span> por coordinación.</div>
   </div></section>
 
   <!-- 3 DE HORAS A VALOR ECONÓMICO (tarifa y valor del tiempo) -->
   <section class="slide"><div class="inner">
-    <h2>De horas recuperadas a <em>valor económico</em></h2>
-    <p class="lede">Convertimos el tiempo que el Asistente IA liberó en valor para el negocio.</p>
-    <div class="tmode-pill"><button type="button" data-tm="rec">Registrado · <b class="tm-rec"></b></button><button type="button" data-tm="proj">Proyección · <b class="tm-proj"></b></button></div>
+    <h2>Costo laboral equivalente del <em>tiempo recuperado</em></h2>
+    <p class="lede">Convertimos el tiempo que el Asistente IA liberó en el costo laboral de un asistente humano promedio.</p>
     <div class="veco">
       <div class="veco-card">
         <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12v3"/><path d="M3 7v10a2 2 0 0 0 2 2h14v-5"/><path d="M21 12h-4a2 2 0 0 0 0 4h4z"/></svg></div>
-        <div><div class="veco-tt">Utilidad Neta Anual</div><span class="veco-l">beneficio neto del agente en un año</span></div>
+        <div><div class="veco-n" id="ve_salary"></div><span class="veco-l">salario mensual promedio</span><span class="veco-sub">2500-3300 BOB</span></div>
       </div>
       <div class="veco-op">÷</div>
       <div class="veco-card">
         <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></div>
-        <div><div class="veco-n" id="ve_hours"></div><span class="veco-l">horas laborales / año</span><span class="veco-sub">asumiendo 40 h/semana</span></div>
+        <div><div class="veco-n" id="ve_hours_month"></div><span class="veco-l">horas laborales / mes</span><span class="veco-sub">40-45 h/semana</span></div>
       </div>
       <div class="veco-op">=</div>
       <div class="veco-card">
         <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.5v11M14.7 9a2.6 2 0 0 0-2.7-1.5c-1.5 0-2.6.8-2.6 2s1 1.6 2.6 2 2.6.9 2.6 2-1.1 2-2.6 2A2.6 2 0 0 1 9.3 16"/></svg></div>
-        <div><div class="veco-n" id="ve_rate"></div><span class="veco-l">por hora</span></div>
+        <div><div class="veco-n" id="ve_rate"></div><span class="veco-l">valor de cada hora recuperada</span></div>
       </div>
       <div class="veco-card">
         <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
-        <div><div class="veco-n"><span id="ve_rate2"></span>/h</div><span class="veco-l">valor de cada hora recuperada</span></div>
+        <div><div class="veco-n" id="ve_rate2"></div><span class="veco-l">valor de cada hora recuperada</span></div>
       </div>
       <div class="veco-op">×</div>
       <div class="veco-card">
         <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg></div>
-        <div><div class="veco-n" id="ve_hsaved"></div><span class="veco-l">recuperadas en Mayo</span></div>
+        <div><div class="veco-n" id="ve_hsaved"></div><span class="veco-l">horas recuperadas proyectadas</span></div>
       </div>
-      <div class="veco-op">=</div>
+      <div class="veco-op">≈</div>
       <div class="veco-card res">
         <div class="veco-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3h5l-1.3 2.4h-2.4z"/><path d="M13 5.4c3 1.3 5 4.4 5 7.8a6 6 0 0 1-12 0c0-3.4 2-6.5 5-7.8"/><path d="M12 10v5M10.7 11c.3-.5.8-.7 1.3-.7.8 0 1.4.4 1.4 1s-.6.9-1.4 1-1.3.5-1.3 1 .6 1 1.3 1c.5 0 1-.2 1.3-.6"/></svg></div>
-        <div><div class="veco-n" id="ve_val"></div><span class="veco-l">valor del tiempo recuperado en Mayo</span></div>
+        <div><div class="veco-n" id="ve_val"></div><span class="veco-l">costo laboral equivalente</span></div>
       </div>
     </div>
   </div></section>
@@ -568,7 +556,7 @@
       <div class="mcard">
         <div class="mcard-h"><span class="mstep">1</span><div><div class="mcard-t">Margen neto anual</div><div class="mcard-s">Calculado con datos anuales del cliente</div></div></div>
         <div class="mrows">
-          <div class="mrow"><span class="mrow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19a6.5 6.5 0 0 1 13 0"/></svg></span><span class="mrow-l">Comisión oficina</span><span class="mrow-v" id="m_ofi"></span></div>
+          <div class="mrow"><span class="mrow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19a6.5 6.5 0 0 1 13 0"/></svg></span><span class="mrow-l">Comisión oficina</span><select class="mselect" id="m_ofi_select"><option value="0.2">20%</option><option value="0.3">30%</option></select></div>
           <div class="mrow"><span class="mrow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5"/><path d="M6 10.5V19h12v-8.5"/></svg></span><span class="mrow-l">Comisión REMAX</span><span class="mrow-v" id="m_remax"></span></div>
           <div class="mrow"><span class="mrow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></span><span class="mrow-l">Impuestos</span><span class="mrow-v" id="m_imp"></span></div>
           <div class="mrow"><span class="mrow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19a6.5 6.5 0 0 1 13 0"/></svg></span><span class="mrow-l">Salario asistente</span><span class="mrow-v"></span></div>
@@ -582,7 +570,7 @@
       <div class="mcard">
         <div class="mcard-h"><span class="mstep">2</span><div class="mcard-t">Utilidad neta por venta promedio</div></div>
         <div class="mrows num">
-          <div class="mrow"><span class="mrn">1</span><span class="mrow-l">Precio promedio por venta de inmueble <span class="asup">supuesto</span></span><span class="mrow-v" id="m_venta"></span></div>
+          <div class="mrow"><span class="mrn">1</span><span class="mrow-l">Ticket promedio de Apartamento <span class="source-tag">(REMAX Emporio)</span></span><span class="mrow-v" id="m_venta"></span></div>
           <div class="mrow"><span class="mrn">2</span><span class="mrow-l">Comisión 1 punta (<span id="m_compct"></span>)</span><span class="mrow-v" id="m_com"></span></div>
           <div class="mrow"><span class="mrn">3</span><span class="mrow-l">Margen neto (<span id="m_margin2"></span>)</span><span class="mbadge">de cálculo</span></div>
         </div>
@@ -594,62 +582,99 @@
     </div>
   </div></section>
 
-  <!-- 5 EMBUDO · conversión (funnel) -->
-  <section class="slide scenter"><div class="inner">
-    <h2>Embudo de Ventas Mayo</h2>
-    <p class="lede">Antes de proyectar ventas, medimos el embudo real de Mayo.</p>
-    <div class="funnel funnel-solo" id="funnelEl"></div>
-  </div></section>
-
-  <!-- 6 PROGRESO hacia la primera venta -->
-  <section class="slide scenter"><div class="inner">
-    <h2>Progreso hacia la primera venta</h2>
-    <p class="lede">Dónde estamos hoy frente al umbral que proyecta el modelo.</p>
-    <div class="dualbar dualbar-solo">
-      <div class="prow">
-        <div class="prow-top"><b>Leads CTWA — Mayo</b><span id="prog_leads_label"></span></div>
-        <div class="track"><div class="track-fill" id="tf_leads"></div><div class="track-target-line" id="tl_leads"></div></div>
-        <div class="prow-note" id="prog_leads_note"></div>
-      </div>
-      <div class="prow">
-        <div class="prow-top"><b>Citas agendadas — Mayo</b><span id="prog_citas_label"></span></div>
-        <div class="track"><div class="track-fill" id="tf_citas"></div><div class="track-target-line" id="tl_citas"></div></div>
-        <div class="prow-note" id="prog_citas_note"></div>
-      </div>
-    </div>
-  </div></section>
-
-  <!-- 6 PROYECCION · Cuánto produce el sistema al mes -->
+  <!-- 5 PROYECCION · Cuánto produce el sistema al mes -->
   <section class="slide"><div class="inner">
-    <h2>Cuánto produce el sistema al mes</h2>
-    <p class="lede">Tasas de conversión <b>reales</b> (Mayo). Dos supuestos declarados: <b>1 venta cada <span id="r_a2s"></span> citas</b> y la <b>venta promedio</b>. Todo lo demás está medido.</p>
+    <h2>Cuánto <em>produce el sistema</em> al mes</h2>
+    <p class="lede">Aplicamos la conversión real de lead a cita y la utilidad neta por venta asistida para proyectar el resultado mensual.</p>
     <div class="roiwrap">
-      <div class="chain" id="chainEl"></div>
-      <div class="controls">
-        <div class="ctl">
-          <label>Citas por venta <span class="asup">supuesto</span><span class="val num" id="lab_a2s"></span></label>
-          <input type="range" id="sl_a2s" min="8" max="20" step="1">
-          <div class="ticks"><span>8 opt.</span><span>12</span><span>15 pes.</span><span>20</span></div>
+      <div class="calcgrid">
+        <div class="calc-card">
+          <div class="calc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
+          <div><div class="calc-n"><span id="calc_leads"></span> leads</div><div class="calc-l">Volumen proyectado / mes</div></div>
         </div>
-        <div class="ctl">
-          <label>Volumen leads / mes<span class="val num" id="lab_vol"></span></label>
-          <input type="range" id="sl_vol" min="191" max="1555" step="5">
-          <div class="ticks"><span>191 real</span><span>700 est.</span><span>1,555 techo</span></div>
+        <div class="calc-op">×</div>
+        <div class="calc-card">
+          <div class="calc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l5-5 4 4 7-8"/><path d="M15 7h5v5"/></svg></div>
+          <div><div class="calc-n" id="calc_rate"></div><div class="calc-l">Tasa cita / lead</div><div class="calc-s">Medida en junio</div></div>
+        </div>
+        <div class="calc-op">=</div>
+        <div class="calc-card">
+          <div class="calc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 10h16M9 15l2 2 4-5"/></svg></div>
+          <div><div class="calc-n"><span id="calc_citas_a"></span> citas</div><div class="calc-l">Citas proyectadas / mes</div></div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 10h16M9 15l2 2 4-5"/></svg></div>
+          <div><div class="calc-n"><span id="calc_citas_b"></span> citas</div><div class="calc-l">Citas proyectadas / mes</div></div>
+        </div>
+        <div class="calc-op">÷</div>
+        <div class="calc-card">
+          <div class="calc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></div>
+          <div><div class="calc-n"><input id="calc_appts_input" class="calc-edit" type="number" min="1" max="99" step="1"></div><div class="calc-l">Citas por venta</div><span class="asup">Estimado</span></div>
+        </div>
+        <div class="calc-op">=</div>
+        <div class="calc-card">
+          <div class="calc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2 3h3l2.2 11.2A2 2 0 0 0 9.2 16H17a2 2 0 0 0 1.9-1.4L21 7H6"/></svg></div>
+          <div><div class="calc-n"><span id="calc_sales_a"></span> ventas</div><div class="calc-l">Ventas asistidas / mes</div></div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2 3h3l2.2 11.2A2 2 0 0 0 9.2 16H17a2 2 0 0 0 1.9-1.4L21 7H6"/></svg></div>
+          <div><div class="calc-n"><span id="calc_sales_b"></span> ventas</div><div class="calc-l">Ventas asistidas / mes</div></div>
+        </div>
+        <div class="calc-op">×</div>
+        <div class="calc-card">
+          <div class="calc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9a3 2.2 0 0 0-3-1.5c-1.7 0-3 .8-3 2.1s1.2 1.8 3 2.2 3 .9 3 2.3-1.3 2.4-3 2.4A3.2 2.4 0 0 1 9 15"/></svg></div>
+          <div><div class="calc-n" id="calc_net_sale"></div><div class="calc-l">Utilidad neta por venta asistida</div></div>
+        </div>
+        <div class="calc-op">=</div>
+        <div class="calc-card res">
+          <div class="calc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3h5l-1.3 2.4h-2.4z"/><path d="M13 5.4c3 1.3 5 4.4 5 7.8a6 6 0 0 1-12 0c0-3.4 2-6.5 5-7.8"/><path d="M12 10v5"/></svg></div>
+          <div><div class="calc-n" id="calc_gross"></div><div class="calc-l">utilidad generada / mes</div></div>
         </div>
       </div>
+      <div class="calc-note"><span class="calc-info">i</span><span>Dato que alimenta la siguiente slide: <b>utilidad mensual generada</b> antes de descontar marketing y servicio.</span></div>
     </div>
   </div></section>
 
-  <!-- 6 CLOSE -->
+  <!-- 6 NETO · Cuánto deja el sistema al mes -->
+  <section class="slide net-slide"><div class="inner">
+    <h2>Cuánto <em>deja el sistema</em> al mes</h2>
+    <p class="lede">Partimos de la utilidad mensual generada y descontamos marketing y servicio para estimar la ganancia neta proyectada.</p>
+    <div class="netcalc">
+      <div class="net-card">
+        <div class="net-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3h5l-1.3 2.4h-2.4z"/><path d="M13 5.4c3 1.3 5 4.4 5 7.8a6 6 0 0 1-12 0c0-3.4 2-6.5 5-7.8"/><path d="M12 10v5"/></svg></div>
+        <div><div class="net-n" id="net_gross"></div><div class="net-l">utilidad generada / mes</div><div class="net-s">resultado de la slide anterior</div></div>
+      </div>
+      <div class="net-op">-</div>
+      <div class="net-stack">
+        <div class="net-card">
+          <div class="net-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v6a1.5 1.5 0 0 0 2.2 1.3L11 18"/><path d="M11 18l7 3V3l-7 3z"/><path d="M11 6v12"/></svg></div>
+          <div><div class="net-n" id="net_marketing"></div><div class="net-l">Marketing</div><div class="net-s"><span id="net_cpl"></span> / lead</div></div>
+        </div>
+        <div class="net-card">
+          <div class="net-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 16 0"/><path d="M4 12v4a2 2 0 0 0 2 2h1v-6H4z"/><path d="M20 12v4a2 2 0 0 1-2 2h-1v-6h3z"/><path d="M14 19c0 1.1-.9 2-2 2h-1"/></svg></div>
+          <div><div class="net-n" id="net_service"></div><div class="net-l">Servicio Capital</div><div class="net-s">precio mensual</div></div>
+        </div>
+      </div>
+      <div class="net-op">=</div>
+      <div class="net-card res">
+        <div class="net-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="4" rx="1"/><rect x="12" y="9" width="3" height="7" rx="1"/><rect x="17" y="6" width="3" height="10" rx="1"/><path d="M7 10l4-4 3 3 5-6"/></svg></div>
+        <div><div class="net-n" id="net_result"></div><div class="net-l">ganancia neta proyectada / mes</div><div class="net-s">después de marketing y servicio</div></div>
+      </div>
+    </div>
+    <div class="calc-note"><span class="calc-info">i</span><span>Dato clave: este es el resultado neto mensual antes de considerar expansión de volumen o mejoras en conversión.</span></div>
+  </div></section>
+
+  <!-- 7 CLOSE -->
   <section class="slide"><div class="inner">
     <div class="closebox">
       <div class="eyebrow" style="color:#8FE3B6">El precio</div>
       <div class="big" id="c_fee_big"></div>
       <p class="lede">El asistente ya devuelve más de lo que cuesta. El volumen hace el resto.</p>
-      <div class="tmode-pill"><button type="button" data-tm="rec">Registrado · <b class="tm-rec"></b></button><button type="button" data-tm="proj">Proyección · <b class="tm-proj"></b></button></div>
       <div class="close5">
         <div class="c5card">
-          <div class="c5tag real">Real · Mayo</div>
+          <div class="c5tag proj">Proyección</div>
           <div class="c5n" id="c_time"></div>
           <div class="c5l">Tiempo recuperado</div>
         </div>
@@ -672,86 +697,6 @@
     </div>
   </div></section>
 
-  <!-- DIFERENCIACION -->
-  <section class="slide diff-slide"><div class="inner">
-    <div class="eyebrow">Diferenciación · Por qué Capital</div>
-    <h2>Reemplaza al asistente. Supera al software genérico. <em>Hace lo que nadie más.</em></h2>
-    <div class="diff-grid">
-      <div class="vcard diff-card win">
-        <span class="tag real">vs Asistente humano</span>
-        <div class="ct">Todo lo que hace un asistente, sin sus límites</div>
-        <ul>
-          <li>Atiende al instante, 24/7, sin turnos ni días libres.</li>
-          <li>Nunca olvida un seguimiento ni deja un cliente sin responder.</li>
-          <li>Sostiene cientos de conversaciones a la vez, sin costo extra.</li>
-        </ul>
-      </div>
-      <div class="vcard diff-card win">
-        <span class="tag real">vs Bot genérico de marketing</span>
-        <div class="ct">Especializado en el rubro</div>
-        <ul>
-          <li>WhatsApp API oficial: adiós a los baneos de números.</li>
-          <li>Cero configuración: sin flujos complejos.</li>
-          <li>Habla solo desde tu inventario real, sin alucinar propiedades.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="diff-excl">
-      <div class="diff-excl-h">Exclusivo de Capital · lo que nadie más ofrece</div>
-      <div class="diff-excl-grid">
-        <div class="excl-item">
-          <span class="excl-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg></span>
-          <div class="excl-body">
-            <div class="excl-t">Mapa comercial</div>
-            <div class="excl-d">El cliente ubica cada inmueble y vos proyectás más profesionalismo.</div>
-          </div>
-        </div>
-        <div class="excl-item">
-          <span class="excl-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2.5"/><line x1="10" y1="18" x2="14" y2="18"/></svg></span>
-          <div class="excl-body">
-            <div class="excl-t">App con CRM automático</div>
-            <div class="excl-d">La IA ordena tu embudo y prioriza clientes por vos.</div>
-          </div>
-        </div>
-        <div class="excl-item">
-          <span class="excl-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><line x1="20" y1="20" x2="15.5" y2="15.5"/></svg></span>
-          <div class="excl-body">
-            <div class="excl-t">Buscador</div>
-            <div class="excl-d">Reúne inmuebles de muchos sitios en un solo lugar. Pronto, con recomendación IA.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div></section>
-
-  <!-- DATOS DE MERCADO -->
-  <section class="slide mkt-slide"><div class="inner">
-    <div class="eyebrow">Datos del mercado · Dónde se pierden las oportunidades</div>
-    <h2>El problema no es generar leads. Es no perderlos después.</h2>
-    <div class="mkt-thesis">Capital resuelve los puntos exactos donde se pierden ventas: velocidad, foco, tiempo y seguimiento.</div>
-    <div class="mkt-grid">
-      <div class="vcard mkt-card">
-        <div class="mkt-head"><span class="mkt-cat">Velocidad</span><span class="mkt-num">5×</span></div>
-        <p class="mkt-txt">Responder en los primeros 5 minutos hace hasta 5× más probable conversar con el lead antes de que se enfríe.</p>
-        <p class="mkt-src">Fuente: MIT / InsideSales</p>
-      </div>
-      <div class="vcard mkt-card">
-        <div class="mkt-head"><span class="mkt-cat">Ruido en el embudo</span><span class="mkt-num">4.2%</span></div>
-        <p class="mkt-txt">Los leads buenos se enfrían mientras los curiosos drenan tu tiempo.</p>
-        <p class="mkt-src">Fuente: Datos internos Capital · Mayo 2026</p>
-      </div>
-      <div class="vcard mkt-card">
-        <div class="mkt-head"><span class="mkt-cat">Carga de comunicación</span><span class="mkt-num">20%–50%</span></div>
-        <p class="mkt-txt">Los agentes dedican entre el 20% y el 50% de su jornada solo a comunicarse: responder y coordinar.</p>
-        <p class="mkt-src">Fuente: Drooms × Statista</p>
-      </div>
-      <div class="vcard mkt-card">
-        <div class="mkt-head"><span class="mkt-cat">Seguimiento</span><span class="mkt-num">+20%</span></div>
-        <p class="mkt-txt">Dar seguimiento constante puede convertir hasta 20% más de tus leads actuales en ventas.</p>
-        <p class="mkt-src">Fuente: Demand Gen Report</p>
-      </div>
-    </div>
-  </div></section>
 </div>
 
 <div class="nav"><button class="arrow" id="prev">‹</button><div class="dots" id="dots"></div><button class="arrow" id="next">›</button></div>
@@ -777,13 +722,13 @@ const CAP={
   inputs:{
     // -- En diapositiva (sliders) --
     vol_leads:{v:700,unit:"leads/mes",label:"Volumen estándar proyectado",src:"Extrapolado de 1,555 FB",g:"slide",s:1},
-    appts_sale:{v:15,unit:"citas/venta",label:"Citas por venta (supuesto)",src:"Asumido pesimista — no medido aún",g:"slide",s:1},
+    appts_sale:{v:30,unit:"citas/venta",label:"Citas por venta (Estimado)",src:"Estimado pesimista — no medido aún",g:"slide",s:1},
     // -- Venta y comisiones --
-    venta_prom_bob:{v:700000,unit:"BOB",label:"Venta promedio (listado)",src:"Listado promedio Capital",g:"venta"},
+    usd_oficial_tc:{v:6.96,unit:"BOB/USD",label:"Tipo de cambio oficial",src:"Usado para convertir precios oficiales a BOB",g:"venta"},
     comision_pct:{v:0.02,unit:"%",label:"Comisión (1 punta)",src:"Estándar REMAX",g:"venta"},
     // -- Costos fijos anuales del agente (definen el margen neto) --
     ann_bruto:{v:747863,unit:"BOB/año",label:"Ingreso bruto anual",src:"Modelo anual del agente",g:"fijos"},
-    com_oficina_pct:{v:0.20,unit:"%",label:"Comisión Oficina",src:"Contrato oficina",g:"fijos"},
+    com_oficina_pct:{v:0.20,unit:"%",label:"Comisión Oficina",src:"Elegir rango: 80% = comisión 20% y ticket 135,000 USD Of.; 70% = comisión 30% y ticket 98,000 USD Of.",g:"fijos",opts:[0.20,0.30]},
     com_remax_pct:{v:0.02,unit:"%",label:"Comisión REMAX Bolivia",src:"Contrato REMAX",g:"fijos"},
     salario_asist_mes:{v:2500,unit:"BOB/mes",label:"Salario asistente (mensual)",src:"Planilla",g:"fijos"},
     contador_mes:{v:1000,unit:"BOB/mes",label:"Contador (mensual)",src:"Servicio contable",g:"fijos"},
@@ -795,22 +740,21 @@ const CAP={
     cost_lead:{v:2.86,unit:"BOB/lead",label:"Costo por lead (variable)",src:"Ene-Mar: 9,117.09 / 3,190",g:"mkt"},
     mkt_spend:{v:9117.09,unit:"BOB",label:"Gasto publicitario (Ene-Mar)",src:"FB Ads Ene-Mar",g:"mkt"},
     mkt_leads:{v:3190,unit:"leads",label:"Leads del periodo (Ene-Mar)",src:"FB Ads Ene-Mar",g:"mkt"},
-    // -- Embudo Mayo (también alimenta barras de progreso) --
-    fun_conv:{v:191,unit:"leads",label:"Conversaciones (Mayo)",src:"CTWA Mayo",g:"embudo"},
-    fun_bot:{v:165,unit:"leads",label:"Atendidas por el bot (Mayo)",src:"CTWA con bot, Mayo",g:"embudo"},
-    fun_cita:{v:7,unit:"citas",label:"Citas agendadas (Mayo)",src:"Citas Mayo",g:"embudo"},
-    appt_rate_may:{v:0.0424,unit:"citas/lead",label:"Tasa cita/lead — Mayo (real)",src:"Conversión medida en Mayo",g:"embudo"},
-    // -- Tiempo recuperado (Mayo) — el total de 18 h se deriva de estos 3 componentes --
-    t_read_h:{v:1,unit:"h/mes",label:"Tiempo ahorrado — lectura (Mayo)",src:"Lectura de mensajes entrantes, Mayo",g:"tiempo"},
-    t_write_h:{v:13,unit:"h/mes",label:"Tiempo ahorrado — escritura (Mayo)",src:"Escritura de respuestas salientes, Mayo",g:"tiempo"},
-    t_doc_h:{v:4,unit:"h/mes",label:"Tiempo ahorrado — documentos (Mayo)",src:"Brochures y listas de precios, Mayo",g:"tiempo"},
+    // -- Conversión real observada --
+    appt_rate_may:{v:0.052,unit:"citas/lead",label:"Tasa cita/lead — Junio (real)",src:"Conversión medida en Junio",g:"embudo"},
+    // -- Tiempo recuperado (Junio) — total real proyectable a 700 leads interactuados --
+    time_leads_real:{v:343,unit:"leads",label:"Leads interactuados reales (Junio)",src:"CTWA/MM/Active con bot y respuesta del lead, 2026-06-01 a 2026-07-01",g:"tiempo"},
+    t_bot_h:{v:44.4,unit:"h/mes",label:"Tiempo ahorrado — conversaciones del bot",src:"Bot workload: 3,783 respuestas, 1,117 mensajes leídos y 503 documentos enviados",g:"tiempo"},
+    t_sugg_h:{v:9.28,unit:"h/mes",label:"Tiempo ahorrado — recomendaciones",src:"Suggester: 152 leads con uso, total medido 556.8 min",g:"tiempo"},
+    t_details_h:{v:9.45,unit:"h/mes",label:"Tiempo ahorrado — detalles y dudas",src:"Details: 215 leads con uso, total medido 567 min",g:"tiempo"},
+    t_sched_h:{v:1.13,unit:"h/mes",label:"Tiempo ahorrado — agenda",src:"Scheduler: 50 leads con uso, total medido 67.8 min",g:"tiempo"},
     work_hours_yr:{v:2080,unit:"h/año",label:"Horas laborales / año",src:"Supuesto (40 h/semana)",g:"tiempo"},
-    read_pps:{v:15,unit:"car/s",label:"Velocidad de lectura",src:"Medición (consulta Supabase)",g:"tiempo"},
-    type_pps:{v:5,unit:"car/s",label:"Velocidad de escritura",src:"Medición (consulta Supabase)",g:"tiempo"},
-    sec_doc:{v:30,unit:"s/doc",label:"Segundos por documento",src:"Medición (consulta Supabase)",g:"tiempo"},
+    sec_sugg:{v:150,unit:"s/uso",label:"Supuesto — recomendar opciones",src:"2 min 30 s para buscar opciones válidas en lista de precios",g:"tiempo"},
+    sec_details:{v:60,unit:"s/uso",label:"Supuesto — aclarar dudas",src:"1 min para verificar información en brochure o lista de precios",g:"tiempo"},
+    sec_sched:{v:45,unit:"s/uso",label:"Supuesto — coordinar cita",src:"45 s para revisar disponibilidad y agendar",g:"tiempo"},
   },
   // Etiquetas de grupo para el panel
-  groups:{slide:"✦ Editables en diapositiva",venta:"Venta y comisiones",fijos:"Costos fijos anuales (agente)",svc:"Servicio",mkt:"Marketing (variable)",embudo:"Embudo Mayo",tiempo:"Tiempo recuperado"},
+  groups:{slide:"✦ Editables en diapositiva",venta:"Venta y comisiones",fijos:"Costos fijos anuales (agente)",svc:"Servicio",mkt:"Marketing (variable)",embudo:"Conversión",tiempo:"Tiempo recuperado"},
   derived:[
     // --- Modelo anual del agente: de ingreso bruto a margen neto ---
     {k:"ingreso_neto",label:"Ingreso neto anual",unit:"BOB/año",f:"bruto × (1 - %oficina - %remax)",fn:I=>I.ann_bruto*(1-I.com_oficina_pct-I.com_remax_pct),src:""},
@@ -820,7 +764,9 @@ const CAP={
     {k:"utilidad_neta",label:"Utilidad neta anual",unit:"BOB/año",f:"ebt - impuestos",fn:(I,D)=>D.ebt-D.impuestos,src:""},
     {k:"margen_neto",label:"Margen neto",unit:"%",f:"utilidad_neta / ingreso_bruto",fn:(I,D)=>D.utilidad_neta/I.ann_bruto,src:""},
     // --- Economía por venta ---
-    {k:"comision_bob",label:"Comisión por venta",unit:"BOB",f:"venta × comisión%",fn:I=>I.venta_prom_bob*I.comision_pct,src:""},
+    {k:"venta_prom_usd",label:"Ticket promedio de Apartamento",unit:"USD Of.",f:"REMAX Emporio, según rango: 80%=135k, 70%=98k",fn:I=>saleUsdForOffice(I.com_oficina_pct),src:""},
+    {k:"venta_prom_bob",label:"Ticket promedio convertido",unit:"BOB",f:"ticket USD oficial × tipo cambio oficial",fn:(I,D)=>D.venta_prom_usd*I.usd_oficial_tc,src:""},
+    {k:"comision_bob",label:"Comisión por venta",unit:"BOB",f:"venta convertida × comisión%",fn:(I,D)=>D.venta_prom_bob*I.comision_pct,src:""},
     {k:"net_per_sale",label:"Ganancia neta por venta",unit:"BOB",f:"comisión × margen_neto",fn:(I,D)=>D.comision_bob*D.margen_neto,src:""},
     // --- Modelo mensual (proyección) ---
     {k:"marketing",label:"Marketing / mes (variable)",unit:"BOB",f:"vol_leads × costo_lead",fn:I=>I.vol_leads*I.cost_lead,src:""},
@@ -832,22 +778,25 @@ const CAP={
     {k:"months_per_sale",label:"Meses que paga 1 venta",unit:"meses",f:"neto_por_venta / servicio",fn:(I,D)=>D.net_per_sale/I.service_fee,src:""},
     // --- Tiempo recuperado ---
     {k:"agent_hourly",label:"Valor de 1 hora del agente",unit:"BOB/h",f:"utilidad_neta / horas_año",fn:(I,D)=>D.utilidad_neta/I.work_hours_yr,src:""},
-    {k:"time_saved",label:"Tiempo ahorrado total — Mayo",unit:"h/mes",f:"lectura + escritura + documentos",fn:I=>I.t_read_h+I.t_write_h+I.t_doc_h,src:""},
-    {k:"time_value",label:"Valor tiempo devuelto — Mayo",unit:"BOB",f:"horas_ahorradas × valor_hora",fn:(I,D)=>D.time_saved*D.agent_hourly,src:""},
+    {k:"time_saved",label:"Tiempo ahorrado total — Junio",unit:"h/mes",f:"bot + recomendaciones + detalles + agenda",fn:I=>I.t_bot_h+I.t_sugg_h+I.t_details_h+I.t_sched_h,src:""},
+    {k:"time_value",label:"Valor tiempo devuelto — Junio",unit:"BOB",f:"horas_ahorradas × valor_hora",fn:(I,D)=>D.time_saved*D.agent_hourly,src:""},
     {k:"leads_for_sale",label:"Leads necesarios para 1ª venta",unit:"leads",f:"citas_por_venta / tasa_cita",fn:I=>I.appts_sale/I.appt_rate_may,src:""},
   ],
 };
 const ORIG=JSON.parse(JSON.stringify(CAP.inputs));
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const PRICE_BY_OFFICE_PCT={0.2:135000,0.3:98000};
+function officePctKey(pct){
+  return Object.keys(PRICE_BY_OFFICE_PCT).reduce((best,k)=>Math.abs(+k-pct)<Math.abs(+best-pct)?k:best,'0.2');
+}
+function saleUsdForOffice(pct){return PRICE_BY_OFFICE_PCT[officePctKey(pct)];}
+function rangeForOfficePct(pct){return Math.round((1-parseFloat(officePctKey(pct)))*100);}
 
 /* ===== FX state ===== */
 let FX={rate:1,sym:'BOB',id:'bob'};
-/* Tiempo recuperado: false = registrado (Mayo, ~191 leads) · true = proyección (700 leads).
-   Escala SOLO las métricas de tiempo por (vol_leads / fun_conv). No toca ventas ni el resto. */
-let timeProj=false;
 const FX_MAP={
   bob:{rate:1,sym:'BOB',tc:1},
-  uof:{rate:1/7,sym:'USD Of.',tc:7},
+  uof:{rate:1/6.96,sym:'USD Of.',tc:6.96},
   upar:{rate:1/10,sym:'USD Par.',tc:10},
 };
 
@@ -860,6 +809,17 @@ function fmtM(bob){
 }
 function fmtMSign(bob){const v=bob*FX.rate;const d=Math.abs(v)<100?2:0;return (v>=0?'+':'-')+money(Math.abs(v),d)+' '+FX.sym;}
 function pct(n){return money(Math.round(n*10000)/100,1)+'%';}
+function fmtSec(s){
+  const m=Math.floor(s/60), sec=Math.round(s%60);
+  if(m&&sec)return `${m} min ${sec} s`;
+  if(m)return `${m} min`;
+  return `${sec} s`;
+}
+function fmtLeadTime(mins){
+  let m=Math.floor(mins), s=Math.ceil((mins-m)*60);
+  if(s>=60){m+=1;s=0;}
+  return `≈ ${m} min${s?` ${s} s`:''} por lead`;
+}
 
 function compute(){
   const I={};for(const k in CAP.inputs)I[k]=CAP.inputs[k].v;
@@ -884,113 +844,87 @@ function annualRows(I,D){return[
 function render(){
   const {I,D}=compute();
 
-  /* Escala de tiempo recuperado (registrado vs proyección) */
-  const tScale=timeProj?(I.vol_leads/I.fun_conv):1;
-  const hrs=v=>money(v,timeProj?1:0).replace(/\.0$/,'');
-  $$('.tm-rec').forEach(e=>e.textContent=money(I.fun_conv)+' leads');
-  $$('.tm-proj').forEach(e=>e.textContent=money(I.vol_leads)+' leads');
-  $$('.tmode-pill button').forEach(b=>b.classList.toggle('on',(b.dataset.tm==='proj')===timeProj));
+  /* Escala de tiempo recuperado a la proyección mensual */
+  const tScale=I.vol_leads/I.time_leads_real;
+  const hrs=v=>money(Math.round(v));
 
-  /* HERO · Costo vs Retorno (números desde CAP, sensibles a la moneda) */
-  const feeV=I.service_fee*FX.rate;
-  $('#cvr_fee').textContent=money(feeV,Math.abs(feeV)<100?2:0);
-  $('#cvr_feeunit').textContent=FX.sym;
-  $('#cvr_hours').textContent=hrs(D.time_saved*tScale)+' h';
-  $('#cvr_timeval').textContent=fmtM(D.time_value*tScale);
-  $('#cvr_net').textContent=fmtMSign(D.net_after_fee);
-
-  /* FUNNEL */
-  const fe=$('#funnelEl');fe.innerHTML='';
-  const stages=[{label:'Conversaciones',n:I.fun_conv},{label:'Atendidas por el bot',n:I.fun_bot},{label:'Citas agendadas',n:I.fun_cita}];
-  const fnMax=stages[0].n||1;
-  stages.forEach((s,i)=>{
-    const w=Math.max(22,s.n/fnMax*100);
-    const r=document.createElement('div');r.className='frow';
-    r.innerHTML=`<div class="fbar" style="width:${w}%"><span>${s.label}</span><span class="n num">${money(s.n)}</span></div>`;
-    fe.appendChild(r);
-    if(i<stages.length-1){
-      const c=document.createElement('div');c.className='fconv';
-      c.innerHTML=`<span class="pill num">${pct(stages[i+1].n/s.n)}</span> pasan a "${stages[i+1].label}"`;
-      fe.appendChild(c);
-    }
-  });
-
-  /* DUAL PROGRESS */
-  const lForSale=D.leads_for_sale, ctwa=I.fun_conv, citas=I.fun_cita, a2s=I.appts_sale;
-  const lMax=Math.max(lForSale*1.15,ctwa*1.1);
-  const lPct=Math.min(100,ctwa/lMax*100), lTgt=Math.min(96,lForSale/lMax*100);
-  $('#tf_leads').style.width=lPct+'%';
-  $('#tf_leads').className='track-fill'+(ctwa>=lForSale?' ov':'');
-  $('#tl_leads').style.left=lTgt+'%';
-  $('#prog_leads_label').textContent=money(ctwa)+' / '+money(Math.round(lForSale))+' leads';
-  const lRem=Math.round(lForSale-ctwa);
-  $('#prog_leads_note').innerHTML=ctwa>=lForSale
-    ?'<b>Ya alcanzamos el umbral en leads</b> — estadísticamente suficientes para la primera venta.'
-    :'Faltan ~<b>'+money(lRem)+'</b> leads para alcanzar el umbral proyectado.';
-
-  const cMax=Math.max(a2s*1.2,citas*1.3,12);
-  const cPct=Math.min(100,citas/cMax*100), cTgt=Math.min(96,a2s/cMax*100);
-  $('#tf_citas').style.width=cPct+'%';
-  $('#tf_citas').className='track-fill'+(citas>=a2s?' ov':'');
-  $('#tl_citas').style.left=cTgt+'%';
-  $('#prog_citas_label').textContent=money(citas)+' / '+money(a2s)+' citas';
-  const cRem=a2s-citas;
-  $('#prog_citas_note').innerHTML=citas>=a2s
-    ?'<b>Objetivo de citas alcanzado</b> — primera venta esperada.'
-    :'Faltan ~<b>'+money(cRem)+'</b> citas para la primera venta.';
+  /* HERO · Retorno proyectado */
+  $('#cvr_hours').textContent=hrs(D.time_saved*tScale);
+  $('#cvr_appts').textContent=money(Math.round(D.citas_mes));
+  $('#cvr_sales').textContent=money(Math.ceil(D.sales_qty*10)/10,1);
 
   /* MOTOR · Cuánto deja una venta asistida */
-  $('#m_ofi').textContent=pct(I.com_oficina_pct);
+  const ofiSelect=$('#m_ofi_select');
+  if(document.activeElement!==ofiSelect)ofiSelect.value=officePctKey(I.com_oficina_pct);
+  $$('#rangePill button').forEach(b=>b.classList.toggle('on',b.dataset.com===officePctKey(I.com_oficina_pct)));
   $('#m_remax').textContent=pct(I.com_remax_pct);
   $('#m_imp').textContent=pct(I.impuestos_pct);
   $('#m_margin').textContent=pct(D.margen_neto);
   $('#m_margin2').textContent=pct(D.margen_neto);
-  $('#m_venta').textContent=fmtM(I.venta_prom_bob);
+  $('#m_venta').textContent=fmtM(D.venta_prom_bob);
   $('#m_compct').textContent=pct(I.comision_pct);
   $('#m_com').textContent=fmtM(D.comision_bob);
   $('#m_calc').innerHTML=`${fmtM(D.comision_bob)} × ${pct(D.margen_neto)} = <span class="mres">${fmtM(D.net_per_sale)}</span>`;
   $('#m_net').textContent=fmtM(D.net_per_sale);
 
-  /* CHAIN · Proyección */
-  $('#r_a2s').textContent=money(I.appts_sale);
-  $('#lab_a2s').textContent=money(I.appts_sale);
-  $('#lab_vol').textContent=money(I.vol_leads);
-  $('#sl_a2s').value=I.appts_sale; $('#sl_vol').value=I.vol_leads;
-  const links=[
-    ['•',`<b>${money(I.vol_leads)} leads/mes</b><div class="src">Volumen estándar proyectado</div>`,money(I.vol_leads)+' leads',''],
-    ['×',`Tasa cita/lead <b>${pct(I.appt_rate_may)}</b><div class="src">Medida en Mayo</div>`,money(D.citas_mes,1)+' citas',''],
-    ['÷',`<b>${money(I.appts_sale)}</b> citas/venta<span class="asup">supuesto</span><div class="src">Aún no medido</div>`,money(D.sales_qty,2)+' ventas',''],
-    ['×',`<b>${fmtM(D.net_per_sale)}</b> neto/venta<div class="src">Utilidad neta por venta asistida</div>`,'+'+fmtM(D.gross_gain),''],
-    ['-',`Marketing <b>${fmtM(D.marketing)}</b><div class="src">${money(I.cost_lead,2)} BOB/lead</div>`,'-'+fmtM(D.marketing),'negr'],
-    ['-',`Servicio Capital <b>${fmtM(I.service_fee)}</b><div class="src">Precio mensual</div>`,'-'+fmtM(I.service_fee),'negr'],
+  /* SLIDE 5 · Proyección mensual */
+  $('#calc_leads').textContent=money(I.vol_leads);
+  $('#calc_rate').textContent=pct(I.appt_rate_may);
+  $('#calc_citas_a').textContent=money(D.citas_mes,1);
+  $('#calc_citas_b').textContent=money(D.citas_mes,1);
+  $('#calc_sales_a').textContent=money(D.sales_qty,2);
+  $('#calc_sales_b').textContent=money(D.sales_qty,2);
+  $('#calc_net_sale').textContent=fmtM(D.net_per_sale);
+  $('#calc_gross').textContent=fmtM(D.gross_gain);
+  const apptsInput=$('#calc_appts_input');
+  if(document.activeElement!==apptsInput)apptsInput.value=money(I.appts_sale);
+
+  /* SLIDE 6 · Ganancia neta mensual */
+  $('#net_gross').textContent=fmtMSign(D.gross_gain);
+  $('#net_marketing').textContent=fmtMSign(-D.marketing);
+  $('#net_service').textContent=fmtMSign(-I.service_fee);
+  $('#net_cpl').textContent=money(I.cost_lead*FX.rate,2)+' '+FX.sym;
+  $('#net_result').textContent=fmtMSign(D.net_after_fee);
+
+  /* SLIDE 2 · Tiempo recuperado por proceso */
+  const timeParts=[
+    ['bot',I.t_bot_h*tScale],
+    ['sugg',I.t_sugg_h*tScale],
+    ['details',I.t_details_h*tScale],
+    ['sched',I.t_sched_h*tScale],
   ];
-  $('#chainEl').innerHTML=links.map(([op,txt,res,cl])=>
-    `<div class="clink ${cl}"><div class="op">${op}</div><div class="txt">${txt}</div><div class="res num">${res}</div></div>`
-  ).join('')+`<div class="clink fin"><div class="op">=</div><div class="txt"><b style="color:#fff">Ganancia neta proyectada / mes</b><div class="src">resultado de la cadena</div></div><div class="res num">${fmtMSign(D.net_after_fee)}</div></div>`;
-
-
-  /* SLIDE 2 · Cálculo del Tiempo Recuperado (desglose) */
-  $('#tc_read').textContent=hrs(I.t_read_h*tScale);
-  $('#tc_write').textContent=hrs(I.t_write_h*tScale);
-  $('#tc_doc').textContent=hrs(I.t_doc_h*tScale);
+  const timeMax=Math.max(...timeParts.map(([,v])=>v),1);
+  timeParts.forEach(([k,v])=>{
+    $('#tc_'+k).textContent=hrs(v);
+    $('#tb_'+k).style.width=Math.max(5,v/timeMax*100)+'%';
+  });
   $('#tc_total').textContent=hrs(D.time_saved*tScale);
-  $('#tc_total_q').textContent=hrs(D.time_saved*tScale)+' h';
-  $('#tc_read_pps').textContent=money(I.read_pps);
-  $('#tc_type_pps').textContent=money(I.type_pps);
-  $('#tc_sec_doc').textContent=money(I.sec_doc);
+  $('#tc_perlead').textContent=fmtLeadTime((D.time_saved*tScale*60)/I.vol_leads);
+  $('#tc_sugg_sec').textContent=fmtSec(I.sec_sugg);
+  $('#tc_details_sec').textContent=fmtSec(I.sec_details);
+  $('#tc_sched_sec').textContent=fmtSec(I.sec_sched);
 
-  /* SLIDE 3 · De horas a valor económico */
-  $('#ve_hours').textContent=money(I.work_hours_yr);
-  $('#ve_rate').textContent=fmtM(D.agent_hourly);
-  $('#ve_rate2').textContent=fmtM(D.agent_hourly);
-  $('#ve_hsaved').textContent=hrs(D.time_saved*tScale)+' h';
-  $('#ve_val').textContent=fmtM(D.time_value*tScale);
+  /* SLIDE 3 · Costo laboral equivalente */
+  const projScale=I.vol_leads/I.time_leads_real;
+  const projHours=D.time_saved*projScale;
+  const salaryAvg=2900;
+  const hoursMonthAvg=42.5*4;
+  const hourlyAvg=salaryAvg/hoursMonthAvg;
+  const equivAvg=hourlyAvg*projHours;
+  const laborEquiv=Math.round(equivAvg/10)*10;
+  const fmtBob=v=>money(v*FX.rate,Math.abs(v*FX.rate)<100?2:0)+' '+FX.sym;
+  $('#ve_salary').textContent=fmtBob(salaryAvg);
+  $('#ve_hours_month').textContent=money(hoursMonthAvg)+' h';
+  $('#ve_rate').textContent=fmtBob(hourlyAvg)+'/h';
+  $('#ve_rate2').textContent=fmtBob(hourlyAvg)+'/h';
+  $('#ve_hsaved').textContent=hrs(projHours)+' h';
+  $('#ve_val').textContent=fmtBob(laborEquiv);
 
   /* CLOSE */
   const feeNum=money(I.service_fee*FX.rate,Math.abs(I.service_fee*FX.rate)<100?2:0);
   $('#c_fee_big').innerHTML=feeNum+'<span style="font-size:.38em;color:#A9C6BA"> '+FX.sym+'/mes</span>';
-  $('#c_time').textContent=fmtM(D.time_value*tScale);
-  $('#c_time_x').textContent=money(D.time_value*tScale/I.service_fee,1)+'×';
+  $('#c_time').textContent=fmtBob(laborEquiv);
+  $('#c_time_x').textContent=money(laborEquiv/I.service_fee,1)+'×';
   $('#c_net').textContent=fmtMSign(D.net_after_fee);
   $('#c_net_x').textContent=money(D.net_after_fee/I.service_fee,1)+'×';
 
@@ -1013,24 +947,33 @@ function buildAuditInputs(){
   for(const g of order){
     if(!byGroup[g]||!byGroup[g].length)continue;
     html+=`<div class="agroup${g==='slide'?' slidegrp':''}" data-grp="${g}">${CAP.groups[g]}</div>`;
-    html+=`<table class="aud"><tbody>`+byGroup[g].map(([k,o])=>
-      `<tr class="arow${o.s?' slidevar':''}" data-k="${k}" data-search="${(o.label+' '+k+' '+o.src).toLowerCase()}">
+    html+=`<table class="aud"><tbody>`+byGroup[g].map(([k,o])=>{
+      const ctrl=o.opts
+        ? `<select data-k="${k}" data-pct="0">${o.opts.map(v=>`<option value="${v}"${v===o.v?' selected':''}>${money(v*100)}%</option>`).join('')}</select>`
+        : `<input data-k="${k}" data-pct="${o.unit==='%'?1:0}" type="number" step="any" value="${inputDisplayVal(o)}">`;
+      return `<tr class="arow${o.s?' slidevar':''}" data-k="${k}" data-search="${(o.label+' '+k+' '+o.src).toLowerCase()}">
         <td class="k">${o.label}<div class="src">${o.src}</div></td>
-        <td class="aval"><input data-k="${k}" data-pct="${o.unit==='%'?1:0}" type="number" step="any" value="${inputDisplayVal(o)}"><span class="aunit">${o.unit}</span></td>
-      </tr>`).join('')+`</tbody></table>`;
+        <td class="aval">${ctrl}<span class="aunit">${o.unit}</span></td>
+      </tr>`;
+    }).join('')+`</tbody></table>`;
   }
   $('#auditInputsWrap').innerHTML=html;
-  $$('#auditInputsWrap input').forEach(inp=>inp.addEventListener('input',e=>{
+  const onAuditChange=e=>{
     let v=parseFloat(e.target.value); if(isNaN(v))return;
     if(e.target.dataset.pct==='1')v=v/100;
     CAP.inputs[e.target.dataset.k].v=v; render();
-  }));
+  };
+  $$('#auditInputsWrap input,#auditInputsWrap select').forEach(inp=>{
+    inp.addEventListener('input',onAuditChange);
+    inp.addEventListener('change',onAuditChange);
+  });
   auditBuilt=true;
 }
 function syncAuditInputs(){
-  $$('#auditInputsWrap input').forEach(inp=>{
+  $$('#auditInputsWrap input,#auditInputsWrap select').forEach(inp=>{
     if(document.activeElement===inp)return;
-    inp.value=inputDisplayVal(CAP.inputs[inp.dataset.k]);
+    const o=CAP.inputs[inp.dataset.k];
+    inp.value=inp.tagName==='SELECT'?o.v:inputDisplayVal(o);
   });
 }
 function filterAudit(q){
@@ -1065,6 +1008,11 @@ $('#fxPill').onclick=e=>{
   $$('#fxPill button').forEach(x=>x.classList.toggle('on',x===b));
   render();
 };
+$('#rangePill').onclick=e=>{
+  const b=e.target.closest('button');if(!b)return;
+  CAP.inputs.com_oficina_pct.v=parseFloat(b.dataset.com);
+  render();
+};
 
 /* slides */
 let cur=0;const slides=$$('.slide'),dots=$('#dots');
@@ -1076,16 +1024,26 @@ function go(i){cur=Math.max(0,Math.min(slides.length-1,i));
   $('#cur').textContent=cur+1;}
 $('#next').onclick=()=>go(cur+1);$('#prev').onclick=()=>go(cur-1);
 document.onkeydown=e=>{if(e.key==='ArrowRight'||e.key===' ')go(cur+1);if(e.key==='ArrowLeft')go(cur-1);};
-$('#sl_a2s').oninput=e=>{CAP.inputs.appts_sale.v=+e.target.value;render();};
-$('#sl_vol').oninput=e=>{CAP.inputs.vol_leads.v=+e.target.value;render();};
+function commitApptsInput(){
+  const el=$('#calc_appts_input');
+  let v=parseFloat(el.value);
+  if(isNaN(v))v=CAP.inputs.appts_sale.v;
+  v=Math.max(1,Math.min(99,Math.round(v)));
+  CAP.inputs.appts_sale.v=v;
+  render();
+}
+$('#calc_appts_input').addEventListener('change',commitApptsInput);
+$('#calc_appts_input').addEventListener('keydown',e=>{if(e.key==='Enter')e.currentTarget.blur();});
+$('#calc_appts_input').addEventListener('focus',e=>e.currentTarget.select());
+$('#m_ofi_select').addEventListener('change',e=>{
+  CAP.inputs.com_oficina_pct.v=parseFloat(e.target.value);
+  render();
+});
 $('#openAudit').onclick=()=>{$('#panel').classList.add('open');$('#scrim').classList.add('open');};
 const cp=()=>{$('#panel').classList.remove('open');$('#scrim').classList.remove('open');};
 $('#closeAudit').onclick=cp;$('#scrim').onclick=cp;
 $('#auditSearch').addEventListener('input',e=>filterAudit(e.target.value));
 $('#resetBtn').onclick=()=>{CAP.inputs=JSON.parse(JSON.stringify(ORIG));auditBuilt=false;$('#auditSearch').value='';render();};
-/* Toggle tiempo recuperado: registrado (191) ↔ proyección (700), en cada slide que lo muestra */
-document.addEventListener('click',e=>{const b=e.target.closest('.tmode-pill button[data-tm]');if(!b)return;timeProj=(b.dataset.tm==='proj');render();});
-
 render();go(0);
 </script>
 </body>
