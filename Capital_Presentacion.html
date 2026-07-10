@@ -38,10 +38,20 @@
     color:var(--slate);padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap}
   .pill3 button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
   .topctrl{display:flex;align-items:center;gap:6px}
+  #fxPill,.topctrl{display:none}
   .toplbl{font-size:11px;font-weight:800;color:var(--slate);text-transform:uppercase;letter-spacing:.06em}
   .abtn{border:1px solid var(--line);background:var(--card);font:inherit;font-size:12.5px;
     font-weight:650;padding:6px 12px;border-radius:8px;cursor:pointer;color:var(--ink)}
   .abtn:hover{border-color:var(--green)}
+  .iconbtn{width:34px;height:34px;border:1px solid var(--line);background:var(--card);color:var(--slate);
+    border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .iconbtn svg{width:17px;height:17px}.iconbtn:hover{border-color:var(--green);color:var(--green-d)}
+  .iconbtn.on{background:#E4F1E9;border-color:#CBE2D4;color:var(--green-d)}
+  .note-topbtn{display:none;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);
+    font:inherit;font-size:12.5px;font-weight:750;padding:6px 11px;border-radius:8px;cursor:pointer;color:var(--ink)}
+  .note-topbtn.show{display:inline-flex}
+  .note-topbtn:hover{border-color:var(--green);color:var(--green-d)}
+  .note-topbtn svg{width:15px;height:15px;flex:0 0 auto}
   /* nav */
   .nav{position:fixed;bottom:18px;left:0;right:0;display:flex;align-items:center;
     justify-content:center;gap:16px;z-index:30}
@@ -49,14 +59,26 @@
     cursor:pointer;font-size:17px;color:var(--ink);box-shadow:var(--shadow);
     display:flex;align-items:center;justify-content:center}
   .arrow:hover{border-color:var(--green);color:var(--green-d)}
-  .dots{display:flex;gap:8px}.dots i{width:7px;height:7px;border-radius:50%;background:#CFC9BC;cursor:pointer;transition:.2s}
-  .dots i.on{background:var(--green);transform:scale(1.3)}
-  .count{position:fixed;bottom:24px;right:22px;font-size:12px;color:var(--slate);z-index:30}
+  .dots{display:flex;gap:6px}.dots i{width:20px;height:4px;border-radius:3px;background:var(--line);cursor:pointer;transition:background .2s,transform .2s}
+  .dots i.on{background:var(--green-d)}
+  .count{display:none}
   /* HERO */
   .hero h1{font-size:clamp(34px,5.2vw,62px);line-height:1.04;letter-spacing:-.03em;font-weight:850;max-width:none}
   .hero .lede{max-width:none;white-space:nowrap}
   .hero h1 em,h2 em{font-style:normal;color:var(--green-d)}
   .hero h1 .vs{color:var(--slate)}
+  /* PORTADA */
+  .cover-slide{background:
+    linear-gradient(135deg,rgba(31,122,82,.08),rgba(247,245,240,0) 34%),
+    linear-gradient(180deg,#FBFAF6,var(--paper));overflow:hidden}
+  .cover-slide:before,.cover-slide:after{content:"";position:absolute;border:1px solid rgba(31,122,82,.16);pointer-events:none}
+  .cover-slide:before{inset:82px 7vw;border-radius:28px}
+  .cover-slide:after{inset:106px calc(7vw + 24px);border-left:0;border-right:0;border-radius:0}
+  .cover-inner{position:relative;z-index:1;min-height:54vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .cover-logo{width:clamp(112px,14vw,178px);height:auto;display:block;filter:drop-shadow(0 20px 34px rgba(15,42,34,.14))}
+  .cover-title{font-size:clamp(42px,6vw,82px);font-weight:850;letter-spacing:-.045em;line-height:.96;color:var(--ink);margin-top:22px}
+  .cover-title span{color:var(--green-d)}
+  .cover-rule{width:min(280px,42vw);height:1px;background:linear-gradient(90deg,rgba(31,122,82,0),rgba(31,122,82,.58),rgba(31,122,82,0));margin-top:24px}
   /* ===== Slide 1 · Retorno proyectado ===== */
   .cvr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:34px}
   .cvr-card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--green);
@@ -367,6 +389,29 @@
   .c5n{font-size:clamp(18px,2.4vw,26px);font-weight:850;letter-spacing:-.02em;color:#fff;
     font-variant-numeric:tabular-nums;line-height:1.1}
   .c5l{font-size:11px;color:#A9C6BA;margin-top:5px;line-height:1.3}
+  .launch-kicker{font-size:clamp(18px,2.35vw,29px);font-weight:850;letter-spacing:.08em;text-transform:uppercase;color:#8FE3B6}
+  .launch-price{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:22px;margin:28px auto 0;max-width:760px}
+  .launch-price-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:22px 20px}
+  .launch-price-card small{display:block;font-size:11px;font-weight:850;letter-spacing:.09em;text-transform:uppercase;color:#A9C6BA;margin-bottom:10px}
+  .launch-price .regular{font-size:clamp(30px,4vw,46px);font-weight:850;color:#8BAFA0;text-decoration:line-through;text-decoration-thickness:2px}
+  .launch-price .special{font-size:clamp(46px,6.8vw,78px);font-weight:850;line-height:.95;color:#fff;letter-spacing:-.04em}
+  .launch-price .future{font-size:clamp(34px,4.8vw,56px);font-weight:850;line-height:.95;color:#fff;letter-spacing:-.035em}
+  .launch-price .unit{font-size:.34em;color:#9DE1BA;margin-left:6px;letter-spacing:-.01em}
+  .launch-arrow{font-size:34px;font-weight:850;color:#8FE3B6}
+  .launch-note{margin:22px auto 0;max-width:720px;background:rgba(157,225,186,.1);border:1px solid rgba(157,225,186,.18);border-radius:14px;padding:16px 18px;color:#DCEFE6;font-size:clamp(15px,1.6vw,18px);line-height:1.38}
+  .close5.launch{grid-template-columns:repeat(3,1fr);max-width:840px;margin-left:auto;margin-right:auto}
+  @media(max-width:820px){.close5.launch{grid-template-columns:1fr}}
+  .closebox.launch-offer{position:relative;background:linear-gradient(135deg,var(--ink),#16382C);color:#fff;border-radius:22px;
+    box-shadow:0 28px 70px rgba(15,42,34,.24);text-align:left;padding:clamp(42px,5.4vw,66px) clamp(46px,6.2vw,82px)}
+  .launch-kicker{font-size:clamp(17px,2.05vw,25px);font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:#8FE3B6;text-align:left}
+  .launch-main{margin-top:38px;display:flex;align-items:baseline;gap:18px;color:#fff;white-space:nowrap}
+  .launch-main .label{font-size:clamp(18px,2.2vw,28px);font-weight:850;color:#CDEBD9;margin-right:8px}
+  .launch-main s{font-size:clamp(22px,3vw,36px);font-weight:850;color:#7F9B90;text-decoration-thickness:2px}
+  .launch-main .deal{font-size:clamp(82px,11.4vw,138px);font-weight:850;line-height:.82;letter-spacing:-.075em;color:#fff}
+  .launch-main .deal span{font-size:.25em;color:#9DE1BA;letter-spacing:0;margin-left:8px}
+  .launch-under{margin-top:22px;font-size:clamp(18px,2vw,24px);font-weight:750;color:#DCEFE6;max-width:760px}
+  .launch-foot{position:absolute;right:clamp(32px,5vw,64px);top:clamp(30px,4vw,48px);display:flex;justify-content:center;color:#CDEBD9;font-size:13px;font-weight:800}
+  .launch-foot span{border:1px solid rgba(157,225,186,.22);background:rgba(157,225,186,.08);border-radius:999px;padding:8px 13px}
   /* AUDIT */
   .scrim{position:fixed;inset:0;background:rgba(15,42,34,.4);opacity:0;pointer-events:none;transition:.2s;z-index:50}
   .scrim.open{opacity:1;pointer-events:auto}
@@ -416,23 +461,28 @@
   .cmp>div{display:flex;align-items:center;border-bottom:1px solid #EDE9DF;padding:7.5px 16px}
   .cmp>div:nth-last-child(-n+4){border-bottom:0}
   .cmp-h-feat{border-bottom-color:transparent}
-  .cmp-h{justify-content:center;text-align:center;font-size:11.5px;font-weight:800;letter-spacing:.05em;
-    text-transform:uppercase;color:#fff;background:#7C8B84;line-height:1.15}
+  .cmp-h{justify-content:center;text-align:center;font-size:12px;font-weight:800;letter-spacing:.05em;
+    text-transform:uppercase;color:#fff;background:#7C8B84;line-height:1.15;padding-top:10px;padding-bottom:10px}
   .cmp-h.cap{background:var(--green-d)}
   .cmp-sec{grid-column:1/-1;font-weight:850;font-size:14.5px;color:var(--ink);background:#F3F0E8;
-    letter-spacing:-.01em;padding-top:8px;padding-bottom:8px}
-  .cmp-feat{gap:9px;color:var(--ink);font-size:15px;line-height:1.28}
+    letter-spacing:-.01em;padding-top:7px;padding-bottom:7px}
+  /* zebra: fila central de cada sección (estructura fija de 3 filas × 3 secciones) */
+  .cmp>div:nth-child(n+10):nth-child(-n+13):not(.cap),
+  .cmp>div:nth-child(n+23):nth-child(-n+26):not(.cap),
+  .cmp>div:nth-child(n+36):nth-child(-n+39):not(.cap){background:#FAF8F3}
+  .cmp-feat{gap:9px;color:var(--ink);font-size:15.5px;line-height:1.3}
   .cmp-feat svg{width:19px;height:19px;color:var(--green-d);flex:0 0 auto}
   .cmp-cell{justify-content:center}
-  .cmp-cell.cap{background:#EAF4EC}
-  .cmp .yes{color:var(--green);font-size:20px;font-weight:900;line-height:1}
-  .cmp .no{color:#C6CDC8;font-size:18px;font-weight:800;line-height:1}
+  .cmp-cell.cap{background:#EAF4EC;box-shadow:inset 3px 0 0 #CFE6D6,inset -3px 0 0 #CFE6D6}
+  .cmp .yes{color:var(--green);font-size:22px;font-weight:900;line-height:1}
+  .cmp .no{color:#C6CDC8;font-size:20px;font-weight:800;line-height:1}
   .cmp .na{color:#AEB6B2;font-size:10.5px;font-weight:700;letter-spacing:.04em}
-  .cmp .dash{color:#C6CDC8;font-size:15.5px}
+  .cmp .dash{color:#C6CDC8;font-size:16px}
   /* DATOS DE MERCADO — compacto: entra en una sola pantalla. Todo scopeado a .mkt-slide */
   .mkt-slide{padding-top:56px;padding-bottom:66px;justify-content:flex-start}
-  .mkt-slide .eyebrow{margin-bottom:5px}
-  .mkt-slide h2{line-height:1.1}
+  .mkt-slide .eyebrow{margin-bottom:12px}
+  .mkt-slide h2{font-size:clamp(30px,4.2vw,48px);line-height:1.03;letter-spacing:-.03em;font-weight:830}
+  .mkt-slide h2 em{font-style:normal;color:var(--green-d)}
   .mkt-slide .lede{margin-top:5px}
   .mkt-grid{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:16px;margin-top:20px;align-items:stretch}
   @media(max-width:820px){.mkt-grid{grid-template-columns:1fr;grid-auto-rows:auto}}
@@ -444,8 +494,380 @@
   .mkt-txt{font-size:16.5px;color:var(--ink);line-height:1.45;margin-top:14px}
   .mkt-src{font-size:11px;color:var(--slate);margin-top:auto;padding-top:14px;letter-spacing:.01em;opacity:.85}
   /* Tesis de apertura (arriba de las KPI cards) — alineada a la izquierda con el título */
-  .mkt-thesis{margin-top:10px;font-size:clamp(15px,1.95vw,19px);font-weight:800;color:var(--ink);
-    letter-spacing:-.01em;line-height:1.35;max-width:80ch}
+  .mkt-thesis{margin-top:15px;font-size:clamp(15px,1.8vw,18.5px);font-weight:600;color:var(--slate);
+    letter-spacing:-.005em;line-height:1.5;max-width:none;white-space:nowrap}
+  .mkt-thesis b{color:var(--green-d);font-weight:800}
+  @media(max-width:820px){.mkt-thesis{white-space:normal}}
+
+  /* QUÉ SOMOS · apertura (Concepto A: un teléfono que alterna WhatsApp ↔ app). Scopeado a .about-slide */
+  .about-slide{padding-top:46px;padding-bottom:54px;justify-content:center}
+  .about-hero{display:grid;grid-template-columns:1fr .58fr;gap:44px;align-items:center;max-width:1020px;margin:0 auto;width:100%}
+  @media(max-width:820px){.about-hero{grid-template-columns:1fr;gap:26px}}
+  .ah-left{display:flex;flex-direction:column;justify-content:center}
+  .ah-left .eyebrow{margin-bottom:10px}
+  .ah-left h2{font-size:clamp(26px,3vw,38px);line-height:1.05;letter-spacing:-.025em;max-width:16ch}
+  .ah-left h2 em{font-style:normal;color:var(--green-d)}
+  .ah-cap{margin-top:26px;min-height:118px}
+  .cap-item{display:none}
+  .cap-item.on{display:block;animation:capIn .38s ease both}
+  @keyframes capIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  .cap-chip{display:inline-block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;
+    padding:3px 10px;border-radius:6px;background:#E4F1E9;color:var(--green-d)}
+  .cap-chip.tu{background:var(--ink);color:#fff}
+  .cap-ct{font-size:clamp(18px,2vw,23px);font-weight:850;color:var(--ink);letter-spacing:-.02em;margin-top:12px;line-height:1.15}
+  .cap-cd{font-size:13.5px;color:var(--slate);line-height:1.5;margin-top:7px;max-width:46ch}
+  .ah-dots{display:flex;gap:6px;margin-top:22px}
+  .ah-dots i{width:20px;height:4px;border-radius:3px;background:var(--line);transition:background .3s}
+  .ah-dots i.on{background:var(--green-d)}
+  /* teléfono */
+  .ah-right{display:flex;align-items:center;justify-content:center}
+  .phone{width:272px;height:min(64vh,560px);background:#000;border-radius:36px;border:9px solid #0F2A22;
+    overflow:hidden;position:relative;box-shadow:0 24px 52px rgba(15,42,34,.3)}
+  .wa-layer{position:absolute;inset:0;display:flex;flex-direction:column}
+  .ov{position:absolute;inset:0;display:flex;flex-direction:column;background:#F4F2EC;opacity:0;
+    transform:translateY(10px) scale(.985);transition:opacity .36s ease,transform .36s ease;pointer-events:none}
+  .ov.on{opacity:1;transform:none;pointer-events:auto}
+  /* WhatsApp */
+  .wa-head{background:var(--green-d);color:#fff;padding:12px 13px;display:flex;align-items:center;gap:9px;flex:0 0 auto}
+  .wa-av{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;
+    justify-content:center;font-size:12px;font-weight:800;flex:0 0 auto}
+  .wa-nm{font-size:12.5px;font-weight:800;line-height:1.15}.wa-nm span{display:block;font-size:9.5px;font-weight:600;opacity:.85}
+  .wa-chat{flex:1;overflow:hidden;padding:12px;display:flex;flex-direction:column;justify-content:flex-start;gap:6px;background:#ECE5DD}
+  .pb{border-radius:11px;padding:7px 10px;font-size:11px;line-height:1.36;max-width:84%;box-shadow:0 1px 1px rgba(0,0,0,.06)}
+  .pb.in{align-self:flex-start;background:#fff;color:#111}
+  .pb.out{align-self:flex-end;background:#DCF8C6;color:#0F2A22}
+  .pb.pdf{display:flex;align-items:center;gap:8px;max-width:90%}
+  .pb.pdf .pdfi{width:22px;height:26px;border-radius:4px;background:#E4443A;color:#fff;font-size:7px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .pb.pdf small{color:#8a8a8a;font-size:9px;display:block;margin-top:1px}
+  .pb.link{padding:0;overflow:hidden;background:#fff;max-width:92%}
+  .pb.link .lp{display:flex;gap:8px;padding:7px;background:#EBE6DC}
+  .pb.link .thumb{width:54px;height:54px;border-radius:5px;flex:0 0 auto;position:relative;overflow:hidden;
+    background:linear-gradient(120deg,#8a9a7f,#b7c0a8)}
+  .pb.link .thumb:before{content:"";position:absolute;left:6px;right:6px;bottom:5px;height:15px;background:#6b7a63;opacity:.55;border-radius:2px}
+  .pb.link .thumb .remax{position:absolute;left:4px;top:4px;background:#d0242a;color:#fff;font-size:7px;font-weight:800;padding:1px 4px;border-radius:2px}
+  .pb.link .meta{min-width:0}
+  .pb.link .meta .t{font-size:9.5px;font-weight:700;color:#111;line-height:1.22}
+  .pb.link .meta .r{font-size:8px;color:#7a7a7a;margin-top:4px}
+  .pb.link .meta .d{font-size:8px;color:#9a9a9a;margin-top:3px}
+  .pb.link .txt{padding:7px 9px;font-size:11px;color:#111;line-height:1.4}
+  .pb.link .txt a{display:block;color:#2a9d94;word-break:break-all;margin-top:2px}
+  .pb[data-c]{display:none}
+  .pb[data-c].shown{display:block;animation:cIn .34s ease both}
+  .pb.pdf[data-c].shown{display:flex}
+  @keyframes cIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  /* App Capital */
+  .app-head{background:#0d0d0d;color:#fff;padding:13px 15px 12px;flex:0 0 auto}
+  .app-brand{font-size:10px;font-weight:800;color:#8FE3B6;letter-spacing:.04em;text-transform:uppercase}
+  .app-title{font-size:16px;font-weight:850;margin-top:4px}
+  .app-body{flex:1;background:#F4F2EC;padding:13px;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+  .flash{display:inline-block;font-size:8.5px;font-weight:800;color:var(--green-d);background:#E4F1E9;padding:2px 7px;
+    border-radius:5px;vertical-align:middle;margin-left:6px}
+  .mp{background:#fff;border:1px solid #E2DDD2;border-radius:12px;padding:12px 13px}
+  .mp-h{display:flex;align-items:center;gap:9px;padding-bottom:9px;border-bottom:1px solid #F1EFE8}
+  .mp-av{width:30px;height:30px;border-radius:50%;background:#E4F1E9;color:var(--green-d);font-weight:800;font-size:12px;
+    display:flex;align-items:center;justify-content:center}
+  .mp-nm{font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px}
+  .mp-gd{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+  .mp-ph{font-size:9.5px;color:#9aa09c}
+  .mp-fr{display:flex;justify-content:space-between;font-size:10.5px;padding:4px 0}
+  .mp-fr .l{color:#9aa09c}.mp-fr .v{color:var(--ink);font-weight:700}
+  .mp-bdg{font-size:8.5px;font-weight:800;padding:1px 7px;border-radius:5px;background:#E4F1E9;color:var(--green-d)}
+  .mp-bdg.g{background:#F1EFE8;color:#9aa09c}
+  .mp-ai{font-size:8.5px;font-weight:800;color:var(--green-d);margin-top:8px}
+  .mp-ait{font-size:9.5px;color:#5B6B64;line-height:1.4;margin-top:2px}
+  /* embudo vertical mobile */
+  .mstg{position:relative;padding-left:22px;padding-bottom:11px}
+  .mstg:before{content:"";position:absolute;left:6px;top:15px;bottom:-2px;width:2px;background:#E2DDD2}
+  .mstg:last-child:before{display:none}
+  .mstg .d{position:absolute;left:0;top:1px;width:14px;height:14px;border-radius:50%;border:2px solid #E2DDD2;background:#fff}
+  .mstg.done .d{background:var(--green);border-color:var(--green)}.mstg.done:before{background:var(--green)}
+  .mstg.now .d{background:var(--green-d);border-color:var(--green-d);box-shadow:0 0 0 4px rgba(45,153,100,.18)}
+  .mstg .t{font-size:11px;color:#9aa09c;font-weight:700}
+  .mstg.done .t{color:var(--ink)}.mstg.now .t{color:var(--green-d);font-weight:800}
+  .mstg .chip{display:inline-flex;align-items:center;gap:4px;background:#EAF4EC;border:1px solid #BFE2CD;border-radius:20px;
+    padding:2px 8px 2px 3px;font-size:8.5px;font-weight:800;color:var(--green-d);margin-top:4px}
+  .mstg .chip .a{width:13px;height:13px;border-radius:50%;background:var(--green-d);color:#fff;font-size:7.5px;
+    display:flex;align-items:center;justify-content:center}
+  /* agenda mobile */
+  .mag-day{font-size:10px;font-weight:800;color:#9aa09c;text-transform:uppercase;letter-spacing:.05em}
+  .mag-evt{background:#fff;border:1px solid #E2DDD2;border-left:4px solid var(--green-d);border-radius:0 10px 10px 0;
+    padding:11px 13px;margin-top:8px}
+  .mag-t{font-size:12.5px;font-weight:850;color:var(--ink)}
+  .mag-s{font-size:10px;color:#5B6B64;margin-top:3px;line-height:1.4}
+  .mag-g{font-size:9px;color:var(--green-d);font-weight:700;margin-top:7px;display:flex;align-items:center;gap:5px}
+  /* embudo kanban mobile (como la app) */
+  .app-body.kan{padding:0;overflow:hidden;position:relative;display:block}
+  .kanrow{display:flex;gap:9px;padding:12px;height:100%}
+  .kcol{flex:0 0 140px;display:flex;flex-direction:column}
+  .kch{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #EFEDE6}
+  .kch .n{font-size:10px;font-weight:800;color:var(--ink)}
+  .kch .c{font-size:8px;font-weight:800;color:#8a9790;background:#EEF1EE;border-radius:10px;padding:1px 6px}
+  .kcol.act .kch{border-bottom-color:var(--green)}
+  .kcard{background:#fff;border:1px solid #E2DDD2;border-radius:9px;padding:8px;margin-top:8px}
+  .kcard.hl{border-color:var(--green);background:#F6FCF8;box-shadow:0 4px 12px rgba(31,122,82,.16)}
+  .kcard .r1{display:flex;align-items:center;gap:6px}
+  .kav{width:18px;height:18px;border-radius:50%;background:#E4F1E9;color:var(--green-d);font-size:7.5px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .kn{font-size:9.5px;font-weight:800;color:var(--ink);line-height:1.1}
+  .kp{font-size:7.5px;color:#9aa09c;margin-top:1px}
+  .kd{font-size:8px;color:#5B6B64;margin-top:5px;line-height:1.3}
+  .kfade{position:absolute;top:0;right:0;bottom:0;width:28px;pointer-events:none;
+    background:linear-gradient(90deg,rgba(244,242,236,0),#F4F2EC)}
+  .ah-hint{margin-top:18px;text-align:center;font-size:12px;color:var(--slate);
+    display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .3s}
+  .ah-hint.gone{opacity:0;pointer-events:none}
+  .ah-hint svg{width:15px;height:15px}
+
+  /* PROPUESTA DE VALOR · 7 pasos */
+  .value-slide{padding-top:52px;padding-bottom:58px;justify-content:center}
+  .value-slide .inner{max-width:1040px;display:flex;flex-direction:column;align-items:center}
+  .vstage{position:relative;width:100%;min-height:420px}
+  .vstep{position:absolute;inset:0;opacity:0;transform:translateX(28px);pointer-events:none;
+    transition:opacity .38s ease,transform .38s ease;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .vstep.on{opacity:1;transform:none;pointer-events:auto}
+  .vstep.prevstep{transform:translateX(-28px)}
+  .value-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(300px,.92fr);gap:54px;align-items:center;width:100%}
+  .value-slide .eyebrow{margin-bottom:12px}
+  .value-slide h2{font-size:clamp(28px,3.2vw,40px);line-height:1.08;letter-spacing:-.03em;
+    font-weight:840;color:var(--ink);max-width:22ch}
+  .value-slide h2 em{font-style:normal;color:var(--green-d)}
+  .value-copy{max-width:62ch}
+  .value-copy p{font-size:clamp(15.5px,1.45vw,17px);line-height:1.56;color:var(--slate);margin-top:15px}
+  .value-copy p b{color:var(--ink);font-weight:750}
+  .value-visual{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+    padding:24px 22px}
+  .value-flow{display:grid;grid-template-columns:1fr;gap:11px;align-items:stretch}
+  .value-node{border:1px solid var(--line);background:#F9F7F1;border-radius:10px;padding:17px 16px;text-align:left;
+    display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:center}
+  .value-node.ia{background:var(--ink);border-color:var(--ink);color:#fff}
+  .value-ico{width:40px;height:40px;border-radius:12px;background:#EEF6F0;color:var(--green-d);
+    display:flex;align-items:center;justify-content:center;margin:0}
+  .value-node.ia .value-ico{background:rgba(255,255,255,.13);color:#9DE1BA}
+  .value-ico svg{width:21px;height:21px}
+  .value-node b{display:block;font-size:15px;line-height:1.18;letter-spacing:-.01em}
+  .value-node small{display:block;font-size:11.5px;line-height:1.35;margin-top:6px;color:var(--slate)}
+  .value-node.ia small{color:#BFD6CA}
+  .value-arrow{display:flex;align-items:center;justify-content:center;color:var(--green-d);height:18px}
+  .value-arrow svg{width:18px;height:18px;transform:rotate(90deg)}
+  .value-title-only{text-align:center;max-width:920px;margin:0 auto}
+  .value-title-only h2{font-size:clamp(36px,4.9vw,62px);line-height:1.02;max-width:18ch;margin:0 auto}
+  .ai-diagram{width:100%;display:grid;grid-template-columns:minmax(160px,.72fr) minmax(0,1.42fr) minmax(160px,.72fr);
+    gap:18px;align-items:center;position:relative}
+  .ai-diagram:before{content:"";position:absolute;left:16%;right:16%;top:50%;height:2px;
+    background:linear-gradient(90deg,rgba(15,124,103,.12),rgba(15,124,103,.54),rgba(15,124,103,.12));z-index:0}
+  .ai-end{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    padding:22px 18px;text-align:center;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
+  .ai-core{background:var(--ink);color:#fff;border-radius:18px;box-shadow:0 22px 48px rgba(15,42,34,.24);
+    padding:30px 32px;text-align:center;position:relative;z-index:1}
+  .ai-core .value-ico{margin:0 auto 14px;background:rgba(255,255,255,.13);color:#9DE1BA}
+  .ai-core b{display:block;font-size:clamp(22px,2.5vw,30px);letter-spacing:-.025em;line-height:1.05}
+  .ai-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+  .ai-action{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);border-radius:10px;
+    padding:10px 12px;font-size:12.5px;font-weight:750;line-height:1.25;color:#E8F4EE}
+  .ai-action.wide{grid-column:1/-1}
+  .ai-arrow{display:flex;align-items:center;justify-content:center;color:var(--green-d)}
+  .ai-arrow svg{width:22px;height:22px}
+  .wa-flow{width:min(1460px,calc(100vw - 112px));display:flex;flex-direction:column;align-items:center;gap:34px}
+  .wa-process{width:100%;display:grid;grid-template-columns:minmax(250px,.72fr) minmax(760px,2.15fr) minmax(250px,.72fr);
+    gap:28px;align-items:center;position:relative}
+  .wa-process:before{content:"";position:absolute;left:13%;right:13%;top:50%;height:3px;
+    background:linear-gradient(90deg,rgba(31,122,82,.18),rgba(31,122,82,.58),rgba(31,122,82,.18));z-index:0}
+  .process-side{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    min-height:246px;padding:34px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
+  .process-side .value-ico{width:52px;height:52px;border-radius:15px;margin-bottom:16px}.process-side .value-ico svg{width:29px;height:29px}
+  .process-side b{font-size:24px;line-height:1.14;letter-spacing:-.02em}
+  .process-core{background:var(--ink);color:#fff;border-radius:20px;box-shadow:0 22px 48px rgba(15,42,34,.24);
+    padding:44px 48px;text-align:center;position:relative;z-index:1}
+  .process-core h3{font-size:clamp(42px,4.2vw,58px);line-height:.98;letter-spacing:-.035em;margin:0}
+  .process-core p{font-size:15px;color:#BFD6CA;margin-top:8px}
+  .process-label{text-align:center;font-size:14px;font-weight:850;letter-spacing:.16em;text-transform:uppercase;color:var(--green-d)}
+  .process-sub{font-size:clamp(20px,1.55vw,27px);color:var(--slate);line-height:1.35;max-width:none;text-align:center;margin-top:-20px;white-space:nowrap}
+  .process-steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;align-items:stretch;margin-top:34px}
+  .process-step{border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.08);border-radius:12px;
+    min-height:132px;padding:18px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+  .process-step:not(:last-child):after{content:"→";position:absolute;right:-19px;top:50%;transform:translateY(-50%);
+    color:#9DE1BA;font-size:28px;font-weight:850;z-index:2}
+  .process-step small{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9DE1BA}
+  .process-step b{font-size:17px;line-height:1.12;margin-top:8px;color:#fff}
+  .process-arrow{display:flex;align-items:center;justify-content:center;color:#9DE1BA}
+  .process-arrow svg{width:20px;height:20px}
+  .notes-panel{position:fixed;right:22px;top:62px;bottom:72px;width:min(390px,calc(100vw - 44px));z-index:45;
+    background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:16px;box-shadow:0 22px 54px rgba(15,42,34,.22);
+    padding:18px 18px 20px;overflow:auto;opacity:0;transform:translateX(18px);pointer-events:none;transition:opacity .22s ease,transform .22s ease}
+  .notes-panel.open{opacity:1;transform:none;pointer-events:auto}
+  .notes-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+  .notes-top b{font-size:15px;letter-spacing:-.01em;color:var(--ink)}
+  .notes-close{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:50%;width:30px;height:30px;
+    cursor:pointer;font-size:18px;line-height:1}
+  .note-group{border-top:1px solid #EFEAE0;padding-top:12px;margin-top:12px}
+  .note-group:first-of-type{border-top:0;margin-top:0;padding-top:0}
+  .note-group h4{font-size:11px;font-weight:850;letter-spacing:.09em;text-transform:uppercase;color:var(--green-d);margin-bottom:6px}
+  .note-group p{font-size:12.5px;line-height:1.42;color:var(--slate);margin:0}
+  .note-group b{color:var(--ink);font-weight:800}
+  .app-story{width:100%;text-align:center}
+  .app-story .vs-line{margin-left:auto;margin-right:auto}
+  .app-story h2{font-size:clamp(30px,3.5vw,44px);line-height:1.05;letter-spacing:-.03em;margin-top:8px}
+  .app-bridge{text-align:center;max-width:860px;margin:0 auto}
+  .app-bridge h2{font-size:clamp(38px,5vw,64px);line-height:1.02;letter-spacing:-.035em}
+  .app-bridge p{font-size:clamp(17px,1.8vw,22px);line-height:1.42;color:var(--slate);max-width:58ch;margin:20px auto 0}
+  .app-bridge em{font-style:normal;color:var(--green-d)}
+  .ops-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px;text-align:left}
+  .ops-card{background:var(--card);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);
+    overflow:hidden;min-height:162px;display:flex;flex-direction:column}
+  .ops-head{height:38px;display:flex;align-items:center;gap:9px;padding:0 13px;border-bottom:1px solid #EFEAE0;
+    font-size:12px;font-weight:850;color:var(--ink);letter-spacing:-.01em}
+  .ops-head .value-ico{width:25px;height:25px;border-radius:8px;margin:0}.ops-head .value-ico svg{width:15px;height:15px}
+  .ops-body{padding:12px 13px;flex:1;background:#FBFAF6}
+  .lead-table{border:1px solid #E8E3DA;border-radius:10px;background:#fff;overflow:hidden}
+  .lead-head,.lead-row{display:grid;grid-template-columns:1.35fr .58fr .62fr .72fr;align-items:center;gap:10px}
+  .lead-head{font-size:9px;font-weight:800;color:#7A867F;background:#F7F5F0;padding:7px 10px;text-transform:uppercase;letter-spacing:.04em}
+  .lead-row{padding:10px;border-top:1px solid #EFEAE0;font-size:11.5px;color:var(--ink)}
+  .lead-person{display:flex;align-items:center;gap:8px;min-width:0}
+  .lead-av{width:28px;height:28px;border-radius:50%;background:#E4F1E9;color:var(--green-d);font-size:11px;font-weight:850;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .lead-name{font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lead-phone{font-size:10.5px;color:var(--slate);line-height:1.2}
+  .mini-pill{display:inline-flex;align-items:center;justify-content:center;justify-self:start;border:1px solid #DAD6CC;border-radius:999px;
+    padding:2px 8px;font-size:10.5px;color:var(--slate);background:#fff}
+  .mini-pill.on{border-color:#A8E5C2;background:#E8F8EF;color:var(--green-d);font-weight:750}
+  .summary-box{border:1px solid #DDE8DF;border-left:4px solid var(--green-d);border-radius:10px;background:#fff;padding:12px 13px}
+  .summary-person{display:flex;align-items:center;gap:9px;border-bottom:1px solid #EEF1EA;padding-bottom:9px;margin-bottom:9px}
+  .summary-person .lead-name{font-size:13.5px}.summary-person .lead-phone{font-size:11px}
+  .summary-title{font-size:11px;font-weight:850;color:var(--green-d);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px}
+  .summary-text{font-size:14.5px;line-height:1.34;color:var(--ink);font-weight:700}
+  .pipeline-mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;align-items:start}
+  .pipe-col{min-width:0}.pipe-title{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;font-weight:850;color:var(--ink);
+    border-bottom:2px solid var(--green-d);padding-bottom:6px;margin-bottom:8px}
+  .pipe-title span{background:#E4F1E9;color:var(--green-d);border-radius:999px;padding:1px 7px;font-size:10px}
+  .pipe-card{background:#fff;border:1px solid #E8E3DA;border-radius:10px;padding:9px;min-height:72px}
+  .pipe-card.hot{border-color:#9BDDB8;background:#F4FCF7;box-shadow:0 6px 14px rgba(31,122,82,.12)}
+  .pipe-name{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:850;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pipe-meta{font-size:10.5px;color:var(--slate);line-height:1.28;margin-top:6px}
+  .gcal{border:1px solid #E8E3DA;border-radius:10px;background:#fff;overflow:hidden}
+  .gcal-top{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid #EFEAE0}
+  .gcal-range{font-size:12px;font-weight:850;color:var(--ink)}.gcal-tabs{display:flex;border:1px solid #E8E3DA;border-radius:7px;overflow:hidden}
+  .gcal-tabs span{font-size:9.5px;padding:3px 7px;color:var(--slate);border-left:1px solid #E8E3DA}.gcal-tabs span:first-child{border-left:0}.gcal-tabs .on{background:#F2F4F7;color:var(--ink)}
+  .gcal-grid{display:grid;grid-template-columns:42px repeat(3,1fr);min-height:96px}
+  .gcal-time{font-size:10px;color:var(--slate);border-right:1px solid #EFEAE0;padding:8px 6px;background:#F7F5F0}
+  .gcal-day{position:relative;border-right:1px solid #EFEAE0;background:linear-gradient(#fff 0 31px,#F4F2EC 32px 33px,#fff 34px 64px,#F4F2EC 65px 66px,#fff 67px)}
+  .gcal-day:last-child{border-right:0}.gcal-dh{font-size:10px;font-weight:850;text-align:center;border-bottom:1px solid #EFEAE0;padding:5px 0;background:#fff}
+  .gcal-event{position:absolute;left:7px;right:7px;top:33px;border-radius:7px;background:#18191D;color:#fff;padding:7px 8px;
+    font-size:10.5px;line-height:1.24;font-weight:750;box-shadow:0 6px 13px rgba(0,0,0,.18)}
+  .time-proof{width:100%;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:28px;align-items:center}
+  .time-proof-copy h2{font-size:clamp(31px,4vw,48px);line-height:1.05;max-width:12ch}
+  .time-proof-copy p{font-size:15.5px;line-height:1.52;color:var(--slate);margin-top:15px;max-width:42ch}
+  .time-mini{display:flex;flex-direction:column;gap:9px}
+  .time-carousel{position:relative;min-height:360px}
+  .time-panel{display:none;flex-direction:column;gap:9px}
+  .time-panel.on{display:flex;animation:capIn .24s ease both}
+  .time-switch{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px}
+  .time-switch i{width:24px;height:4px;border-radius:999px;background:var(--line);transition:background .2s}
+  .time-switch i.on{background:var(--green-d)}
+  .time-mini-section{font-size:10.5px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:var(--green-d);
+    margin:4px 4px 0}
+  .time-mini-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:13px 15px}
+  .time-mini-row b{font-size:14.5px;line-height:1.16;color:var(--ink)}
+  .time-mini-row span{font-size:22px;font-weight:850;color:var(--green-d);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .time-mini-row.extra{background:#F8FBF6;border-color:#D7EADB}
+  .time-mini-subtotal{background:#F1EFE8;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:14px 16px;
+    display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+  .time-mini-subtotal b{font-size:15px;line-height:1.1}.time-mini-subtotal span{font-size:25px;font-weight:850;color:var(--green-d);white-space:nowrap}
+  .time-mini-total{background:var(--ink);color:#fff;border-radius:16px;padding:18px 20px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+    box-shadow:0 18px 40px rgba(15,42,34,.22)}
+  .time-mini-total b{font-size:18px;line-height:1.1}.time-mini-total span{font-size:34px;font-weight:850;color:#9DE1BA;white-space:nowrap}
+  .impact-slide{width:100%;display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:22px;align-items:center}
+  .impact-copy h2{font-size:clamp(28px,3.4vw,40px);line-height:1.04;max-width:18ch}
+  .impact-copy p{font-size:14.5px;line-height:1.45;color:var(--slate);margin-top:12px;max-width:41ch}
+  .impact-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+  .impact-kpi{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 14px;box-shadow:var(--shadow)}
+  .impact-kpi.wide{grid-column:1 / -1}
+  .impact-kpi .n{font-size:clamp(24px,2.7vw,32px);font-weight:850;color:var(--green-d);line-height:1;letter-spacing:-.035em}
+  .impact-kpi .l{font-size:11px;color:var(--slate);line-height:1.26;margin-top:6px}
+  .tier-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .tier-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:19px 18px}
+  .tier-card.primary{background:linear-gradient(135deg,var(--green-d),#176444);border-color:transparent;color:#fff}
+  .tier-label{font-size:10.5px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:var(--green-d)}
+  .tier-card.primary .tier-label{color:#9DE1BA}
+  .tier-n{font-size:clamp(30px,3.5vw,42px);font-weight:850;line-height:1;letter-spacing:-.035em;margin-top:10px;color:var(--ink)}
+  .tier-card.primary .tier-n{color:#fff}
+  .tier-sub{font-size:12.5px;color:var(--slate);line-height:1.38;margin-top:9px}
+  .tier-card.primary .tier-sub{color:#CDEBD9}
+  .tier-detail{border-top:1px solid #EFEAE0;margin-top:14px;padding-top:11px;font-size:11.5px;color:var(--slate);line-height:1.4}
+  .tier-card.primary .tier-detail{border-top-color:rgba(255,255,255,.16);color:#DCEFE6}
+  .mono-slide{width:100%;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:32px;align-items:center}
+  .mono-copy h2{font-size:clamp(34px,4.05vw,50px);line-height:1.03;letter-spacing:-.03em;max-width:18ch}
+  .mono-copy p{font-size:15px;line-height:1.48;color:var(--slate);margin-top:14px;max-width:45ch}
+  .mono-copy p b{color:var(--ink);font-weight:850}
+  .mono-note{font-size:11.5px;color:var(--slate);line-height:1.35;margin-top:10px}
+  .mono-service{margin-top:18px;background:var(--ink);color:#fff;border-radius:15px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 18px 38px rgba(15,42,34,.18)}
+  .mono-service span{font-size:12px;color:#CDEBD9;font-weight:750}.mono-service b{font-size:26px;line-height:1;color:#9DE1BA}
+  .mono-editor{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+  .mono-edit-card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:20px 18px;min-height:118px;box-shadow:0 15px 32px rgba(30,24,15,.09);display:flex;flex-direction:column;justify-content:center}
+  .mono-edit-card label{display:block;font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.08em;color:var(--green-d);margin-bottom:12px}
+  .mono-edit-wrap{display:flex;align-items:baseline;gap:6px}
+  .mono-edit-wrap input{width:100%;min-width:0;border:0;background:transparent;color:var(--ink);font-size:38px;font-weight:850;line-height:1;letter-spacing:-.025em;font-family:inherit}
+  .mono-edit-wrap input:focus{outline:none}
+  .mono-select-wrap{position:relative;display:flex;align-items:center}
+  .mono-select-wrap select{width:100%;appearance:none;border:1px solid #DCE9E1;background:#F7FBF8;color:var(--ink);border-radius:14px;padding:14px 42px 14px 16px;font:inherit;font-size:30px;font-weight:850;line-height:1;letter-spacing:-.025em;cursor:pointer}
+  .mono-select-wrap select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(45,153,100,.14)}
+  .mono-select-wrap:after{content:"";position:absolute;right:16px;top:50%;width:9px;height:9px;border-right:2px solid var(--green-d);border-bottom:2px solid var(--green-d);transform:translateY(-65%) rotate(45deg);pointer-events:none}
+  .mono-edit-wrap span{font-size:14px;color:var(--slate);font-weight:800}
+  .mono-equation{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px}
+  .mono-eq-row{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #EFEAE0}
+  .mono-eq-row:first-child{padding-top:0}.mono-eq-row:last-child{border-bottom:0;padding-bottom:0}
+  .mono-symbol{width:32px;height:32px;border-radius:9px;background:#EEE9DF;color:var(--green-d);display:grid;place-items:center;font-weight:900;font-size:18px}
+  .mono-eq-row strong{font-size:15px;color:var(--ink);line-height:1.15}.mono-eq-row small{display:block;color:var(--slate);font-size:11.5px;line-height:1.35;margin-top:3px}
+  .mono-eq-val{font-size:22px;font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .mono-eq-row.total{margin:7px -8px 0;padding:14px 8px;background:#F4FBF6;border-radius:14px;border-bottom:0}
+  .mono-eq-row.total .mono-symbol{background:#DDF4E6}.mono-eq-row.total .mono-eq-val{color:var(--green-d);font-size:30px}
+  .mono-eq-row.final{margin-top:8px;padding:16px 8px;background:var(--ink);border-radius:14px;color:#fff;border-bottom:0}
+  .mono-eq-row.final .mono-symbol{background:rgba(157,225,186,.14);color:#9DE1BA}.mono-eq-row.final strong,.mono-eq-row.final .mono-eq-val{color:#fff}.mono-eq-row.final small{color:#CDEBD9}
+  .time-focus{max-width:860px;margin:0 auto;text-align:center}
+  .time-focus .vs-tag{margin-bottom:16px}
+  .time-focus h2{font-size:clamp(30px,4vw,48px);line-height:1.08;max-width:22ch;margin:0 auto}
+  .time-focus p{font-size:clamp(19px,2.15vw,26px);line-height:1.38;color:var(--ink);max-width:48ch;margin:20px auto 0;font-weight:700;letter-spacing:-.015em}
+  .vs-tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--green-d);background:#E4F1E9;padding:4px 13px;border-radius:20px}
+  .vs-line{font-size:clamp(13.5px,1.55vw,16.5px);color:var(--slate);line-height:1.5;max-width:62ch;text-align:center;margin-top:18px}
+  .vs-line b{color:var(--ink);font-weight:750}
+  .vtiles{display:grid;grid-template-columns:repeat(5,minmax(145px,190px));gap:16px;justify-content:center;margin-top:34px}
+  .vtile{background:var(--card);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);
+    padding:30px 18px 27px;text-align:center;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .vtile .value-ico{margin:0 auto 16px;width:48px;height:48px;border-radius:14px}
+  .vtile .value-ico svg{width:25px;height:25px}
+  .vtile b{font-size:16px;color:var(--ink);display:block;line-height:1.22;letter-spacing:-.01em}
+  .time-proof-note{display:inline-flex;margin-top:18px;background:#E4F1E9;color:var(--green-d);border:1px solid #CBE2D4;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:850}
+  .vres{background:var(--ink);border-radius:20px;padding:40px 48px;color:#fff;max-width:740px;
+    box-shadow:0 22px 48px rgba(15,42,34,.24);margin-top:8px;text-align:center}
+  .vres .vs-tag{background:rgba(255,255,255,.12);color:#9DE1BA}
+  .vres-t{font-size:clamp(20px,2.7vw,30px);font-weight:820;letter-spacing:-.022em;line-height:1.28;
+    margin:16px auto 0;max-width:26ch}
+  .vres-t em{font-style:normal;color:#9DE1BA}
+  .vdots{display:none;gap:6px;margin-top:22px;justify-content:center}
+  .vdots i{width:20px;height:4px;border-radius:3px;background:var(--line);transition:background .3s}
+  .vdots i.on{background:var(--green-d)}
+  @media(max-width:900px){
+    .value-layout{grid-template-columns:1fr;gap:24px}
+    .value-slide h2{max-width:none}
+    .vstage{min-height:auto}.vstep{position:relative;display:none}.vstep.on{display:flex}
+    .vtiles{grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+    .ai-diagram{grid-template-columns:1fr}
+    .ai-diagram:before{display:none}
+    .ai-arrow svg{transform:rotate(90deg)}
+    .wa-process,.time-proof,.impact-slide{grid-template-columns:1fr}
+    .process-sub{white-space:normal}
+    .process-steps{grid-template-columns:1fr;gap:8px}
+    .process-step:not(:last-child):after{right:auto;left:50%;top:auto;bottom:-16px;transform:translateX(-50%) rotate(90deg)}
+    .process-arrow svg{transform:rotate(90deg)}
+    .ops-grid,.impact-kpis,.tier-grid,.mono-slide,.mono-grid,.mono-editor{grid-template-columns:1fr}
+    .lead-head,.lead-row{grid-template-columns:1fr .55fr}
+    .lead-head span:nth-child(3),.lead-head span:nth-child(4),.lead-row>span:nth-child(3),.lead-row>span:nth-child(4){display:none}
+  }
+  @media(max-width:680px){
+    .value-flow{grid-template-columns:1fr;gap:10px}
+    .value-node{grid-template-columns:38px 1fr}
+    .vtiles{grid-template-columns:1fr}
+  }
 </style>
 </head>
 <body>
@@ -464,14 +886,396 @@
       <button data-com="0.3">70%</button>
     </div>
   </div>
+  <button class="note-topbtn" id="openValueNotesTop" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>Notas</button>
+  <button class="iconbtn" id="toggleExtras" type="button" title="Mostrar slides extra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
   <button class="abtn" id="openAudit">Auditar datos</button>
 </div>
 
 <div class="deck" id="deck">
 
-  <!-- 1 BLANK -->
-  <!-- 1 BLANK -->
-  <section class="slide diff-slide active"><div class="inner">
+  <!-- 0 PORTADA -->
+  <section class="slide cover-slide active"><div class="inner cover-inner">
+    <img class="cover-logo" src="capital_logo_clean.svg" alt="Capital Solutions">
+    <h1 class="cover-title">Capital <span>Solutions</span></h1>
+    <div class="cover-rule"></div>
+  </div></section>
+
+  <!-- 0 PROPUESTA DE VALOR -->
+  <section class="slide value-slide"><div class="inner">
+    <div class="vstage">
+      <div class="vstep on">
+        <div class="value-title-only">
+          <div class="eyebrow">Propuesta de valor</div>
+          <h2>Facilitar la conversión automática de prospectos que entran por WhatsApp en <em>reuniones agendadas</em>.</h2>
+        </div>
+      </div>
+      <div class="vstep">
+        <div class="wa-flow">
+          <div class="process-label">Flujo habitual</div>
+          <div class="process-sub">Del primer mensaje a una reunión agendada, sin desconcentrar al agente inmobiliario.</div>
+          <div class="wa-process">
+            <div class="process-side">
+              <div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H9l-4 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></div>
+              <b>Prospecto por WhatsApp</b>
+            </div>
+            <div class="process-core">
+              <h3>Asistente IA</h3>
+              <div class="process-steps">
+                <div class="process-step"><small>01</small><b>Recibe lead</b></div>
+                <div class="process-step"><small>02</small><b>Califica intención</b></div>
+                <div class="process-step"><small>03</small><b>Orienta opciones</b></div>
+                <div class="process-step"><small>04</small><b>Informa detalles</b></div>
+                <div class="process-step"><small>05</small><b>Propone reunión</b></div>
+                <div class="process-step"><small>06</small><b>Agenda reunión</b></div>
+              </div>
+            </div>
+            <div class="process-side">
+              <div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <b>Agente inmobiliario</b>
+            </div>
+          </div>
+        </div>
+        <aside class="notes-panel" id="valueNotes">
+          <div class="notes-top"><b>Notas · Proceso WhatsApp</b><button class="notes-close" id="closeValueNotes" type="button">×</button></div>
+          <div class="note-group"><h4>Apertura</h4><p><b>Del primer mensaje a una reunión agendada</b>, sin desconcentrar al agente inmobiliario.</p></div>
+          <div class="note-group"><h4>Lectura del diagrama</h4><p>Este es el <b>flujo habitual</b> de la conversación, no una regla rígida. El asistente IA puede adelantar o repetir pasos según lo que pregunte el prospecto.</p></div>
+          <div class="note-group"><h4>Cómo referirnos al sistema</h4><p>Decir que <b>el asistente IA recibe la información y la gestiona</b>. No decir "nosotros lo hacemos". Las opciones, precios y documentos vienen de la <b>base de datos de Capital</b>, no de una gestión manual nuestra.</p></div>
+          <div class="note-group"><h4>Control del agente</h4><p>El agente inmobiliario puede intervenir en cualquier momento: pausar o desactivar el bot, responder él mismo y reactivarlo después. El asistente no pierde contexto y también lee los mensajes enviados por el agente.</p></div>
+          <div class="note-group"><h4>Prospecto por WhatsApp</h4><p>El lead puede entrar por <b>Click to WhatsApp</b> desde Facebook, Instagram u otra red social; por <b>GCP / formulario</b>, donde nosotros lo contactamos; o de forma <b>orgánica</b>.</p></div>
+          <div class="note-group"><h4>Recibe lead</h4><p>El asistente IA toma el primer mensaje y abre la conversación sin esperar a que el agente humano esté disponible.</p></div>
+          <div class="note-group"><h4>Califica intención</h4><p>Pregunta lo esencial: <b>tipo de operación</b> compra o alquiler, <b>tipología</b> casa o departamento, <b>dormitorios</b> y <b>fecha de entrega</b>.</p></div>
+          <div class="note-group"><h4>Orienta opciones</h4><p>Filtra la <b>base de datos de Capital</b>. Aunque puede haber unas <b>54 opciones válidas</b>, recomienda solo <b>3 mejores</b> para no agobiar al cliente y abrir espacio a la reunión.</p></div>
+          <div class="note-group"><h4>Informa detalles</h4><p>Si el lead pregunta por amenities, precios, ubicación o un proyecto específico, responde desde la <b>base de datos de Capital</b>. Cuando corresponde, también envía <b>brochures o documentos</b>.</p></div>
+          <div class="note-group"><h4>Agenda reunión</h4><p>Después de proponer la reunión, coordina horario y deja los datos listos: ubicación por Maps o link virtual, según corresponda.</p></div>
+        </aside>
+      </div>
+      <div class="vstep">
+        <div class="app-bridge">
+          <h2>Capital no solo <em>responde</em></h2>
+          <p>Mientras que la conversación de WhatsApp se desarrolla, el Asistente IA también registra, resume, mueve el embudo y agenda en la app.</p>
+        </div>
+      </div>
+      <div class="vstep">
+        <div class="app-story">
+          <span class="vs-tag">App Capital</span>
+          <div class="vs-line">La conversación se convierte en operación comercial actualizada.</div>
+          <div class="ops-grid">
+            <div class="ops-card">
+              <div class="ops-head"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19a6.5 6.5 0 0 1 13 0"/></svg></div>Registra el lead</div>
+              <div class="ops-body">
+                <div class="lead-table">
+                  <div class="lead-head"><span>Prospecto</span><span>Urgencia</span><span>Plataforma</span><span>Asistente</span></div>
+                  <div class="lead-row">
+                    <div class="lead-person"><span class="lead-av">CR</span><div><div class="lead-name">Camila Rojas Vaca</div><div class="lead-phone">59168429517</div></div></div>
+                    <span class="mini-pill">Alta</span><span>Whatsapp</span><span class="mini-pill on">Activo</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ops-card">
+              <div class="ops-head"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>Actualiza resumen</div>
+              <div class="ops-body">
+                <div class="summary-box">
+                  <div class="summary-person"><span class="lead-av">CR</span><div><div class="lead-name">Camila Rojas Vaca</div><div class="lead-phone">59168429517 · Whatsapp · Asistente activo</div></div></div>
+                  <div class="summary-title">Resumen AI</div>
+                  <div class="summary-text">Busca Depto 3 dorm para inversión Agosto 2026. Cuenta con financiamiento bancario. Reunión en oficina agendada para viernes 10 jul, 9:00-10:00 am.</div>
+                </div>
+              </div>
+            </div>
+            <div class="ops-card">
+              <div class="ops-head"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18l-7 8v6l-4 2v-8z"/></svg></div>Mueve el embudo</div>
+              <div class="ops-body">
+                <div class="pipeline-mini">
+                  <div class="pipe-col"><div class="pipe-title">Conversando <span>440</span></div><div class="pipe-card"><div class="pipe-name"><span class="lead-av">MG</span>Maria Gutiérrez</div><div class="pipe-meta">Macororo 19<br>Interés: Medio</div></div></div>
+                  <div class="pipe-col"><div class="pipe-title">Requerimiento <span>35</span></div><div class="pipe-card"><div class="pipe-name"><span class="lead-av">LA</span>Luis Aguilera</div><div class="pipe-meta">Local Comercial, 700 m<sup>2</sup>, Zona Norte, presupuesto de 30,000 Bs/mes</div></div></div>
+                  <div class="pipe-col"><div class="pipe-title">Reunión <span>15</span></div><div class="pipe-card hot"><div class="pipe-name"><span class="lead-av">CR</span>Camila Rojas</div><div class="pipe-meta">Depto 3 dorm inversión. Con Financiamiento bancario</div></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="ops-card">
+              <div class="ops-head"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 10h16M9 15l2 2 4-5"/></svg></div>Registra la cita</div>
+              <div class="ops-body">
+                <div class="gcal">
+                  <div class="gcal-top"><div class="gcal-range">6 - 12 jul 2026</div><div class="gcal-tabs"><span>Mes</span><span class="on">Semana</span><span>Día</span></div></div>
+                  <div class="gcal-grid">
+                    <div class="gcal-time">09:00<br><br>09:30<br><br>10:00</div>
+                    <div class="gcal-day"><div class="gcal-dh">mié 8/7</div></div>
+                    <div class="gcal-day"><div class="gcal-dh">jue 9/7</div></div>
+                    <div class="gcal-day"><div class="gcal-dh">vie 10/7</div><div class="gcal-event">9:00 - 10:00<br>Reunión Oficina<br>Depto 3 dorm inversión - Camila</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="vstep">
+        <span class="vs-tag">Adicionalmente</span>
+        <div class="vs-line">Apps y servicios complementarios, <b>diseñados junto a agentes inmobiliarios</b> para resolver problemas cotidianos de su proceso comercial.</div>
+        <div class="vtiles">
+          <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg></div><b>Mapa comercial</b></div>
+          <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/><path d="M8 4v16"/><path d="M16 4v16"/></svg></div><b>Generación de inventario</b></div>
+          <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.4-4.4"/></svg></div><b>Buscador multisitio</b></div>
+          <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><b>Seguimientos a un clic</b></div>
+          <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="4" rx="1"/><rect x="12" y="9" width="3" height="7" rx="1"/><rect x="17" y="6" width="3" height="10" rx="1"/></svg></div><b>Métricas y dashboards</b></div>
+        </div>
+      </div>
+      <div class="vstep">
+        <div class="time-proof">
+          <div class="time-proof-copy">
+            <span class="vs-tag">Ahorro de tiempo</span>
+            <h2>El agente se enfoca en leads con <em>mayor intención comercial</em>.</h2>
+            <p>El sistema automatiza la gestión inicial y acumula horas recuperadas en cada etapa del proceso.</p>
+            <div class="time-proof-note">Cálculo proyectado sobre 700 leads/mes</div>
+          </div>
+          <div class="time-mini">
+            <div class="time-carousel">
+              <div class="time-panel on">
+                <div class="time-mini-section">Ahorro operativo directo</div>
+                <div class="time-mini-row"><b>Mensajes del Asistente IA</b><span><span id="pv_tc_bot"></span> h</span></div>
+                <div class="time-mini-row"><b>Recomendación de opciones</b><span><span id="pv_tc_sugg"></span> h</span></div>
+                <div class="time-mini-row"><b>Detalles de proyectos y unidades</b><span><span id="pv_tc_details"></span> h</span></div>
+                <div class="time-mini-row"><b>Coordinación de citas</b><span><span id="pv_tc_sched"></span> h</span></div>
+                <div class="time-mini-total"><b>Ahorro operativo directo / mes</b><span><span id="pv_tc_direct_total"></span> h</span></div>
+              </div>
+              <div class="time-panel">
+                <div class="time-mini-section">Ahorro adicional automatizado</div>
+                <div class="time-mini-row extra"><b>Registro del lead</b><span><span id="pv_tc_register"></span> h</span></div>
+                <div class="time-mini-row extra"><b>Actualización de resumen</b><span><span id="pv_tc_summary"></span> h</span></div>
+                <div class="time-mini-row extra"><b>Movimiento de embudo</b><span><span id="pv_tc_pipeline"></span> h</span></div>
+                <div class="time-mini-row extra"><b>Generación de inventario</b><span><span id="pv_tc_inventory_gen"></span> h</span></div>
+                <div class="time-mini-row extra"><b>Actualización de inventario</b><span><span id="pv_tc_inventory_update"></span> h</span></div>
+                <div class="time-mini-total"><b>Ahorro adicional automatizado / mes</b><span><span id="pv_tc_additional_total"></span> h</span></div>
+              </div>
+              <div class="time-panel">
+                <div class="time-mini-section">Resumen mensual</div>
+                <div class="time-mini-row"><b>Ahorro operativo directo</b><span><span id="pv_tc_direct_summary"></span> h</span></div>
+                <div class="time-mini-row extra"><b>Ahorro adicional automatizado</b><span><span id="pv_tc_additional_summary"></span> h</span></div>
+                <div class="time-mini-total"><b>Total recuperado / mes</b><span><span id="pv_tc_grand_total"></span> h</span></div>
+              </div>
+            </div>
+            <div class="time-switch"><i class="on"></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="vstep">
+        <div class="mono-slide">
+          <div class="mono-copy">
+            <span class="vs-tag">Ejemplo económico</span>
+            <h2>Una venta de monoambiente puede pagar el servicio del mes.</h2>
+            <!-- Nota slide 7: El ejercicio usa una comisión de una punta de 2% y descuenta 6% para REMAX Bolivia sobre la comisión del agente. -->
+            <div class="mono-editor">
+              <div class="mono-edit-card">
+                <label for="mono_price_input">Precio promedio</label>
+                <div class="mono-edit-wrap"><input id="mono_price_input" type="text" inputmode="decimal"><span>USD</span></div>
+              </div>
+              <div class="mono-edit-card">
+                <label for="mono_range_select">Rango agente</label>
+                <div class="mono-select-wrap">
+                  <select id="mono_range_select">
+                    <option value="80">80%</option>
+                    <option value="70">70%</option>
+                    <option value="60">60%</option>
+                    <option value="50">50%</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mono-equation">
+            <div class="mono-eq-row">
+              <div class="mono-symbol">$</div>
+              <div><strong>Precio del monoambiente</strong><small>Base editable del ejercicio</small></div>
+              <div class="mono-eq-val" id="mono_eq_price"></div>
+            </div>
+            <div class="mono-eq-row">
+              <div class="mono-symbol">×</div>
+              <div><strong>Comisión de una punta</strong><small>2% de la venta</small></div>
+              <div class="mono-eq-val" id="mono_eq_commission"></div>
+            </div>
+            <div class="mono-eq-row">
+              <div class="mono-symbol">×</div>
+              <div><strong>Rango del agente</strong><small>Porcentaje que conserva el agente</small></div>
+              <div class="mono-eq-val" id="mono_eq_agent"></div>
+            </div>
+            <div class="mono-eq-row">
+              <div class="mono-symbol">−</div>
+              <div><strong>REMAX Bolivia</strong><small>6% sobre la comisión del agente</small></div>
+              <div class="mono-eq-val" id="mono_eq_remax"></div>
+            </div>
+            <div class="mono-eq-row total">
+              <div class="mono-symbol">=</div>
+              <div><strong>Utilidad neta por una venta</strong><small>Antes de pagar Capital</small></div>
+              <div class="mono-eq-val" id="mono_eq_net"></div>
+            </div>
+            <div class="mono-eq-row">
+              <div class="mono-symbol">−</div>
+              <div><strong>Servicio Capital</strong><small>Costo mensual fijo</small></div>
+              <div class="mono-eq-val" id="mono_eq_service"></div>
+            </div>
+            <div class="mono-eq-row final">
+              <div class="mono-symbol">=</div>
+              <div><strong>Después del servicio</strong><small>Ingreso neto con una venta</small></div>
+              <div class="mono-eq-val" id="mono_eq_left"></div>
+            </div>
+          </div>
+          <aside class="notes-panel" id="monoNotes">
+            <div class="notes-top"><b>Notas · Ejercicio económico</b><button class="notes-close" id="closeMonoNotes" type="button">×</button></div>
+            <div class="note-group"><h4>Supuesto de comisión</h4><p>El ejercicio usa una comisión de una punta de <b>2%</b> y descuenta <b>6%</b> para REMAX Bolivia sobre la comisión del agente.</p></div>
+          </aside>
+        </div>
+      </div>
+      <div class="vstep">
+        <div class="vres">
+          <span class="vs-tag">El resultado</span>
+          <div class="vres-t">Una operación comercial <em>más ordenada</em>, un agente <em>mejor preparado</em> y una mayor capacidad de <em>convertir prospectos en ventas</em>.</div>
+        </div>
+      </div>
+    </div>
+    <div class="vdots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="ah-hint" id="vHint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>Presiona → para recorrer la propuesta</div>
+  </div></section>
+
+  <!-- 1 QUÉ SOMOS · apertura -->
+  <section class="slide about-slide"><div class="inner">
+    <div class="about-hero">
+      <div class="ah-left">
+        <div class="eyebrow">Capital</div>
+        <h2>Tu <em>copiloto comercial</em> con IA.</h2>
+        <div class="ah-cap">
+          <div class="cap-item on" data-step="1"><span class="cap-chip">Agente Capital</span><div class="cap-ct">Llega el prospecto</div><div class="cap-cd">Entra desde tu anuncio de Facebook (CTWA) o directo a tu WhatsApp.</div></div>
+          <div class="cap-item" data-step="2"><span class="cap-chip">Agente Capital</span><div class="cap-ct">Se crea el prospecto</div><div class="cap-cd">Queda registrado al instante, con su resumen AI.</div></div>
+          <div class="cap-item" data-step="3"><span class="cap-chip">Agente Capital</span><div class="cap-ct">Califica</div><div class="cap-cd">Pregunta lo necesario para orientarlo: dormitorios y fecha de entrega.</div></div>
+          <div class="cap-item" data-step="4"><span class="cap-chip">Agente Capital</span><div class="cap-ct">Sugiere y asesora</div><div class="cap-cd">Propone proyectos reales, según lo que hay disponible en tu inventario.</div></div>
+          <div class="cap-item" data-step="5"><span class="cap-chip">Agente Capital</span><div class="cap-ct">Aclara detalles</div><div class="cap-cd">Responde precios y ubicaciones, sin inventar nada.</div></div>
+          <div class="cap-item" data-step="6"><span class="cap-chip">Agente Capital</span><div class="cap-ct">Propone y coordina</div><div class="cap-cd">Ofrece horarios y confirma la cita con el lead.</div></div>
+          <div class="cap-item" data-step="7"><span class="cap-chip">Agente Capital</span><div class="cap-ct">Agenda y confirma</div><div class="cap-cd">Envía la dirección de tu oficina y se despide.</div></div>
+          <div class="cap-item" data-step="8"><span class="cap-chip">Agente Capital</span><div class="cap-ct">Avanza en el embudo</div><div class="cap-cd">El prospecto sube directo a Reunión agendada.</div></div>
+          <div class="cap-item" data-step="9"><span class="cap-chip">Agente Capital</span><div class="cap-ct">Queda en tu agenda</div><div class="cap-cd">Sincronizado con tu Google Calendar.</div></div>
+          <div class="cap-item" data-step="10"><span class="cap-chip tu">Tú</span><div class="cap-ct">Tomas las riendas</div><div class="cap-cd">Llegas a la reunión con todo el contexto listo. Tú cierras.</div></div>
+        </div>
+        <div class="ah-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="ah-right">
+        <div class="phone">
+          <div class="wa-layer">
+            <div class="wa-head"><span class="wa-av">R</span><span class="wa-nm">RE/MAX Emporio<span>en línea</span></span></div>
+            <div class="wa-chat" id="ahChat">
+              <div class="pb out" data-c="1">Hola, quisiera información sobre proyectos en Equipetrol.</div>
+              <div class="pb in" data-c="2">Hola Sebastián, Equipetrol es una zona excelente</div>
+              <div class="pb in" data-c="3">Cuántos dormitorios está buscando?</div>
+              <div class="pb out" data-c="4">Estoy buscando algo de 2 dormitorios</div>
+              <div class="pb in" data-c="5">Muy bien, y para qué fecha la entrega?</div>
+              <div class="pb out" data-c="6">Lo antes posible</div>
+              <div class="pb in" data-c="7">Actualmente en Equipetrol la mayoría de las opciones de 2 dormitorios están en preventa o construcción avanzada</div>
+              <div class="pb in" data-c="8">Pero Tengo proyectos como Béton Brut o Domus Insignia que están muy cerca de entregarse, o el edificio Giardino que es una opción premium</div>
+              <div class="pb out" data-c="9">Ah ok, y en qué rango de precio están las opciones?</div>
+              <div class="pb in" data-c="10">En Domus Insignia , que está por la zona de Plaza Italia, los precios van desde los $119,364</div>
+              <div class="pb in" data-c="11">Béton Brut , sobre la Av. San Martín, tiene unidades desde los $142,494</div>
+              <div class="pb in" data-c="12">Y en Giardino , que es un proyecto de 31 pisos con áreas sociales increíbles, los departamentos de 2 dormitorios arrancan en los $232,270</div>
+              <div class="pb in" data-c="13">Le parece si agendamos una breve reunión para mostrarle los que están más próximos a entrega y ver cuál le calza mejor?</div>
+              <div class="pb out" data-c="14">Ok</div>
+              <div class="pb in" data-c="15">Perfecto, Sebastián, qué día y hora le quedan mejor? Le sugiero:<br>- Jueves 09/07 11:30<br>- Viernes 10/07 09:30<br>- Lunes 13/07 10:00.<br>Le parece una reunión presencial en mi oficina?</div>
+              <div class="pb out" data-c="16">Sí está bien el jueves a las 11:30 gracias</div>
+              <div class="pb in" data-c="17">Listo, Sebastián. Lo agendé para el viernes 10/07 a las 09:00 en nuestra oficina de RE/MAX Emporio</div>
+              <div class="pb in link" data-c="18"><div class="lp"><div class="thumb"><span class="remax">RE/MAX</span></div><div class="meta"><div class="t">REMAX EMPORIO · Av. Ovidio Barbery Justiniano Nro. 495, Santa Cruz de la…</div><div class="r">★★★★☆ · Real estate consultant</div><div class="d">maps.app.goo.gl</div></div></div><div class="txt">Av. Ovidio Barbery #495. <a href="https://maps.app.goo.gl/z61iKjzz74W7mJVV9">https://maps.app.goo.gl/z61iKjzz74W7mJVV9</a></div></div>
+              <div class="pb in" data-c="19">Nos vemos ahí para revisar juntos las opciones de Béton Brut, Domus Insignia y Giardino. Que tengás una excelente tarde</div>
+            </div>
+          </div>
+          <div class="ov" data-app="prospecto">
+            <div class="app-head"><div class="app-brand">Capital Solutions</div><div class="app-title">Prospectos <span class="flash">+1 nuevo</span></div></div>
+            <div class="app-body">
+              <div class="mp">
+                <div class="mp-h"><span class="mp-av">S</span><div><div class="mp-nm">Sebastián <span class="mp-gd"></span></div><div class="mp-ph">591 6470 0143</div></div></div>
+                <div class="mp-fr"><span class="l">Interés</span><span class="v">Proyectos · Equipetrol</span></div>
+                <div class="mp-fr"><span class="l">Plataforma</span><span class="v">WhatsApp</span></div>
+                <div class="mp-fr"><span class="l">Etapa</span><span class="v"><span class="mp-bdg g">Conversando</span></span></div>
+                <div class="mp-fr"><span class="l">Asistente</span><span class="v"><span class="mp-bdg">Activo</span></span></div>
+                <div class="mp-ai">✦ Resumen AI</div>
+                <div class="mp-ait">Consulta por proyectos en Equipetrol (zona premium). Perfil inversionista; busca 2 dormitorios con entrega pronta.</div>
+              </div>
+            </div>
+          </div>
+          <div class="ov" data-app="embudo">
+            <div class="app-head"><div class="app-brand">Capital Solutions</div><div class="app-title">Embudo de compradores</div></div>
+            <div class="app-body kan">
+              <div class="kanrow">
+                <div class="kcol">
+                  <div class="kch"><span class="n">Conversando</span><span class="c">431</span></div>
+                  <div class="kcard"><div class="r1"><span class="kav">EV</span><div><div class="kn">Eva Villarroel</div><div class="kp">591 6789 5464</div></div></div><div class="kd">Dpto 2 dorm · Domus Onix</div></div>
+                </div>
+                <div class="kcol act">
+                  <div class="kch"><span class="n">Reunión agendada</span><span class="c">13</span></div>
+                  <div class="kcard hl"><div class="r1"><span class="kav">S</span><div><div class="kn">Sebastián</div><div class="kp">591 6470 0143</div></div></div><div class="kd">Vie 10/07 · 09:00 · 2 dorm Equipetrol</div></div>
+                </div>
+              </div>
+              <div class="kfade"></div>
+            </div>
+          </div>
+          <div class="ov" data-app="agenda">
+            <div class="app-head"><div class="app-brand">Capital Solutions</div><div class="app-title">Agenda</div></div>
+            <div class="app-body">
+              <div class="mag-day">Viernes 10 de julio</div>
+              <div class="mag-evt">
+                <div class="mag-t">09:00 · Reunión — Sebastián</div>
+                <div class="mag-s">Oficina RE/MAX Emporio · Béton Brut / Domus Insignia / Giardino</div>
+                <div class="mag-g">✓ Sincronizado con Google Calendar</div>
+              </div>
+            </div>
+          </div>
+          <div class="ov" data-app="tu">
+            <div class="app-head"><div class="app-brand">Capital Solutions</div><div class="app-title">Embudo de compradores</div></div>
+            <div class="app-body kan">
+              <div class="kanrow">
+                <div class="kcol act">
+                  <div class="kch"><span class="n">Reunión agendada</span><span class="c">13</span></div>
+                  <div class="kcard hl"><div class="r1"><span class="kav">S</span><div><div class="kn">Sebastián</div><div class="kp">591 6470 0143</div></div></div><div class="kd">Reunión vie 10/07 · 09:00</div></div>
+                </div>
+                <div class="kcol">
+                  <div class="kch"><span class="n">Reunión concretada</span><span class="c">—</span></div>
+                  <div class="kcard" style="border-style:dashed;border-color:var(--ink)"><div class="r1"><span class="kav" style="background:var(--ink);color:#fff">T</span><div><div class="kn">Ahora sigues tú →</div><div class="kp">tú tomas las riendas</div></div></div><div class="kd">Llegas con todo el contexto listo. Solo cierras.</div></div>
+                </div>
+              </div>
+              <div class="kfade"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ah-hint" id="ahHint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>Presiona → para ver cómo trabaja</div>
+  </div></section>
+
+  <!-- 2 QUÉ RESOLVEMOS · datos del mercado -->
+  <section class="slide mkt-slide"><div class="inner">
+    <div class="eyebrow">Datos del mercado · Dónde se pierden las oportunidades</div>
+    <h2>¿Qué <em>resolvemos?</em></h2>
+    <div class="mkt-thesis">Capital resuelve los puntos exactos donde se pierden ventas: <b>velocidad, foco, tiempo y seguimiento</b>.</div>
+    <div class="mkt-grid">
+      <div class="vcard mkt-card">
+        <div class="mkt-head"><span class="mkt-cat">Velocidad</span><span class="mkt-num">5×</span></div>
+        <p class="mkt-txt">Responder en los primeros 5 minutos hace hasta 5× más probable conversar con el lead antes de que se enfríe.</p>
+        <p class="mkt-src">Fuente: MIT / InsideSales</p>
+      </div>
+      <div class="vcard mkt-card">
+        <div class="mkt-head"><span class="mkt-cat">Ruido en el embudo</span><span class="mkt-num">5.2%</span></div>
+        <p class="mkt-txt">Los leads buenos se enfrían mientras los curiosos drenan tu tiempo.</p>
+        <p class="mkt-src">Fuente: Datos internos Capital · Mayo 2026</p>
+      </div>
+      <div class="vcard mkt-card">
+        <div class="mkt-head"><span class="mkt-cat">Carga de comunicación</span><span class="mkt-num">20%–50%</span></div>
+        <p class="mkt-txt">Los agentes dedican entre el 20% y el 50% de su jornada solo a comunicarse: responder y coordinar.</p>
+        <p class="mkt-src">Fuente: Drooms × Statista</p>
+      </div>
+      <div class="vcard mkt-card">
+        <div class="mkt-head"><span class="mkt-cat">Seguimiento</span><span class="mkt-num">+20%</span></div>
+        <p class="mkt-txt">Dar seguimiento constante puede convertir hasta 20% más de tus leads actuales en ventas.</p>
+        <p class="mkt-src">Fuente: Demand Gen Report</p>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- 2 POR QUÉ CAPITAL · matriz comparativa -->
+  <section class="slide diff-slide"><div class="inner">
     <h2 class="diff-title">¿Por qué <span class="cap-hl">Capital?</span></h2>
     <div class="cmp">
       <div class="cmp-h-feat"></div>
@@ -499,7 +1303,7 @@
       <div class="cmp-feat">WhatsApp API oficial: adiós a los baneos de números.</div>
       <div class="cmp-cell cap"><span class="yes">✓</span></div>
       <div class="cmp-cell"><span class="no">✕</span></div>
-      <div class="cmp-cell"><span class="dash">—</span></div>
+      <div class="cmp-cell"><span class="no">✕</span></div>
 
       <div class="cmp-feat">Cero configuración: sin flujos complejos.</div>
       <div class="cmp-cell cap"><span class="yes">✓</span></div>
@@ -517,7 +1321,7 @@
       <div class="cmp-cell"><span class="no">✕</span></div>
       <div class="cmp-cell"><span class="no">✕</span></div>
 
-      <div class="cmp-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2.5"/><line x1="10" y1="18" x2="14" y2="18"/></svg>App con CRM automático e IA.</div>
+      <div class="cmp-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2.5"/><line x1="10" y1="18" x2="14" y2="18"/></svg>La IA centraliza y automatiza el registro de leads, embudo de ventas, y citas.</div>
       <div class="cmp-cell cap"><span class="yes">✓</span></div>
       <div class="cmp-cell"><span class="no">✕</span></div>
       <div class="cmp-cell"><span class="no">✕</span></div>
@@ -529,35 +1333,7 @@
     </div>
   </div></section>
 
-  <section class="slide mkt-slide"><div class="inner">
-    <div class="eyebrow">Datos del mercado · Dónde se pierden las oportunidades</div>
-    <h2>El problema no es generar leads. Es no perderlos después.</h2>
-    <div class="mkt-thesis">Capital resuelve los puntos exactos donde se pierden ventas: velocidad, foco, tiempo y seguimiento.</div>
-    <div class="mkt-grid">
-      <div class="vcard mkt-card">
-        <div class="mkt-head"><span class="mkt-cat">Velocidad</span><span class="mkt-num">5×</span></div>
-        <p class="mkt-txt">Responder en los primeros 5 minutos hace hasta 5× más probable conversar con el lead antes de que se enfríe.</p>
-        <p class="mkt-src">Fuente: MIT / InsideSales</p>
-      </div>
-      <div class="vcard mkt-card">
-        <div class="mkt-head"><span class="mkt-cat">Ruido en el embudo</span><span class="mkt-num">5.2%</span></div>
-        <p class="mkt-txt">Los leads buenos se enfrían mientras los curiosos drenan tu tiempo.</p>
-        <p class="mkt-src">Fuente: Datos internos Capital · Mayo 2026</p>
-      </div>
-      <div class="vcard mkt-card">
-        <div class="mkt-head"><span class="mkt-cat">Carga de comunicación</span><span class="mkt-num">20%–50%</span></div>
-        <p class="mkt-txt">Los agentes dedican entre el 20% y el 50% de su jornada solo a comunicarse: responder y coordinar.</p>
-        <p class="mkt-src">Fuente: Drooms × Statista</p>
-      </div>
-      <div class="vcard mkt-card">
-        <div class="mkt-head"><span class="mkt-cat">Seguimiento</span><span class="mkt-num">+20%</span></div>
-        <p class="mkt-txt">Dar seguimiento constante puede convertir hasta 20% más de tus leads actuales en ventas.</p>
-        <p class="mkt-src">Fuente: Demand Gen Report</p>
-      </div>
-    </div>
-  </div></section>
-
-  <!-- 1 PORTADA · Retorno proyectado -->
+  <!-- 3 PORTADA · Retorno proyectado -->
   <section class="slide hero"><div class="inner">
     <h1>Retorno mensual estimado del <em>Asistente IA</em></h1>
     <div class="cvr">
@@ -602,7 +1378,7 @@
         <div class="time-step">1</div>
         <div><div class="time-title">Conversa con el prospecto</div><div class="time-sub">Lee mensajes · escribe respuestas · envía documentación</div></div>
         <div class="time-bar"><div class="time-bar-fill" id="tb_bot"></div></div>
-        <div class="time-val"><b><span id="tc_bot"></span><span class="hunit">h</span></b><span>Conversaciones del bot</span></div>
+        <div class="time-val"><b><span id="tc_bot"></span><span class="hunit">h</span></b><span>Mensajes del Asistente IA</span></div>
       </div>
       <div class="time-row">
         <div class="time-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></div>
@@ -790,32 +1566,11 @@
 
   <!-- 7 CLOSE -->
   <section class="slide"><div class="inner">
-    <div class="closebox">
-      <div class="eyebrow" style="color:#8FE3B6">El precio</div>
-      <div class="big" id="c_fee_big"></div>
-      <p class="lede">El asistente ya devuelve más de lo que cuesta. El volumen hace el resto.</p>
-      <div class="close5">
-        <div class="c5card">
-          <div class="c5tag proj">Proyección</div>
-          <div class="c5n" id="c_time"></div>
-          <div class="c5l">Tiempo recuperado</div>
-        </div>
-        <div class="c5card">
-          <div class="c5tag" style="background:rgba(255,255,255,.1);color:#A9C6BA">Cubre</div>
-          <div class="c5n" id="c_time_x"></div>
-          <div class="c5l">veces el costo del servicio</div>
-        </div>
-        <div class="c5card">
-          <div class="c5tag proj">Proyección</div>
-          <div class="c5n" id="c_net"></div>
-          <div class="c5l">Ganancia neta / mes</div>
-        </div>
-        <div class="c5card">
-          <div class="c5tag" style="background:rgba(255,255,255,.1);color:#A9C6BA">Cubre</div>
-          <div class="c5n" id="c_net_x"></div>
-          <div class="c5l">veces el costo del servicio</div>
-        </div>
-      </div>
+    <div class="closebox launch-offer">
+      <div class="launch-kicker">Precio especial por lanzamiento</div>
+      <div class="launch-foot"><span>Solo primeros 6 agentes</span></div>
+      <div class="launch-main"><span class="label">Primer mes</span><s>250 USD</s><span class="deal">150<span>USD</span></span></div>
+      <div class="launch-under">Reembolsable si deciden no continuar el servicio.</div>
     </div>
   </div></section>
 
@@ -848,6 +1603,10 @@ const CAP={
     // -- Venta y comisiones --
     usd_oficial_tc:{v:6.96,unit:"BOB/USD",label:"Tipo de cambio oficial",src:"Usado para convertir precios oficiales a BOB",g:"venta"},
     comision_pct:{v:0.02,unit:"%",label:"Comisión (1 punta)",src:"Estándar REMAX",g:"venta"},
+    mono_price_usd:{v:46700,unit:"USD",label:"Precio promedio monoambiente",src:"Referencia comercial Capital",g:"venta"},
+    mono_commission_pct:{v:0.02,unit:"%",label:"Comisión monoambiente (1 punta)",src:"Comisión de una punta",g:"venta"},
+    mono_agent_range_pct:{v:0.80,unit:"%",label:"Rango agente monoambiente",src:"Editable en el ejemplo económico",g:"venta"},
+    mono_remax_pct:{v:0.06,unit:"%",label:"REMAX Bolivia sobre comisión agente",src:"6% después de la comisión de oficina",g:"venta"},
     // -- Costos fijos anuales del agente (definen el margen neto) --
     ann_bruto:{v:747863,unit:"BOB/año",label:"Ingreso bruto anual",src:"Modelo anual del agente",g:"fijos"},
     com_oficina_pct:{v:0.20,unit:"%",label:"Comisión Oficina",src:"Elegir rango: 80% = comisión 20% y ticket 135,000 USD Of.; 70% = comisión 30% y ticket 98,000 USD Of.",g:"fijos",opts:[0.20,0.30]},
@@ -865,11 +1624,16 @@ const CAP={
     // -- Conversión real observada --
     appt_rate_may:{v:0.052,unit:"citas/lead",label:"Tasa cita/lead — Junio (real)",src:"Conversión medida en Junio",g:"embudo"},
     // -- Tiempo recuperado (Junio) — total real proyectable a 700 leads interactuados --
-    time_leads_real:{v:343,unit:"leads",label:"Leads interactuados reales (Junio)",src:"CTWA/MM/Active con bot y respuesta del lead, 2026-06-01 a 2026-07-01",g:"tiempo"},
-    t_bot_h:{v:44.4,unit:"h/mes",label:"Tiempo ahorrado — conversaciones del bot",src:"Bot workload: 3,783 respuestas, 1,117 mensajes leídos y 503 documentos enviados",g:"tiempo"},
-    t_sugg_h:{v:9.28,unit:"h/mes",label:"Tiempo ahorrado — recomendaciones",src:"Suggester: 152 leads con uso, total medido 556.8 min",g:"tiempo"},
-    t_details_h:{v:9.45,unit:"h/mes",label:"Tiempo ahorrado — detalles y dudas",src:"Details: 215 leads con uso, total medido 567 min",g:"tiempo"},
-    t_sched_h:{v:1.13,unit:"h/mes",label:"Tiempo ahorrado — agenda",src:"Scheduler: 50 leads con uso, total medido 67.8 min",g:"tiempo"},
+    time_leads_real:{v:342,unit:"leads",label:"Leads interactuados reales (Junio)",src:"CTWA/MM/Active con bot y respuesta del lead, 2026-06-01 a 2026-07-01",g:"tiempo"},
+    t_register_h:{v:0.95,unit:"h/mes",label:"Valor adicional — registro del lead",src:"342 leads interactuados × 10 s por registro",g:"tiempo"},
+    t_bot_h:{v:44.45,unit:"h/mes",label:"Tiempo ahorrado — mensajes del Asistente IA",src:"Bot workload: 3,781 respuestas, 1,115 mensajes leídos y 503 documentos enviados",g:"tiempo"},
+    t_sugg_h:{v:11.21,unit:"h/mes",label:"Tiempo ahorrado — recomendaciones",src:"Suggester: 177 leads con uso, total medido 672.6 min",g:"tiempo"},
+    t_details_h:{v:10.95,unit:"h/mes",label:"Tiempo ahorrado — detalles y dudas",src:"Details: 301 leads con uso, total medido 657 min",g:"tiempo"},
+    t_sched_h:{v:1.51,unit:"h/mes",label:"Tiempo ahorrado — agenda",src:"Scheduler: 70 leads con uso, total medido 90.6 min",g:"tiempo"},
+    t_summary_h:{v:7.3,unit:"h/mes",label:"Valor adicional — actualización de resumen",src:"438 interacciones × 60 s, agrupadas con 4 h de inactividad",g:"tiempo"},
+    t_pipeline_h:{v:1.35,unit:"h/mes",label:"Valor adicional — movimiento de embudo",src:"324 movimientos × 15 s",g:"tiempo"},
+    t_inventory_gen_h:{v:59.75,unit:"h",label:"Valor adicional — generación de inventario",src:"22 proyectos × 30 min + 585 listings independientes × 5 min",g:"tiempo"},
+    t_inventory_update_h:{v:3.93,unit:"h",label:"Valor adicional — actualización de inventario",src:"Revisión de disponibilidad cada 14 días × 5 min por proyecto",g:"tiempo"},
     work_hours_yr:{v:2080,unit:"h/año",label:"Horas laborales / año",src:"Supuesto (40 h/semana)",g:"tiempo"},
     sec_sugg:{v:150,unit:"s/uso",label:"Supuesto — recomendar opciones",src:"2 min 30 s para buscar opciones válidas en lista de precios",g:"tiempo"},
     sec_details:{v:60,unit:"s/uso",label:"Supuesto — aclarar dudas",src:"1 min para verificar información en brochure o lista de precios",g:"tiempo"},
@@ -900,8 +1664,11 @@ const CAP={
     {k:"months_per_sale",label:"Meses que paga 1 venta",unit:"meses",f:"neto_por_venta / servicio",fn:(I,D)=>D.net_per_sale/I.service_fee,src:""},
     // --- Tiempo recuperado ---
     {k:"agent_hourly",label:"Valor de 1 hora del agente",unit:"BOB/h",f:"utilidad_neta / horas_año",fn:(I,D)=>D.utilidad_neta/I.work_hours_yr,src:""},
-    {k:"time_saved",label:"Tiempo ahorrado total — Junio",unit:"h/mes",f:"bot + recomendaciones + detalles + agenda",fn:I=>I.t_bot_h+I.t_sugg_h+I.t_details_h+I.t_sched_h,src:""},
-    {k:"time_value",label:"Valor tiempo devuelto — Junio",unit:"BOB",f:"horas_ahorradas × valor_hora",fn:(I,D)=>D.time_saved*D.agent_hourly,src:""},
+    {k:"time_saved",label:"Tiempo ahorrado base — Junio",unit:"h/mes",f:"bot + recomendaciones + detalles + agenda",fn:I=>I.t_bot_h+I.t_sugg_h+I.t_details_h+I.t_sched_h,src:""},
+    {k:"time_direct_saved",label:"Ahorro operativo directo — Junio",unit:"h/mes",f:"bot + recomendaciones + detalles + agenda",fn:(I,D)=>D.time_saved,src:""},
+    {k:"time_additional_auto",label:"Valor operativo adicional — Junio",unit:"h/mes",f:"registro + resumen + movimiento_embudo",fn:I=>I.t_register_h+I.t_summary_h+I.t_pipeline_h,src:""},
+    {k:"time_additional_inventory",label:"Generación y actualización de inventario",unit:"h",f:"generación_inventario + actualización_inventario",fn:I=>I.t_inventory_gen_h+I.t_inventory_update_h,src:""},
+    {k:"time_value",label:"Valor tiempo directo — Junio",unit:"BOB",f:"ahorro_directo × valor_hora",fn:(I,D)=>D.time_direct_saved*D.agent_hourly,src:""},
     {k:"leads_for_sale",label:"Leads necesarios para 1ª venta",unit:"leads",f:"citas_por_venta / tasa_cita",fn:I=>I.appts_sale/I.appt_rate_may,src:""},
   ],
 };
@@ -943,11 +1710,13 @@ function fmtLeadTime(mins){
   return `≈ ${m} min${s?` ${s} s`:''} por lead`;
 }
 
-function compute(){
+function computeWith(overrides={}){
   const I={};for(const k in CAP.inputs)I[k]=CAP.inputs[k].v;
+  Object.assign(I,overrides);
   const D={};for(const d of CAP.derived)D[d.k]=d.fn(I,D,CAP);
   return{I,D};
 }
+function compute(){return computeWith();}
 
 /* Annual table data (in BOB) with detail */
 function annualRows(I,D){return[
@@ -971,7 +1740,7 @@ function render(){
   const hrs=v=>money(Math.round(v));
 
   /* HERO · Retorno proyectado */
-  $('#cvr_hours').textContent=hrs(D.time_saved*tScale);
+  $('#cvr_hours').textContent=hrs(D.time_direct_saved*tScale);
   $('#cvr_appts').textContent=money(Math.round(D.citas_mes));
   $('#cvr_sales').textContent=money(Math.ceil(D.sales_qty*10)/10,1);
 
@@ -1020,15 +1789,34 @@ function render(){
     $('#tc_'+k).textContent=hrs(v);
     $('#tb_'+k).style.width=Math.max(5,v/timeMax*100)+'%';
   });
-  $('#tc_total').textContent=hrs(D.time_saved*tScale);
-  $('#tc_perlead').textContent=fmtLeadTime((D.time_saved*tScale*60)/I.vol_leads);
+  $('#tc_total').textContent=hrs(D.time_direct_saved*tScale);
+  $('#tc_perlead').textContent=fmtLeadTime((D.time_direct_saved*tScale*60)/I.vol_leads);
   $('#tc_sugg_sec').textContent=fmtSec(I.sec_sugg);
   $('#tc_details_sec').textContent=fmtSec(I.sec_details);
   $('#tc_sched_sec').textContent=fmtSec(I.sec_sched);
+  $('#pv_tc_register').textContent=hrs(I.t_register_h*tScale);
+  $('#pv_tc_bot').textContent=hrs(I.t_bot_h*tScale);
+  $('#pv_tc_sugg').textContent=hrs(I.t_sugg_h*tScale);
+  $('#pv_tc_details').textContent=hrs(I.t_details_h*tScale);
+  $('#pv_tc_sched').textContent=hrs(I.t_sched_h*tScale);
+  const directProjectedHours=D.time_direct_saved*tScale;
+  const inventoryHours=D.time_additional_inventory;
+  const additionalProjectedHours=(D.time_additional_auto*tScale)+inventoryHours;
+  const grandProjectedHours=directProjectedHours+additionalProjectedHours;
+  $('#pv_tc_direct_total').textContent=hrs(directProjectedHours);
+  $('#pv_tc_summary').textContent=hrs(I.t_summary_h*tScale);
+  $('#pv_tc_pipeline').textContent=hrs(I.t_pipeline_h*tScale);
+  $('#pv_tc_inventory_gen').textContent=hrs(I.t_inventory_gen_h);
+  $('#pv_tc_inventory_update').textContent=hrs(I.t_inventory_update_h);
+  $('#pv_tc_additional_total').textContent=hrs(additionalProjectedHours);
+  $('#pv_tc_direct_summary').textContent=hrs(directProjectedHours);
+  $('#pv_tc_additional_summary').textContent=hrs(additionalProjectedHours);
+  $('#pv_tc_grand_total').textContent=hrs(grandProjectedHours);
 
   /* SLIDE 3 · Costo laboral equivalente */
   const projScale=I.vol_leads/I.time_leads_real;
-  const projHours=D.time_saved*projScale;
+  const projHours=D.time_direct_saved*projScale;
+  const projAdditionalHours=(D.time_additional_auto*projScale)+D.time_additional_inventory;
   const salaryAvg=2900;
   const hoursMonthAvg=42.5*4;
   const hourlyAvg=salaryAvg/hoursMonthAvg;
@@ -1041,14 +1829,23 @@ function render(){
   $('#ve_rate2').textContent=fmtBob(hourlyAvg)+'/h';
   $('#ve_hsaved').textContent=hrs(projHours)+' h';
   $('#ve_val').textContent=fmtBob(laborEquiv);
-
-  /* CLOSE */
-  const feeNum=money(I.service_fee*FX.rate,Math.abs(I.service_fee*FX.rate)<100?2:0);
-  $('#c_fee_big').innerHTML=feeNum+'<span style="font-size:.38em;color:#A9C6BA"> '+FX.sym+'/mes</span>';
-  $('#c_time').textContent=fmtBob(laborEquiv);
-  $('#c_time_x').textContent=money(laborEquiv/I.service_fee,1)+'×';
-  $('#c_net').textContent=fmtMSign(D.net_after_fee);
-  $('#c_net_x').textContent=money(D.net_after_fee/I.service_fee,1)+'×';
+  const fmtUsd=v=>money(v,Math.abs(v)<100?2:0)+' USD';
+  const monoServiceUsd=250;
+  const monoCommissionUsd=I.mono_price_usd*I.mono_commission_pct;
+  const monoAgentCommissionUsd=monoCommissionUsd*I.mono_agent_range_pct;
+  const monoRemaxUsd=monoAgentCommissionUsd*I.mono_remax_pct;
+  const monoNetUsd=monoAgentCommissionUsd-monoRemaxUsd;
+  const monoPriceInput=$('#mono_price_input');
+  const monoRangeSelect=$('#mono_range_select');
+  if(document.activeElement!==monoPriceInput)monoPriceInput.value=money(I.mono_price_usd);
+  if(document.activeElement!==monoRangeSelect)monoRangeSelect.value=String(Math.round(I.mono_agent_range_pct*100));
+  $('#mono_eq_price').textContent=fmtUsd(I.mono_price_usd);
+  $('#mono_eq_commission').textContent=fmtUsd(monoCommissionUsd);
+  $('#mono_eq_agent').textContent=fmtUsd(monoAgentCommissionUsd);
+  $('#mono_eq_remax').textContent='-'+fmtUsd(monoRemaxUsd);
+  $('#mono_eq_net').textContent=fmtUsd(monoNetUsd);
+  $('#mono_eq_service').textContent='-'+fmtUsd(monoServiceUsd);
+  $('#mono_eq_left').textContent=fmtUsd(monoNetUsd-monoServiceUsd);
 
   audit(I,D);
 }
@@ -1138,14 +1935,142 @@ $('#rangePill').onclick=e=>{
 
 /* slides */
 let cur=0;const slides=$$('.slide'),dots=$('#dots');
-$('#tot').textContent=slides.length;
-slides.forEach((_,i)=>{const d=document.createElement('i');d.onclick=()=>go(i);dots.appendChild(d);});
-function go(i){cur=Math.max(0,Math.min(slides.length-1,i));
+let extrasVisible=false,navStops=[];
+/* reveal por pasos en la slide de apertura */
+const aboutEl=document.querySelector('.about-slide');
+const aboutIdx=slides.indexOf(aboutEl);
+const aboutCaps=[...aboutEl.querySelectorAll('.cap-item')];
+const aboutDots=[...aboutEl.querySelectorAll('.ah-dots i')];
+const aboutMsgs=[...aboutEl.querySelectorAll('.wa-chat .pb')];
+const aboutOvs=[...aboutEl.querySelectorAll('.ov')];
+const ABOUT_STEPS=[{chat:1},{app:'prospecto'},{chat:6},{chat:8},{chat:12},{chat:16},{chat:19},{app:'embudo'},{app:'agenda'},{app:'tu'}];
+const aboutMax=ABOUT_STEPS.length;
+let aboutStep=1;
+function aboutApply(){
+  let cl=0;for(let i=0;i<aboutStep;i++){if(ABOUT_STEPS[i].chat!=null)cl=ABOUT_STEPS[i].chat;}
+  aboutMsgs.forEach(m=>m.classList.toggle('shown',+m.dataset.c<=cl));
+  const st=ABOUT_STEPS[aboutStep-1]||{};
+  aboutOvs.forEach(o=>o.classList.toggle('on',!!st.app&&o.dataset.app===st.app));
+  aboutCaps.forEach((c,i)=>c.classList.toggle('on',i===aboutStep-1));
+  aboutDots.forEach((d,i)=>d.classList.toggle('on',i<aboutStep));
+  const chat=$('#ahChat');if(chat)requestAnimationFrame(()=>{chat.scrollTop=chat.scrollHeight;});
+  const h=$('#ahHint');if(h)h.classList.toggle('gone',aboutStep>1);}
+/* pasos dentro de la slide de propuesta de valor */
+const valueEl=document.querySelector('.value-slide');
+const valueIdx=slides.indexOf(valueEl);
+const valueSteps=[...valueEl.querySelectorAll('.vstep')];
+const valueDots=[...valueEl.querySelectorAll('.vdots i')];
+const valueMax=valueSteps.length;
+const visibleValueMax=valueMax-1;
+let valueStep=1;
+const timeValueStep=valueSteps.findIndex(el=>el.querySelector('.time-proof'))+1;
+const monoValueStep=valueSteps.findIndex(el=>el.querySelector('.mono-slide'))+1;
+const timePanels=[...valueEl.querySelectorAll('.time-panel')];
+const timeSwitchDots=[...valueEl.querySelectorAll('.time-switch i')];
+const timeMax=timePanels.length||1;
+let timeStep=1;
+const lastIdx=slides.length-1;
+const extraSlideIdxs=slides.map((_,i)=>i).filter(i=>i>valueIdx&&i<lastIdx-1);
+function makeNavStops(){
+  const stops=[{slide:0}];
+  for(let step=1;step<=visibleValueMax;step++)stops.push({slide:valueIdx,valueStep:step});
+  if(extrasVisible)extraSlideIdxs.forEach(i=>stops.push({slide:i}));
+  if(lastIdx>0)stops.push({slide:lastIdx});
+  navStops=stops;
+  dots.innerHTML='';
+  navStops.forEach(stop=>{
+    const d=document.createElement('i');
+    d.onclick=()=>goStop(stop);
+    dots.appendChild(d);
+  });
+  updateNavDots();
+}
+function currentStopIndex(){
+  const idx=navStops.findIndex(s=>s.slide===cur&&(cur!==valueIdx||s.valueStep===valueStep));
+  return idx>=0?idx:navStops.findIndex(s=>s.slide===cur);
+}
+function updateNavDots(){
+  const active=currentStopIndex();
+  $$('#dots i').forEach((d,i)=>d.classList.toggle('on',i<=active));
+}
+function goStop(stop){
+  if(stop.slide===valueIdx&&stop.valueStep){
+    go(valueIdx);
+    valueStep=stop.valueStep;
+    valueApply();
+  }else{
+    go(stop.slide);
+  }
+  updateNavDots();
+}
+function nextVisibleSlide(dir){
+  const ordered=[0,valueIdx,...(extrasVisible?extraSlideIdxs:[]),lastIdx].filter((v,i,a)=>a.indexOf(v)===i);
+  const pos=ordered.indexOf(cur);
+  if(pos<0)return cur;
+  return ordered[Math.max(0,Math.min(ordered.length-1,pos+dir))];
+}
+function timeApply(){
+  timePanels.forEach((el,i)=>el.classList.toggle('on',i===timeStep-1));
+  timeSwitchDots.forEach((d,i)=>d.classList.toggle('on',i===timeStep-1));
+}
+timeSwitchDots.forEach((d,i)=>d.onclick=()=>{timeStep=i+1;timeApply();});
+function valueApply(){
+  valueSteps.forEach((el,i)=>{el.classList.toggle('on',i===valueStep-1);el.classList.toggle('prevstep',i<valueStep-1);});
+  valueDots.forEach((d,i)=>{d.style.display=i<visibleValueMax?'':'none';d.classList.toggle('on',i<valueStep&&i<visibleValueMax);});
+  const h=$('#vHint');if(h)h.classList.toggle('gone',valueStep>1);
+  const nb=$('#openValueNotesTop');if(nb)nb.classList.toggle('show',cur===valueIdx&&(valueStep===2||valueStep===monoValueStep));
+  document.body.classList.toggle('mono-economic-step',cur===valueIdx&&valueStep===monoValueStep);
+  if(valueStep===timeValueStep)timeApply();
+  updateNavDots();
+  if(valueStep!==2&&valueStep!==monoValueStep)closeValueNotes();}
+function closeValueNotes(){[$('#valueNotes'),$('#monoNotes')].filter(Boolean).forEach(n=>n.classList.remove('open'));}
+const openValueNotesTop=$('#openValueNotesTop');
+if(openValueNotesTop)openValueNotesTop.onclick=()=>{
+  const panel=valueStep===monoValueStep?$('#monoNotes'):$('#valueNotes');
+  [$('#valueNotes'),$('#monoNotes')].filter(Boolean).forEach(n=>{if(n!==panel)n.classList.remove('open');});
+  panel.classList.toggle('open');
+};
+const closeValueNotesBtn=$('#closeValueNotes');
+if(closeValueNotesBtn)closeValueNotesBtn.onclick=closeValueNotes;
+const closeMonoNotesBtn=$('#closeMonoNotes');
+if(closeMonoNotesBtn)closeMonoNotesBtn.onclick=closeValueNotes;
+/* registro de slides con pasos internos */
+const steppers=[
+  {idx:valueIdx,get:()=>valueStep,set:v=>{valueStep=v;valueApply();},max:()=>visibleValueMax},
+  {idx:aboutIdx,get:()=>aboutStep,set:v=>{aboutStep=v;aboutApply();},max:()=>aboutMax}
+];
+function go(i){const prev=cur;cur=Math.max(0,Math.min(slides.length-1,i));
   slides.forEach((s,j)=>{s.classList.toggle('active',j===cur);s.classList.toggle('prev',j<cur);});
-  $$('#dots i').forEach((d,j)=>d.classList.toggle('on',j===cur));
-  $('#cur').textContent=cur+1;}
-$('#next').onclick=()=>go(cur+1);$('#prev').onclick=()=>go(cur-1);
-document.onkeydown=e=>{if(e.key==='ArrowRight'||e.key===' ')go(cur+1);if(e.key==='ArrowLeft')go(cur-1);};
+  updateNavDots();
+  $('#cur').textContent=cur+1;
+  const nb=$('#openValueNotesTop');if(nb)nb.classList.toggle('show',cur===valueIdx&&(valueStep===2||valueStep===monoValueStep));
+  document.body.classList.toggle('mono-economic-step',cur===valueIdx&&valueStep===monoValueStep);
+  if(cur!==valueIdx)closeValueNotes();
+  const sp=steppers.find(s=>s.idx===cur);
+  if(sp&&prev!==cur){sp.set(prev>cur?sp.max():1);}}
+function nav(dir){
+  const sp=steppers.find(s=>s.idx===cur);
+  if(sp){
+    if(cur===valueIdx&&valueStep===timeValueStep){
+      if(dir>0&&timeStep<timeMax){timeStep++;timeApply();return;}
+      if(dir<0&&timeStep>1){timeStep--;timeApply();return;}
+    }
+    if(dir>0&&sp.get()<sp.max()){
+      const next=sp.get()+1;
+      if(cur===valueIdx&&next===timeValueStep)timeStep=1;
+      sp.set(next);return;
+    }
+    if(dir<0&&sp.get()>1){
+      const next=sp.get()-1;
+      if(cur===valueIdx&&next===timeValueStep)timeStep=timeMax;
+      sp.set(next);return;
+    }
+  }
+  const next=nextVisibleSlide(dir);
+  if(next!==cur)go(next);
+}
+$('#next').onclick=()=>nav(1);$('#prev').onclick=()=>nav(-1);
+document.onkeydown=e=>{if(e.key==='ArrowRight'||e.key===' ')nav(1);if(e.key==='ArrowLeft')nav(-1);};
 function commitApptsInput(){
   const el=$('#calc_appts_input');
   let v=parseFloat(el.value);
@@ -1157,16 +2082,40 @@ function commitApptsInput(){
 $('#calc_appts_input').addEventListener('change',commitApptsInput);
 $('#calc_appts_input').addEventListener('keydown',e=>{if(e.key==='Enter')e.currentTarget.blur();});
 $('#calc_appts_input').addEventListener('focus',e=>e.currentTarget.select());
+function commitMonoInputs(){
+  const priceEl=$('#mono_price_input');
+  if(priceEl.value.trim()==='')return;
+  let price=parseFloat(priceEl.value.replace(/,/g,''));
+  if(isNaN(price))price=CAP.inputs.mono_price_usd.v;
+  CAP.inputs.mono_price_usd.v=Math.max(1,price);
+  render();
+}
+$('#mono_price_input').addEventListener('input',commitMonoInputs);
+$('#mono_price_input').addEventListener('change',commitMonoInputs);
+$('#mono_price_input').addEventListener('keydown',e=>{if(e.key==='Enter')e.currentTarget.blur();});
+$('#mono_price_input').addEventListener('focus',e=>e.currentTarget.select());
+$('#mono_range_select').addEventListener('change',e=>{
+  CAP.inputs.mono_agent_range_pct.v=parseFloat(e.target.value)/100;
+  render();
+});
 $('#m_ofi_select').addEventListener('change',e=>{
   CAP.inputs.com_oficina_pct.v=parseFloat(e.target.value);
   render();
+});
+$('#toggleExtras').addEventListener('click',e=>{
+  extrasVisible=!extrasVisible;
+  e.currentTarget.classList.toggle('on',extrasVisible);
+  e.currentTarget.title=extrasVisible?'Ocultar slides extra':'Mostrar slides extra';
+  makeNavStops();
+  if(!extrasVisible&&extraSlideIdxs.includes(cur))go(lastIdx);
+  else updateNavDots();
 });
 $('#openAudit').onclick=()=>{$('#panel').classList.add('open');$('#scrim').classList.add('open');};
 const cp=()=>{$('#panel').classList.remove('open');$('#scrim').classList.remove('open');};
 $('#closeAudit').onclick=cp;$('#scrim').onclick=cp;
 $('#auditSearch').addEventListener('input',e=>filterAudit(e.target.value));
 $('#resetBtn').onclick=()=>{CAP.inputs=JSON.parse(JSON.stringify(ORIG));auditBuilt=false;$('#auditSearch').value='';render();};
-render();go(0);
+makeNavStops();render();go(0);aboutApply();valueApply();
 </script>
 </body>
 </html>

@@ -1,0 +1,216 @@
+{
+  "notes": {
+    "use": "Importa/cop?a estos nodos al workflow existente. Si quieres todo armado, usa Capital_time_savings_workflow_UPDATED.json.",
+    "assumptions": [
+      "Registro del lead = 10s por lead interactuado.",
+      "Actualizaci?n de resumen = 60s por interacci?n; nueva interacci?n si hay m?s de 4h sin mensajes.",
+      "Movimiento de embudo = 15s por movimiento inferido.",
+      "Inventario = 30m por proyecto, 5m por listing independiente activo, revisi?n de disponibilidad de proyectos cada 14 d?as a 5m/proyecto.",
+      "Inventario usa public.projects y public.listings; ajustar nombres si tu schema real usa otros."
+    ]
+  },
+  "params_to_add": [
+    {
+      "id": "dc2aac36-d8dc-46cd-be7a-111009135fdd",
+      "name": "segundos_por_registro_lead",
+      "value": 10,
+      "type": "number"
+    },
+    {
+      "id": "ea8b3e2e-96bd-4250-b030-bfd6419cf4bd",
+      "name": "horas_idle_para_interaccion_resumen",
+      "value": 4,
+      "type": "number"
+    },
+    {
+      "id": "4212fa8c-cbab-45b4-a460-406d276e0d92",
+      "name": "segundos_por_actualizacion_resumen_interaccion",
+      "value": 60,
+      "type": "number"
+    },
+    {
+      "id": "c01ba003-ed46-41ff-ba8b-41bb2492ca2a",
+      "name": "segundos_por_movimiento_embudo",
+      "value": 15,
+      "type": "number"
+    },
+    {
+      "id": "1a707947-c7e5-4d88-8357-a75065c436b4",
+      "name": "minutos_por_proyecto_inventario",
+      "value": 30,
+      "type": "number"
+    },
+    {
+      "id": "c35d17f0-e4c7-4cc9-8958-d8840fb8a92c",
+      "name": "minutos_por_listing_independiente_inventario",
+      "value": 5,
+      "type": "number"
+    },
+    {
+      "id": "245c66f3-f9e4-4589-8eee-a6f671a00ecc",
+      "name": "minutos_revision_disponibilidad_proyecto",
+      "value": 5,
+      "type": "number"
+    },
+    {
+      "id": "bcbb0ce3-1f83-480a-b2ea-c0cb85b5f252",
+      "name": "dias_ciclo_revision_disponibilidad_proyecto",
+      "value": 14,
+      "type": "number"
+    }
+  ],
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Lead Registration Calls ? mismo universo que Interacted Leads Base */\nWITH scoped_msgs AS (\n  SELECT cm.lead_id, LOWER(TRIM(cm.tipo_emisor)) AS sender_type, cm.message_class, cm.plataforma_origen,\n    NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL AS has_content\n  FROM public.chat_messages cm\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n),\nlead_flags AS (\n  SELECT lead_id,\n    BOOL_OR(has_content AND sender_type = 'prospecto') AS tiene_msg_prospecto,\n    BOOL_OR(has_content AND sender_type = 'bot') AS tiene_msg_bot,\n    BOOL_OR(has_content) AS has_convo,\n    BOOL_OR(plataforma_origen ILIKE '%CTWA%') AS has_ctwa,\n    BOOL_OR(message_class = 'Campa?a') AS has_campana\n  FROM scoped_msgs GROUP BY lead_id\n),\nprospecto_state AS (\n  SELECT p.lead_id, BOOL_OR(p.bot_estado = 'Activo') AS is_active,\n    BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\ntarget_leads AS (\n  SELECT lf.lead_id\n  FROM lead_flags lf\n  INNER JOIN prospecto_state ps ON ps.lead_id = lf.lead_id\n  WHERE lf.has_convo\n    AND (lf.has_ctwa OR lf.has_campana OR COALESCE(ps.is_active, false))\n    AND lf.tiene_msg_prospecto\n    AND lf.tiene_msg_bot\n    AND COALESCE(ps.phone_blacklisted, false) = false\n)\nSELECT tl.lead_id, 1 AS registros_lead\nFROM target_leads tl\nORDER BY tl.lead_id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        16
+      ],
+      "id": "6c0085f7-a8d2-40a7-b19a-6af52e8d18fa",
+      "name": "Lead Registration Calls",
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Set | All Params').first().json;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\n\nconst segundosPorRegistro = n(params.segundos_por_registro_lead);\nconst filas = items.map(i => i.json);\nconst leadsSet = new Set(filas.map(f => f.lead_id));\nconst totalRegistros = filas.length;\nconst horasAhorradas = round((totalRegistros * segundosPorRegistro) / 3600, 2);\nconst ahorroEquivalenteBob = round(horasAhorradas * costoHoraBob, 2);\nconst porLead = [...leadsSet].map(lead_id => ({ lead_id, total_registros: 1, horas_ahorradas: round(segundosPorRegistro / 3600, 4), ahorro_equivalente_bob: round((segundosPorRegistro / 3600) * costoHoraBob, 2) }));\nreturn [{ json: { tipo_stats: 'lead_registration', clasificacion_ahorro: 'directo', scale_mode: 'per_lead', resumen_ejecutivo: { leads_atendidos: leadsSet.size, registros_procesados: totalRegistros, segundos_que_tomaria_a_un_humano_por_registro: segundosPorRegistro, horas_ahorradas: horasAhorradas, costo_por_hora_de_un_asistente_humano_bob: costoHoraBob, ahorro_equivalente_bob: ahorroEquivalenteBob }, detalle_tecnico: { supuestos_usados: { segundos_por_registro: segundosPorRegistro, salario_mensual_de_un_asistente_humano_bob: salarioMensualBob, horas_de_trabajo_por_semana: horasSemana }, desglose_por_lead: porLead } }}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        16
+      ],
+      "id": "35ecb932-d2b8-4ff9-a59e-87009b1a39a0",
+      "name": "Lead Registration Stats"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Summary Interaction Calls ? agrupa mensajes en interacciones por inactividad */\nWITH scoped_msgs AS (\n  SELECT cm.lead_id, LOWER(TRIM(cm.tipo_emisor)) AS sender_type, cm.message_class, cm.plataforma_origen,\n    NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL AS has_content\n  FROM public.chat_messages cm\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n),\nlead_flags AS (\n  SELECT lead_id,\n    BOOL_OR(has_content AND sender_type = 'prospecto') AS tiene_msg_prospecto,\n    BOOL_OR(has_content AND sender_type = 'bot') AS tiene_msg_bot,\n    BOOL_OR(has_content) AS has_convo,\n    BOOL_OR(plataforma_origen ILIKE '%CTWA%') AS has_ctwa,\n    BOOL_OR(message_class = 'Campa?a') AS has_campana\n  FROM scoped_msgs GROUP BY lead_id\n),\nprospecto_state AS (\n  SELECT p.lead_id, BOOL_OR(p.bot_estado = 'Activo') AS is_active,\n    BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\ntarget_leads AS (\n  SELECT lf.lead_id\n  FROM lead_flags lf\n  INNER JOIN prospecto_state ps ON ps.lead_id = lf.lead_id\n  WHERE lf.has_convo\n    AND (lf.has_ctwa OR lf.has_campana OR COALESCE(ps.is_active, false))\n    AND lf.tiene_msg_prospecto\n    AND lf.tiene_msg_bot\n    AND COALESCE(ps.phone_blacklisted, false) = false\n),\nraw_messages AS (\n  SELECT cm.id, cm.lead_id, COALESCE(cm.chat_id, '__lead_' || cm.lead_id::text) AS chat_key,\n    LOWER(TRIM(cm.tipo_emisor)) AS sender_type,\n    COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) AS msg_at,\n    NULLIF(TRIM(COALESCE(cm.content, '')), '') AS clean_content\n  FROM public.chat_messages cm\n  INNER JOIN target_leads tl ON tl.lead_id = cm.lead_id\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n    AND NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL\n),\nordered_messages AS (\n  SELECT rm.*, LAG(rm.msg_at) OVER (PARTITION BY rm.lead_id, rm.chat_key ORDER BY rm.msg_at, rm.id) AS prev_msg_at\n  FROM raw_messages rm\n),\nmarked AS (\n  SELECT om.*,\n    CASE WHEN om.prev_msg_at IS NULL THEN 1\n         WHEN om.msg_at - om.prev_msg_at > ({{ $('Set | All Params').first().json.horas_idle_para_interaccion_resumen }}::numeric * interval '1 hour') THEN 1\n         ELSE 0 END AS starts_new_interaction\n  FROM ordered_messages om\n),\nsessionized AS (\n  SELECT m.*, SUM(starts_new_interaction) OVER (PARTITION BY m.lead_id, m.chat_key ORDER BY m.msg_at, m.id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS interaction_number\n  FROM marked m\n),\ninteractions AS (\n  SELECT lead_id, chat_key, interaction_number, MIN(msg_at) AS interaction_start_at, MAX(msg_at) AS interaction_end_at,\n    COUNT(*) AS total_messages,\n    COUNT(*) FILTER (WHERE sender_type = 'prospecto') AS prospecto_messages,\n    COUNT(*) FILTER (WHERE sender_type IN ('bot', 'usuario')) AS handler_messages\n  FROM sessionized\n  GROUP BY lead_id, chat_key, interaction_number\n)\nSELECT * FROM interactions\nWHERE prospecto_messages > 0\nORDER BY interaction_start_at DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        208
+      ],
+      "id": "5483f228-c4d7-4566-8041-d7cdb2a4f9a4",
+      "name": "Summary Interaction Calls",
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Set | All Params').first().json;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\n\nconst segundosPorInteraccion = n(params.segundos_por_actualizacion_resumen_interaccion);\nconst idleHours = n(params.horas_idle_para_interaccion_resumen);\nconst filas = items.map(i => i.json);\nconst leadsSet = new Set(filas.map(f => f.lead_id));\nconst totalInteracciones = filas.length;\nconst horasAhorradas = round((totalInteracciones * segundosPorInteraccion) / 3600, 2);\nconst ahorroEquivalenteBob = round(horasAhorradas * costoHoraBob, 2);\nconst porLeadMap = {};\nfor (const f of filas) { const id = f.lead_id; porLeadMap[id] ||= { lead_id: id, total_interacciones: 0, total_messages: 0, prospecto_messages: 0, handler_messages: 0 }; porLeadMap[id].total_interacciones++; porLeadMap[id].total_messages += n(f.total_messages); porLeadMap[id].prospecto_messages += n(f.prospecto_messages); porLeadMap[id].handler_messages += n(f.handler_messages); }\nconst porLead = Object.values(porLeadMap).map(l => ({ ...l, horas_ahorradas: round((l.total_interacciones * segundosPorInteraccion) / 3600, 4), ahorro_equivalente_bob: round(((l.total_interacciones * segundosPorInteraccion) / 3600) * costoHoraBob, 2) }));\nreturn [{ json: { tipo_stats: 'summary_updates', clasificacion_ahorro: 'adicional', scale_mode: 'per_lead', resumen_ejecutivo: { leads_atendidos: leadsSet.size, interacciones_procesadas: totalInteracciones, horas_idle_para_nueva_interaccion: idleHours, segundos_que_tomaria_a_un_humano_por_actualizacion: segundosPorInteraccion, horas_ahorradas: horasAhorradas, costo_por_hora_de_un_asistente_humano_bob: costoHoraBob, ahorro_equivalente_bob: ahorroEquivalenteBob }, detalle_tecnico: { supuestos_usados: { horas_idle_para_nueva_interaccion: idleHours, segundos_por_actualizacion_resumen: segundosPorInteraccion, salario_mensual_de_un_asistente_humano_bob: salarioMensualBob, horas_de_trabajo_por_semana: horasSemana }, desglose_por_lead: porLead } }}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        208
+      ],
+      "id": "d1e77c47-db96-4ef9-a77b-386e61823a88",
+      "name": "Summary Interaction Stats"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Pipeline Move Calls ? movimientos de etapa inferidos desde uso de herramientas */\nWITH scoped_msgs AS (\n  SELECT cm.lead_id, LOWER(TRIM(cm.tipo_emisor)) AS sender_type, cm.message_class, cm.plataforma_origen,\n    NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL AS has_content\n  FROM public.chat_messages cm\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n),\nlead_flags AS (\n  SELECT lead_id,\n    BOOL_OR(has_content AND sender_type = 'prospecto') AS tiene_msg_prospecto,\n    BOOL_OR(has_content AND sender_type = 'bot') AS tiene_msg_bot,\n    BOOL_OR(has_content) AS has_convo,\n    BOOL_OR(plataforma_origen ILIKE '%CTWA%') AS has_ctwa,\n    BOOL_OR(message_class = 'Campa?a') AS has_campana\n  FROM scoped_msgs GROUP BY lead_id\n),\nprospecto_state AS (\n  SELECT p.lead_id, BOOL_OR(p.bot_estado = 'Activo') AS is_active,\n    BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\ntarget_leads AS (\n  SELECT lf.lead_id\n  FROM lead_flags lf\n  INNER JOIN prospecto_state ps ON ps.lead_id = lf.lead_id\n  WHERE lf.has_convo\n    AND (lf.has_ctwa OR lf.has_campana OR COALESCE(ps.is_active, false))\n    AND lf.tiene_msg_prospecto\n    AND lf.tiene_msg_bot\n    AND COALESCE(ps.phone_blacklisted, false) = false\n),\nscoped_log AS (\n  SELECT z.id, z.created_at, z.execution_id, z.lead_id, z.tool_name, z.merge_output\n  FROM public.z_execution_log z\n  INNER JOIN target_leads tl ON tl.lead_id = z.lead_id\n  WHERE z.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND z.execution_type = 'prod'\n    AND z.tool_name IN ('needs_property_match', 'needs_property_details', 'needs_scheduling')\n    AND z.created_at >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND z.created_at < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n),\nrequerimiento_moves AS (\n  SELECT lead_id, MIN(created_at) AS move_at, 'to_requerimiento' AS move_type\n  FROM scoped_log\n  WHERE tool_name IN ('needs_property_match', 'needs_property_details')\n  GROUP BY lead_id\n),\nscheduler_elements AS (\n  SELECT sl.*, elem\n  FROM scoped_log sl\n  CROSS JOIN LATERAL jsonb_array_elements(sl.merge_output->'data') AS elem\n  WHERE sl.tool_name = 'needs_scheduling' AND elem ? sl.tool_name\n),\nreunion_moves AS (\n  SELECT lead_id, MIN(created_at) AS move_at, 'to_reunion_agendada' AS move_type\n  FROM scheduler_elements\n  WHERE (elem -> tool_name ->> 'start_at') IS NOT NULL\n    AND NULLIF(elem -> tool_name ->> 'event_deleted', '') IS NULL\n  GROUP BY lead_id\n)\nSELECT * FROM requerimiento_moves\nUNION ALL\nSELECT * FROM reunion_moves\nORDER BY move_at DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        400
+      ],
+      "id": "63b53509-54a0-4976-b9bf-2d93e0e87259",
+      "name": "Pipeline Move Calls",
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Set | All Params').first().json;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\n\nconst segundosPorMovimiento = n(params.segundos_por_movimiento_embudo);\nconst filas = items.map(i => i.json);\nconst leadsSet = new Set(filas.map(f => f.lead_id));\nconst conteoPorTipo = {};\nfor (const f of filas) conteoPorTipo[f.move_type || 'desconocido'] = (conteoPorTipo[f.move_type || 'desconocido'] || 0) + 1;\nconst totalMovimientos = filas.length;\nconst horasAhorradas = round((totalMovimientos * segundosPorMovimiento) / 3600, 2);\nconst ahorroEquivalenteBob = round(horasAhorradas * costoHoraBob, 2);\nconst porLeadMap = {};\nfor (const f of filas) { const id = f.lead_id; porLeadMap[id] ||= { lead_id: id, total_movimientos: 0, to_requerimiento: 0, to_reunion_agendada: 0 }; porLeadMap[id].total_movimientos++; if (f.move_type === 'to_requerimiento') porLeadMap[id].to_requerimiento++; if (f.move_type === 'to_reunion_agendada') porLeadMap[id].to_reunion_agendada++; }\nconst porLead = Object.values(porLeadMap).map(l => ({ ...l, horas_ahorradas: round((l.total_movimientos * segundosPorMovimiento) / 3600, 4), ahorro_equivalente_bob: round(((l.total_movimientos * segundosPorMovimiento) / 3600) * costoHoraBob, 2) }));\nreturn [{ json: { tipo_stats: 'pipeline_moves', clasificacion_ahorro: 'adicional', scale_mode: 'per_lead', resumen_ejecutivo: { leads_atendidos: leadsSet.size, movimientos_procesados: totalMovimientos, movimientos_por_tipo: conteoPorTipo, segundos_que_tomaria_a_un_humano_por_movimiento: segundosPorMovimiento, horas_ahorradas: horasAhorradas, costo_por_hora_de_un_asistente_humano_bob: costoHoraBob, ahorro_equivalente_bob: ahorroEquivalenteBob }, detalle_tecnico: { supuestos_usados: { segundos_por_movimiento_embudo: segundosPorMovimiento, salario_mensual_de_un_asistente_humano_bob: salarioMensualBob, horas_de_trabajo_por_semana: horasSemana }, desglose_por_lead: porLead } }}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        400
+      ],
+      "id": "e655e5a0-d046-4416-93dd-deb616cd9b88",
+      "name": "Pipeline Move Stats"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Inventory Ops Calls ? creaci?n de inventario + revisi?n quincenal de disponibilidad */\nWITH params AS (\n  SELECT '{{ $('Set | All Params').first().json.period_start }}'::timestamp AS period_start,\n         '{{ $('Set | All Params').first().json.period_end }}'::timestamp AS period_end,\n         {{ $('Set | All Params').first().json.dias_ciclo_revision_disponibilidad_proyecto }}::numeric AS revision_cycle_days\n),\nperiod AS (\n  SELECT EXTRACT(EPOCH FROM (period_end - period_start)) / 86400.0 AS period_days, revision_cycle_days FROM params\n),\nprojects_scope AS (\n  SELECT p.id FROM public.projects p\n  WHERE p.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n),\nstandalone_listings_scope AS (\n  SELECT l.id FROM public.listings l\n  WHERE l.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND l.record_status = 1\n    AND l.listing_project_id IS NULL\n),\ncounts AS (\n  SELECT (SELECT COUNT(*) FROM projects_scope)::numeric AS project_count,\n         (SELECT COUNT(*) FROM standalone_listings_scope)::numeric AS standalone_listing_count,\n         (SELECT period_days FROM period) AS period_days,\n         (SELECT revision_cycle_days FROM period) AS revision_cycle_days\n)\nSELECT 'project_creation' AS inventory_work_type, project_count AS units, project_count, standalone_listing_count, period_days, revision_cycle_days FROM counts\nUNION ALL\nSELECT 'standalone_listing_creation' AS inventory_work_type, standalone_listing_count AS units, project_count, standalone_listing_count, period_days, revision_cycle_days FROM counts\nUNION ALL\nSELECT 'project_availability_revision' AS inventory_work_type,\n  CASE WHEN revision_cycle_days > 0 THEN project_count * (period_days / revision_cycle_days) ELSE 0 END AS units,\n  project_count, standalone_listing_count, period_days, revision_cycle_days\nFROM counts;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        592
+      ],
+      "id": "df95d5b7-2358-427e-bca0-2eccb4c5f760",
+      "name": "Inventory Ops Calls",
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Set | All Params').first().json;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\n\nconst minutosPorProyecto = n(params.minutos_por_proyecto_inventario);\nconst minutosPorListing = n(params.minutos_por_listing_independiente_inventario);\nconst minutosRevisionProyecto = n(params.minutos_revision_disponibilidad_proyecto);\nconst filas = items.map(i => i.json);\nconst byType = Object.fromEntries(filas.map(f => [f.inventory_work_type, f]));\nconst projectCreationUnits = n(byType.project_creation?.units);\nconst listingCreationUnits = n(byType.standalone_listing_creation?.units);\nconst revisionUnits = n(byType.project_availability_revision?.units);\nconst projectCount = n(filas[0]?.project_count);\nconst standaloneListingCount = n(filas[0]?.standalone_listing_count);\nconst periodDays = n(filas[0]?.period_days);\nconst revisionCycleDays = n(filas[0]?.revision_cycle_days);\nconst minutosCreacionProyectos = projectCreationUnits * minutosPorProyecto;\nconst minutosCreacionListings = listingCreationUnits * minutosPorListing;\nconst minutosRevision = revisionUnits * minutosRevisionProyecto;\nconst horasCreacionInventario = round((minutosCreacionProyectos + minutosCreacionListings) / 60, 2);\nconst horasRevisionDisponibilidadMes = round(minutosRevision / 60, 2);\nconst horasTotalReferencia = round(horasCreacionInventario + horasRevisionDisponibilidadMes, 2);\nreturn [{ json: { tipo_stats: 'inventory_ops', clasificacion_ahorro: 'adicional', scale_mode: 'inventory_not_lead_scaled', resumen_ejecutivo: { proyectos_en_db: projectCount, listings_independientes_activos: standaloneListingCount, revisiones_de_disponibilidad_equivalentes_en_periodo: round(revisionUnits, 2), minutos_por_proyecto_inventario: minutosPorProyecto, minutos_por_listing_independiente_inventario: minutosPorListing, minutos_revision_disponibilidad_por_proyecto: minutosRevisionProyecto, ciclo_revision_disponibilidad_dias: revisionCycleDays, horas_creacion_inventario: horasCreacionInventario, horas_revision_disponibilidad_mes: horasRevisionDisponibilidadMes, horas_ahorradas: horasTotalReferencia, costo_por_hora_de_un_asistente_humano_bob: costoHoraBob, ahorro_equivalente_bob: round(horasTotalReferencia * costoHoraBob, 2), ahorro_recurrente_mes_bob: round(horasRevisionDisponibilidadMes * costoHoraBob, 2), ahorro_setup_inventario_bob: round(horasCreacionInventario * costoHoraBob, 2) }, detalle_tecnico: { nota: 'Creaci?n de inventario es valor tipo setup. Revisi?n de disponibilidad es recurrente mensual y no se escala por leads.', supuestos_usados: { minutos_por_proyecto_inventario: minutosPorProyecto, minutos_por_listing_independiente_inventario: minutosPorListing, minutos_revision_disponibilidad_por_proyecto: minutosRevisionProyecto, dias_ciclo_revision_disponibilidad_proyecto: revisionCycleDays, period_days: periodDays, salario_mensual_de_un_asistente_humano_bob: salarioMensualBob, horas_de_trabajo_por_semana: horasSemana }, desglose_inventario: { project_creation: { units: projectCreationUnits, minutos: round(minutosCreacionProyectos, 2) }, standalone_listing_creation: { units: listingCreationUnits, minutos: round(minutosCreacionListings, 2) }, project_availability_revision: { units: round(revisionUnits, 2), minutos: round(minutosRevision, 2) } } } }}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        592
+      ],
+      "id": "91d28f85-c6a0-4665-88f3-8dc04a5a7fe6",
+      "name": "Inventory Ops Stats"
+    }
+  ],
+  "projection_node_jsCode": "// ============================================================\n// PROYECCI?N TOTAL DE AHORRO ? DIRECTO + ADICIONAL\n// ============================================================\nconst params = $('Set | All Params').first().json;\nconst leadsProyectados = Number(params.leads_interacted_proyectados);\nconst interactedRaw = $('Interacted Leads Base').all().map(i => i.json);\nconst todos = items.map(i => i.json);\nconst baseLeadsSet = new Set(interactedRaw.map(r => Number(r.lead_id)));\nconst baseLeadsCount = baseLeadsSet.size;\nconst scale = baseLeadsCount > 0 ? leadsProyectados / baseLeadsCount : 0;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst costoHoraBob = Math.round((salarioMensualBob / (horasSemana * SEMANAS_POR_MES)) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\nfunction firstLeadKeys(item){ return Object.keys((item.detalle_tecnico?.desglose_por_lead || [])[0] || {}); }\nfunction isBotWorkload(item){ return item.tipo_stats === 'bot_workload'; }\nfunction isLeadRegistration(item){ return item.tipo_stats === 'lead_registration'; }\nfunction isSummaryUpdates(item){ return item.tipo_stats === 'summary_updates'; }\nfunction isPipelineMoves(item){ return item.tipo_stats === 'pipeline_moves'; }\nfunction isInventoryOps(item){ return item.tipo_stats === 'inventory_ops'; }\nfunction isSuggester(item){ return firstLeadKeys(item).includes('modelos_evaluados_total'); }\nfunction isDetails(item){ return firstLeadKeys(item).includes('proyectos_compilados_total'); }\nfunction isScheduler(item){ const keys = firstLeadKeys(item); return keys.includes('total_solicitudes') && !isBotWorkload(item) && !isLeadRegistration(item) && !isSummaryUpdates(item) && !isPipelineMoves(item); }\nconst components = { lead_registration: todos.find(isLeadRegistration), bot_workload: todos.find(isBotWorkload), suggester: todos.find(isSuggester), details: todos.find(isDetails), scheduler: todos.find(isScheduler), summary_updates: todos.find(isSummaryUpdates), pipeline_moves: todos.find(isPipelineMoves), inventory_ops: todos.find(isInventoryOps) };\nconst required = ['lead_registration','bot_workload','suggester','details','scheduler','summary_updates','pipeline_moves','inventory_ops'];\nconst missing = required.filter(k => !components[k]);\nif (!baseLeadsCount || missing.length) return [{ json: { tipo_salida: 'error_missing_input_branch_v2', error: 'Faltan ramas para calcular la proyecci?n completa', missing, interacted_rows: baseLeadsCount, received_tipo_stats: todos.map(x => x.tipo_stats || null), received_keys: todos.map(x => firstLeadKeys(x)) } }];\nfunction hoursOf(item, field='horas_ahorradas'){ return n(item?.resumen_ejecutivo?.[field]); }\nfunction bobOfHours(h){ return round(h * costoHoraBob, 2); }\nconst directKeys = ['lead_registration','bot_workload','suggester','details','scheduler'];\nconst additionalLeadKeys = ['summary_updates','pipeline_moves'];\nconst directRealHours = round(directKeys.reduce((s,k)=>s+hoursOf(components[k]),0),2);\nconst directProjectedHours = round(directRealHours * scale, 2);\nconst additionalLeadRealHours = round(additionalLeadKeys.reduce((s,k)=>s+hoursOf(components[k]),0),2);\nconst additionalLeadProjectedHours = round(additionalLeadRealHours * scale, 2);\nconst inventorySetupHours = hoursOf(components.inventory_ops, 'horas_creacion_inventario');\nconst inventoryRecurringHours = hoursOf(components.inventory_ops, 'horas_revision_disponibilidad_mes');\nconst additionalMonthlyProjectedHours = round(additionalLeadProjectedHours + inventoryRecurringHours, 2);\nconst additionalReferenceTotalHours = round(additionalMonthlyProjectedHours + inventorySetupHours, 2);\nconst totalMonthlyProjectedHours = round(directProjectedHours + additionalMonthlyProjectedHours, 2);\nconst totalReferenceWithSetupHours = round(directProjectedHours + additionalReferenceTotalHours, 2);\nfunction compSummary(k){ const item = components[k]; const rawH = hoursOf(item); const isInventory = k === 'inventory_ops'; const projectedH = isInventory ? rawH : rawH * scale; return { componente: k, clasificacion_ahorro: item.clasificacion_ahorro || null, scale_mode: item.scale_mode || (isInventory ? 'inventory_not_lead_scaled' : 'per_lead'), leads_con_uso: item.resumen_ejecutivo?.leads_atendidos ?? null, horas_reales_periodo: round(rawH,2), horas_proyectadas_o_referencia: round(projectedH,2), ahorro_bob_proyectado_o_referencia: bobOfHours(projectedH), resumen_ejecutivo: item.resumen_ejecutivo || {} }; }\nconst porLead = {};\nfor (const lead_id of baseLeadsSet) porLead[lead_id] = { lead_id };\nfor (const [k,item] of Object.entries(components)) {\n  for (const r of (item.detalle_tecnico?.desglose_por_lead || [])) {\n    const id = Number(r.lead_id); if (!porLead[id]) continue;\n    porLead[id]['horas_' + k] = n(r.horas_ahorradas);\n    porLead[id]['ahorro_' + k + '_bob'] = n(r.ahorro_equivalente_bob);\n  }\n}\nfor (const l of Object.values(porLead)) { l.horas_directas = round(directKeys.reduce((s,k)=>s+n(l['horas_' + k]),0),4); l.horas_adicionales = round(additionalLeadKeys.reduce((s,k)=>s+n(l['horas_' + k]),0),4); }\nreturn [{ json: { tipo_salida: 'projection_total_ahorro_interacted_v2', scope: { base: 'Leads (CTWA/MM/Active) with Bot & Lead Reply', periodo_inicio: params.period_start, periodo_fin: params.period_end, target_user_id: params.target_user_id, leads_interacted_reales_periodo: baseLeadsCount, leads_interacted_proyectados: leadsProyectados, escala_proyeccion_leads: round(scale,4) }, resumen_capas: { ahorro_operativo_directo: { componentes: directKeys, horas_reales_periodo: directRealHours, horas_proyectadas_mes: directProjectedHours, ahorro_proyectado_mes_bob: bobOfHours(directProjectedHours) }, valor_operativo_adicional_automatizado: { componentes_lead_scaled: additionalLeadKeys, horas_lead_scaled_reales_periodo: additionalLeadRealHours, horas_lead_scaled_proyectadas_mes: additionalLeadProjectedHours, horas_revision_disponibilidad_mes: round(inventoryRecurringHours,2), horas_creacion_inventario_setup: round(inventorySetupHours,2), horas_adicionales_recurrentes_mes: additionalMonthlyProjectedHours, valor_adicional_recurrente_mes_bob: bobOfHours(additionalMonthlyProjectedHours), horas_adicionales_referencia_con_setup: additionalReferenceTotalHours, valor_adicional_referencia_con_setup_bob: bobOfHours(additionalReferenceTotalHours) }, total_recurrente_mes: { horas: totalMonthlyProjectedHours, bob: bobOfHours(totalMonthlyProjectedHours) }, total_referencia_con_setup_inventario: { horas: totalReferenceWithSetupHours, bob: bobOfHours(totalReferenceWithSetupHours) } }, resumen_por_componente: Object.fromEntries(required.map(k => [k, compSummary(k)])), detalle_tecnico: { costo_por_hora_asistente_humano_bob: costoHoraBob, supuestos_nuevos: { segundos_por_registro_lead: params.segundos_por_registro_lead, horas_idle_para_interaccion_resumen: params.horas_idle_para_interaccion_resumen, segundos_por_actualizacion_resumen_interaccion: params.segundos_por_actualizacion_resumen_interaccion, segundos_por_movimiento_embudo: params.segundos_por_movimiento_embudo, minutos_por_proyecto_inventario: params.minutos_por_proyecto_inventario, minutos_por_listing_independiente_inventario: params.minutos_por_listing_independiente_inventario, minutos_revision_disponibilidad_proyecto: params.minutos_revision_disponibilidad_proyecto, dias_ciclo_revision_disponibilidad_proyecto: params.dias_ciclo_revision_disponibilidad_proyecto }, desglose_por_lead: Object.values(porLead) } } }];",
+  "merge_numberInputs": 8,
+  "connection_patch": {
+    "from_interacted_leads_base_to_calls": [
+      "Lead Registration Calls",
+      "Summary Interaction Calls",
+      "Pipeline Move Calls",
+      "Inventory Ops Calls"
+    ],
+    "stats_to_merge_indexes": {
+      "Lead Registration Stats": 4,
+      "Summary Interaction Stats": 5,
+      "Pipeline Move Stats": 6,
+      "Inventory Ops Stats": 7
+    }
+  }
+}

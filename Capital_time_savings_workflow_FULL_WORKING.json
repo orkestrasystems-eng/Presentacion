@@ -1,0 +1,785 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        -560
+      ],
+      "id": "c642b191-c9b0-4baa-8691-270a2f6004e5",
+      "name": "When clicking 'Execute workflow'"
+    },
+    {
+      "parameters": {
+        "numberInputs": 8
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        32,
+        -576
+      ],
+      "id": "6b97e9d9-ba56-4e98-99db-8f5be59d1d22",
+      "name": "Merge Stats"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* STEP 1 (v6) - Suggester (needs_property_match) volume extraction */\n\nWITH scoped_leads AS (\n  SELECT DISTINCT z.lead_id\n  FROM public.z_execution_log z\n  WHERE z.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND z.lead_id IS NOT NULL\n),\nprospecto_phone_flags AS (\n  SELECT p.lead_id, BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\nlead_blacklist AS (\n  SELECT sl.lead_id, (ppf.lead_id IS NULL OR COALESCE(ppf.phone_blacklisted, false)) AS is_blacklisted\n  FROM scoped_leads sl\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = sl.lead_id\n),\nscoped_log AS (\n  SELECT z.id, z.created_at, z.execution_id, z.lead_id, z.tool_name, z.merge_output\n  FROM public.z_execution_log z\n  LEFT JOIN lead_blacklist lb ON lb.lead_id = z.lead_id\n  WHERE z.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND z.execution_type = 'prod'\n    AND z.tool_name = 'needs_property_match'\n    AND z.created_at >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND z.created_at < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n    AND COALESCE(lb.is_blacklisted, false) = false\n),\ndata_elements AS (\n  SELECT sl.*, elem\n  FROM scoped_log sl\n  CROSS JOIN LATERAL jsonb_array_elements(sl.merge_output->'data') AS elem\n  WHERE elem ? sl.tool_name\n),\nproperty_match_requests AS (\n  SELECT\n    de.id AS execution_log_id, de.execution_id, de.created_at, de.lead_id,\n    req ->> 'request_number' AS request_number,\n    req ->> 'request_result' AS request_result,\n    (req ->> 'has_exact')::boolean AS has_exact,\n    req ->> 'structured_criteria' AS structured_criteria,\n    req ->> 'semantic_criteria' AS semantic_criteria,\n    req ->> 'response_context' AS response_context\n  FROM data_elements de\n  CROSS JOIN LATERAL jsonb_array_elements(de.elem -> de.tool_name -> 'requests') AS req\n)\nSELECT\n  execution_log_id, execution_id, created_at, lead_id, request_number, request_result, has_exact, structured_criteria,\n  (regexp_match(response_context, '(\\d+)\\s*proyectos'))[1]::int AS proyectos_evaluados,\n  (regexp_match(response_context, '(\\d+)\\s*modelos'))[1]::int AS modelos_evaluados_criterio,\n  (regexp_match(response_context, '(\\d+)\\s*unidades'))[1]::int AS unidades_evaluadas,\n  COALESCE((SELECT COUNT(*) FROM regexp_matches(COALESCE(response_context, ''), 'docs: brochure', 'g')), 0)::int AS opciones_presentadas\nFROM property_match_requests\nORDER BY created_at DESC;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        -752
+      ],
+      "id": "8925e29f-4952-470f-90ca-91d20b49dc04",
+      "name": "Suggester Calls",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Property Details (needs_property_details) volume extraction */\n\nWITH scoped_leads AS (\n  SELECT DISTINCT z.lead_id\n  FROM public.z_execution_log z\n  WHERE z.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND z.lead_id IS NOT NULL\n),\nprospecto_phone_flags AS (\n  SELECT p.lead_id, BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\nlead_blacklist AS (\n  SELECT sl.lead_id, (ppf.lead_id IS NULL OR COALESCE(ppf.phone_blacklisted, false)) AS is_blacklisted\n  FROM scoped_leads sl\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = sl.lead_id\n),\nscoped_log AS (\n  SELECT z.id, z.created_at, z.execution_id, z.lead_id, z.tool_name, z.merge_output\n  FROM public.z_execution_log z\n  LEFT JOIN lead_blacklist lb ON lb.lead_id = z.lead_id\n  WHERE z.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND z.execution_type = 'prod'\n    AND z.tool_name = 'needs_property_details'\n    AND z.created_at >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND z.created_at < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n    AND COALESCE(lb.is_blacklisted, false) = false\n),\ndata_elements AS (\n  SELECT sl.*, elem\n  FROM scoped_log sl\n  CROSS JOIN LATERAL jsonb_array_elements(sl.merge_output->'data') AS elem\n  WHERE elem ? sl.tool_name\n),\nraw_outputs AS (\n  SELECT de.id AS execution_log_id, de.execution_id, de.created_at, de.lead_id,\n    de.elem -> de.tool_name ->> 'output' AS raw_text\n  FROM data_elements de\n  WHERE de.elem -> de.tool_name ->> 'output' IS NOT NULL\n    AND (SELECT COUNT(*) FROM regexp_matches(de.elem -> de.tool_name ->> 'output', '\"response_type\"', 'g')) = 1\n),\nproperty_details_parsed AS (\n  SELECT execution_log_id, execution_id, created_at, lead_id, raw_text::jsonb AS parsed_output\n  FROM raw_outputs\n)\nSELECT\n  execution_log_id, execution_id, created_at, lead_id,\n  parsed_output ->> 'response_type' AS response_type,\n  COALESCE(jsonb_array_length(parsed_output -> 'projects'), 0) AS proyectos_compilados,\n  COALESCE(jsonb_array_length(parsed_output -> 'unit_groups'), 0) AS unidades_compiladas,\n  COALESCE(jsonb_array_length(parsed_output -> 'standalone_listings'), 0) AS listados_independientes_compilados\nFROM property_details_parsed\nORDER BY created_at DESC;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        -560
+      ],
+      "id": "994e6b06-e464-4146-9ac3-24b226c82e66",
+      "name": "Property Details Calls1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Scheduler (needs_scheduling) volume extraction */\n\nWITH scoped_leads AS (\n  SELECT DISTINCT z.lead_id\n  FROM public.z_execution_log z\n  WHERE z.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND z.lead_id IS NOT NULL\n),\nprospecto_phone_flags AS (\n  SELECT p.lead_id, BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\nlead_blacklist AS (\n  SELECT sl.lead_id, (ppf.lead_id IS NULL OR COALESCE(ppf.phone_blacklisted, false)) AS is_blacklisted\n  FROM scoped_leads sl\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = sl.lead_id\n),\nscoped_log AS (\n  SELECT z.id, z.created_at, z.execution_id, z.lead_id, z.tool_name, z.merge_output\n  FROM public.z_execution_log z\n  LEFT JOIN lead_blacklist lb ON lb.lead_id = z.lead_id\n  WHERE z.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND z.execution_type = 'prod'\n    AND z.tool_name = 'needs_scheduling'\n    AND z.created_at >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND z.created_at < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n    AND COALESCE(lb.is_blacklisted, false) = false\n),\ndata_elements AS (\n  SELECT sl.*, elem\n  FROM scoped_log sl\n  CROSS JOIN LATERAL jsonb_array_elements(sl.merge_output->'data') AS elem\n  WHERE elem ? sl.tool_name\n)\nSELECT\n  de.id AS execution_log_id, de.execution_id, de.created_at, de.lead_id,\n  de.elem -> de.tool_name ->> 'modality' AS modality,\n  (de.elem -> de.tool_name ->> 'start_at') IS NOT NULL AS tiene_start_at,\n  (de.elem -> de.tool_name ->> 'end_at') IS NOT NULL AS tiene_end_at,\n  NULLIF(de.elem -> de.tool_name ->> 'event_deleted', '') IS NOT NULL AS evento_eliminado\nFROM data_elements de\nORDER BY de.created_at DESC;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        -368
+      ],
+      "id": "c1733573-9d16-47ea-a2e1-03c1520d7436",
+      "name": "Scheduler Calls",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH prospecto_phone_flags AS (\n  SELECT p.lead_id,\n    BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted,\n    BOOL_OR(p.bot_estado = 'Activo') AS is_active_bot\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\nchat_flags AS (\n  SELECT cm.lead_id,\n    BOOL_OR(cm.plataforma_origen ILIKE '%CTWA%') AS has_ctwa,\n    BOOL_OR(cm.message_class = 'Campaña') AS has_campana,\n    BOOL_OR(NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL) AS has_convo,\n    MIN(COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el)) FILTER (\n      WHERE NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL\n        AND LOWER(TRIM(cm.tipo_emisor)) IN ('bot', 'usuario')\n        AND cm.message_class = 'Campaña'\n    ) AS first_masivo_at,\n    MAX(COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el)) FILTER (\n      WHERE NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL\n        AND LOWER(TRIM(cm.tipo_emisor)) = 'prospecto'\n    ) AS last_prospecto_reply_at\n  FROM public.chat_messages cm\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('').first().json.period_end }}'::timestamp\n  GROUP BY cm.lead_id\n),\ntool_leads AS (\n  SELECT z.lead_id,\n    BOOL_OR(z.tool_name = 'needs_property_match') AS used_suggester,\n    BOOL_OR(z.tool_name = 'needs_property_details') AS used_details,\n    BOOL_OR(z.tool_name = 'needs_scheduling') AS used_scheduler\n  FROM public.z_execution_log z\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = z.lead_id\n  WHERE z.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND z.execution_type = 'prod'\n    AND z.tool_name IN ('needs_property_match', 'needs_property_details', 'needs_scheduling')\n    AND z.created_at >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND z.created_at < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n    AND COALESCE(ppf.phone_blacklisted, false) = false\n    AND z.lead_id IS NOT NULL\n  GROUP BY z.lead_id\n),\nstage_leads AS (\n  -- 1. People with Convos\n  SELECT 1 AS s, 'People with Convos' AS stage, cf.lead_id\n  FROM chat_flags cf\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = cf.lead_id\n  WHERE cf.has_convo AND COALESCE(ppf.phone_blacklisted, false) = false\n\n  UNION ALL\n\n  -- 2. Leads (CTWA/MM/Active)\n  SELECT 2, 'Leads (CTWA/MM/Active)', cf.lead_id\n  FROM chat_flags cf\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = cf.lead_id\n  WHERE cf.has_convo\n    AND (cf.has_ctwa OR cf.has_campana OR COALESCE(ppf.is_active_bot, false))\n    AND COALESCE(ppf.phone_blacklisted, false) = false\n\n  UNION ALL\n\n  -- 3. MM\n  SELECT 3, 'MM', cf.lead_id\n  FROM chat_flags cf\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = cf.lead_id\n  WHERE cf.has_convo AND cf.has_campana\n    AND COALESCE(ppf.phone_blacklisted, false) = false\n\n  UNION ALL\n\n  -- 4. MM - Interacted (Replied After)\n  SELECT 4, 'MM - Interacted (Replied After)', cf.lead_id\n  FROM chat_flags cf\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = cf.lead_id\n  WHERE cf.has_convo AND cf.has_campana\n    AND cf.first_masivo_at IS NOT NULL\n    AND cf.last_prospecto_reply_at IS NOT NULL\n    AND cf.last_prospecto_reply_at > cf.first_masivo_at\n    AND COALESCE(ppf.phone_blacklisted, false) = false\n\n  UNION ALL\n\n  -- 5. CTWA only\n  SELECT 5, 'CTWA', cf.lead_id\n  FROM chat_flags cf\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = cf.lead_id\n  WHERE cf.has_convo AND cf.has_ctwa\n    AND COALESCE(ppf.phone_blacklisted, false) = false\n\n  UNION ALL\n\n  -- 6. Active Only (Not CTWA or MM)\n  SELECT 6, 'Active Only (Not CTWA or MM)', cf.lead_id\n  FROM chat_flags cf\n  LEFT JOIN prospecto_phone_flags ppf ON ppf.lead_id = cf.lead_id\n  WHERE cf.has_convo\n    AND COALESCE(ppf.is_active_bot, false)\n    AND NOT cf.has_ctwa AND NOT cf.has_campana\n    AND COALESCE(ppf.phone_blacklisted, false) = false\n)\nSELECT\n  sl.s,\n  sl.stage,\n  COUNT(DISTINCT sl.lead_id) AS total_leads,\n  COUNT(DISTINCT tl.lead_id) AS leads_used_any_tool,\n  COUNT(DISTINCT sl.lead_id) FILTER (WHERE tl.used_suggester) AS used_suggester,\n  COUNT(DISTINCT sl.lead_id) FILTER (WHERE tl.used_details) AS used_details,\n  COUNT(DISTINCT sl.lead_id) FILTER (WHERE tl.used_scheduler) AS used_scheduler\nFROM stage_leads sl\nLEFT JOIN tool_leads tl ON tl.lead_id = sl.lead_id\nGROUP BY sl.s, sl.stage\nORDER BY sl.s;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -928,
+        -752
+      ],
+      "id": "b681110a-a435-48b2-b9a2-3701e995809c",
+      "name": "Lead Category Diagnostics",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Interacted Leads base — the single source of truth for the projection\n   denominator across all 3 tools (Suggester / Details / Scheduler).\n\n   Definition (locked):\n     - Belongs to CTWA/MM/Active for the period\n     - Has >=1 real message from Prospecto (with content)\n     - Has >=1 real message from Bot (with content)\n     - Not in phone blacklist (metric_excluded_numbers)\n     - Has a prospectos row (no orphans)\n     - Deduped by lead_id\n*/\n\nWITH scoped_msgs AS (\n  SELECT\n    cm.lead_id,\n    LOWER(TRIM(cm.tipo_emisor)) AS sender_type,\n    cm.message_class,\n    cm.plataforma_origen,\n    NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL AS has_content\n  FROM public.chat_messages cm\n  WHERE cm.user_id = {{ $json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $json.period_end }}'::timestamp\n),\n\nlead_flags AS (\n  SELECT\n    lead_id,\n    BOOL_OR(has_content AND sender_type = 'prospecto') AS tiene_msg_prospecto,\n    BOOL_OR(has_content AND sender_type = 'bot')       AS tiene_msg_bot,\n    BOOL_OR(has_content)                                AS has_convo,\n    BOOL_OR(plataforma_origen ILIKE '%CTWA%')           AS has_ctwa,\n    BOOL_OR(message_class = 'Campaña')                  AS has_campana\n  FROM scoped_msgs\n  GROUP BY lead_id\n),\n\nprospecto_state AS (\n  SELECT\n    p.lead_id,\n    BOOL_OR(p.bot_estado = 'Activo') AS is_active,\n    BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n)\n\nSELECT\n  lf.lead_id\nFROM lead_flags lf\nINNER JOIN prospecto_state ps\n  ON ps.lead_id = lf.lead_id\nWHERE lf.has_convo\n  AND (\n    lf.has_ctwa\n    OR lf.has_campana\n    OR COALESCE(ps.is_active, false)\n  )\n  AND lf.tiene_msg_prospecto\n  AND lf.tiene_msg_bot\n  AND COALESCE(ps.phone_blacklisted, false) = false;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -928,
+        -560
+      ],
+      "id": "f553e5e9-1c6c-4315-9a1c-12d913c96898",
+      "name": "Interacted Leads Base",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// PROYECCI?N TOTAL DE AHORRO ? DIRECTO + ADICIONAL\n// ============================================================\nconst params = $('Set | All Params').first().json;\nconst leadsProyectados = Number(params.leads_interacted_proyectados);\nconst interactedRaw = $('Interacted Leads Base').all().map(i => i.json);\nconst todos = items.map(i => i.json);\nconst baseLeadsSet = new Set(interactedRaw.map(r => Number(r.lead_id)));\nconst baseLeadsCount = baseLeadsSet.size;\nconst scale = baseLeadsCount > 0 ? leadsProyectados / baseLeadsCount : 0;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst costoHoraBob = Math.round((salarioMensualBob / (horasSemana * SEMANAS_POR_MES)) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\nfunction firstLeadKeys(item){ return Object.keys((item.detalle_tecnico?.desglose_por_lead || [])[0] || {}); }\nfunction isBotWorkload(item){ return item.tipo_stats === 'bot_workload'; }\nfunction isLeadRegistration(item){ return item.tipo_stats === 'lead_registration'; }\nfunction isSummaryUpdates(item){ return item.tipo_stats === 'summary_updates'; }\nfunction isPipelineMoves(item){ return item.tipo_stats === 'pipeline_moves'; }\nfunction isInventoryOps(item){ return item.tipo_stats === 'inventory_ops'; }\nfunction isSuggester(item){ return firstLeadKeys(item).includes('modelos_evaluados_total'); }\nfunction isDetails(item){ return firstLeadKeys(item).includes('proyectos_compilados_total'); }\nfunction isScheduler(item){ const keys = firstLeadKeys(item); return keys.includes('total_solicitudes') && !isBotWorkload(item) && !isLeadRegistration(item) && !isSummaryUpdates(item) && !isPipelineMoves(item); }\nconst byType = Object.fromEntries(todos.filter(x => x.tipo_stats).map(x => [x.tipo_stats, x]));\nconst components = {\n  lead_registration: byType.lead_registration || todos.find(isLeadRegistration),\n  bot_workload: byType.bot_workload || todos.find(isBotWorkload),\n  suggester: byType.suggester || todos.find(isSuggester),\n  details: byType.details || todos.find(isDetails),\n  scheduler: byType.scheduler || todos.find(isScheduler),\n  summary_updates: byType.summary_updates || todos.find(isSummaryUpdates),\n  pipeline_moves: byType.pipeline_moves || todos.find(isPipelineMoves),\n  inventory_ops: byType.inventory_ops || todos.find(isInventoryOps)\n};\nconst required = ['lead_registration','bot_workload','suggester','details','scheduler','summary_updates','pipeline_moves','inventory_ops'];\nconst missing = required.filter(k => !components[k]);\nif (!baseLeadsCount || missing.length) return [{ json: { tipo_salida: 'error_missing_input_branch_v2', error: 'Faltan ramas para calcular la proyecci?n completa', missing, interacted_rows: baseLeadsCount, received_tipo_stats: todos.map(x => x.tipo_stats || null), received_keys: todos.map(x => firstLeadKeys(x)) } }];\nfunction hoursOf(item, field='horas_ahorradas'){ return n(item?.resumen_ejecutivo?.[field]); }\nfunction bobOfHours(h){ return round(h * costoHoraBob, 2); }\nconst directKeys = ['lead_registration','bot_workload','suggester','details','scheduler'];\nconst additionalLeadKeys = ['summary_updates','pipeline_moves'];\nconst directRealHours = round(directKeys.reduce((s,k)=>s+hoursOf(components[k]),0),2);\nconst directProjectedHours = round(directRealHours * scale, 2);\nconst additionalLeadRealHours = round(additionalLeadKeys.reduce((s,k)=>s+hoursOf(components[k]),0),2);\nconst additionalLeadProjectedHours = round(additionalLeadRealHours * scale, 2);\nconst inventorySetupHours = hoursOf(components.inventory_ops, 'horas_creacion_inventario');\nconst inventoryRecurringHours = hoursOf(components.inventory_ops, 'horas_revision_disponibilidad_mes');\nconst additionalMonthlyProjectedHours = round(additionalLeadProjectedHours + inventoryRecurringHours, 2);\nconst additionalReferenceTotalHours = round(additionalMonthlyProjectedHours + inventorySetupHours, 2);\nconst totalMonthlyProjectedHours = round(directProjectedHours + additionalMonthlyProjectedHours, 2);\nconst totalReferenceWithSetupHours = round(directProjectedHours + additionalReferenceTotalHours, 2);\nfunction compSummary(k){ const item = components[k]; const rawH = hoursOf(item); const isInventory = k === 'inventory_ops'; const projectedH = isInventory ? rawH : rawH * scale; return { componente: k, clasificacion_ahorro: item.clasificacion_ahorro || null, scale_mode: item.scale_mode || (isInventory ? 'inventory_not_lead_scaled' : 'per_lead'), leads_con_uso: item.resumen_ejecutivo?.leads_atendidos ?? null, horas_reales_periodo: round(rawH,2), horas_proyectadas_o_referencia: round(projectedH,2), ahorro_bob_proyectado_o_referencia: bobOfHours(projectedH), resumen_ejecutivo: item.resumen_ejecutivo || {} }; }\nconst porLead = {};\nfor (const lead_id of baseLeadsSet) porLead[lead_id] = { lead_id };\nfor (const [k,item] of Object.entries(components)) {\n  for (const r of (item.detalle_tecnico?.desglose_por_lead || [])) {\n    const id = Number(r.lead_id); if (!porLead[id]) continue;\n    porLead[id]['horas_' + k] = n(r.horas_ahorradas);\n    porLead[id]['ahorro_' + k + '_bob'] = n(r.ahorro_equivalente_bob);\n  }\n}\nfor (const l of Object.values(porLead)) { l.horas_directas = round(directKeys.reduce((s,k)=>s+n(l['horas_' + k]),0),4); l.horas_adicionales = round(additionalLeadKeys.reduce((s,k)=>s+n(l['horas_' + k]),0),4); }\nreturn [{ json: { tipo_salida: 'projection_total_ahorro_interacted_v2', scope: { base: 'Leads (CTWA/MM/Active) with Bot & Lead Reply', periodo_inicio: params.period_start, periodo_fin: params.period_end, target_user_id: params.target_user_id, leads_interacted_reales_periodo: baseLeadsCount, leads_interacted_proyectados: leadsProyectados, escala_proyeccion_leads: round(scale,4) }, resumen_capas: { ahorro_operativo_directo: { componentes: directKeys, horas_reales_periodo: directRealHours, horas_proyectadas_mes: directProjectedHours, ahorro_proyectado_mes_bob: bobOfHours(directProjectedHours) }, valor_operativo_adicional_automatizado: { componentes_lead_scaled: additionalLeadKeys, horas_lead_scaled_reales_periodo: additionalLeadRealHours, horas_lead_scaled_proyectadas_mes: additionalLeadProjectedHours, horas_revision_disponibilidad_mes: round(inventoryRecurringHours,2), horas_creacion_inventario_setup: round(inventorySetupHours,2), horas_adicionales_recurrentes_mes: additionalMonthlyProjectedHours, valor_adicional_recurrente_mes_bob: bobOfHours(additionalMonthlyProjectedHours), horas_adicionales_referencia_con_setup: additionalReferenceTotalHours, valor_adicional_referencia_con_setup_bob: bobOfHours(additionalReferenceTotalHours) }, total_recurrente_mes: { horas: totalMonthlyProjectedHours, bob: bobOfHours(totalMonthlyProjectedHours) }, total_referencia_con_setup_inventario: { horas: totalReferenceWithSetupHours, bob: bobOfHours(totalReferenceWithSetupHours) } }, resumen_por_componente: Object.fromEntries(required.map(k => [k, compSummary(k)])), detalle_tecnico: { costo_por_hora_asistente_humano_bob: costoHoraBob, supuestos_nuevos: { segundos_por_registro_lead: params.segundos_por_registro_lead, horas_idle_para_interaccion_resumen: params.horas_idle_para_interaccion_resumen, segundos_por_actualizacion_resumen_interaccion: params.segundos_por_actualizacion_resumen_interaccion, segundos_por_movimiento_embudo: params.segundos_por_movimiento_embudo, minutos_por_proyecto_inventario: params.minutos_por_proyecto_inventario, minutos_por_listing_independiente_inventario: params.minutos_por_listing_independiente_inventario, minutos_revision_disponibilidad_proyecto: params.minutos_revision_disponibilidad_proyecto, dias_ciclo_revision_disponibilidad_proyecto: params.dias_ciclo_revision_disponibilidad_proyecto }, desglose_por_lead: Object.values(porLead) } } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        -544
+      ],
+      "id": "8c272575-7caf-4bf1-bb1b-ae254a098f88",
+      "name": "Projection - Total Ahorro Interacted"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// ESTADÍSTICAS SUGGESTER + TIEMPO AHORRADO\n// ============================================================\n// Entrada: filas de \"Suggester Calls\" (una fila por solicitud de búsqueda)\n// Lee los parámetros de tiempo/salario del nodo \"Set | Suggester Params\"\n// Salida: un item con las estadísticas resumidas\n// ============================================================\n//\n// MODELO DE TIEMPO (v2):\n// El tiempo \"ahorrado\" en BOB ya NO se calcula multiplicando por la\n// cantidad de modelos evaluados (eso daba resultados irreales, ~33 min\n// por solicitud). Ahora se usa un tiempo FIJO y realista por solicitud\n// (minutos_por_solicitud_humano) — el tiempo que tomaría a un asistente\n// humano revisar brochures/precios y responder a un cliente.\n//\n// La \"profundidad\" del bot (cuántos modelos evaluó vs. lo que un humano\n// alcanzaría a revisar en ese mismo tiempo) se reporta como un dato\n// APARTE, no mezclado con el cálculo de dinero — para no inflar el\n// número de costo con una comparación que en realidad es de calidad,\n// no de tiempo.\n//\n// minutos_por_solicitud_humano y opciones_evaluadas_humano_asumidas son\n// PLACEHOLDERS sin validar — hay que confirmar con el equipo real\n// (ej. preguntarle a Ysela cuánto le toma revisar un brochure y comparar\n// contra lo que pide un cliente).\n// ============================================================\n\nconst params = $('Set | All Params').first().json;\n\nconst minutosPorSolicitudHumano = Number(params.minutos_por_solicitud_humano_para_suggester);\nconst modelosQueRevisariaUnHumano = Number(params.modelos_que_revisaria_un_humano_para_suggester);\n\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\n\nfunction numField(f, campo) {\n  const v = f[campo];\n  if (v === null || v === undefined || v === '') return null;\n  const n = Number(v);\n  return Number.isNaN(n) ? null : n;\n}\n\nconst filas = items.map(i => i.json);\n\n// --- LEADS ÚNICOS ---\nconst leadsSet = new Set(filas.map(f => f.lead_id));\nconst leadsUnicos = leadsSet.size;\nconst totalSolicitudes = filas.length;\nconst solicitudesPorLead = leadsUnicos > 0\n  ? Math.round((totalSolicitudes / leadsUnicos) * 100) / 100\n  : null;\n\n// --- RESULTADOS POR TIPO ---\nconst conteoResultados = { coincidencias: 0, sin_coincidencia: 0, invalidas: 0, otro: 0 };\nfor (const f of filas) {\n  if (f.request_result === 'matched') conteoResultados.coincidencias++;\n  else if (f.request_result === 'no_match') conteoResultados.sin_coincidencia++;\n  else if (f.request_result === 'invalid') conteoResultados.invalidas++;\n  else conteoResultados.otro++;\n}\n\nconst filasCoincidencia = filas.filter(f => f.request_result === 'matched');\nconst coincidenciasExactas = filasCoincidencia.filter(f => f.has_exact === true).length;\nconst porcentajeCoincidenciasExactas = filasCoincidencia.length > 0\n  ? Math.round((coincidenciasExactas / filasCoincidencia.length) * 1000) / 10\n  : null;\n\n// --- PROMEDIOS Y TOTALES EVALUADOS (ignora nulos) ---\nfunction promedio(campo) {\n  const valores = filas.map(f => numField(f, campo)).filter(v => v !== null);\n  if (valores.length === 0) return null;\n  const suma = valores.reduce((a, b) => a + b, 0);\n  return Math.round((suma / valores.length) * 100) / 100;\n}\nfunction sumar(campo) {\n  const valores = filas.map(f => numField(f, campo)).filter(v => v !== null);\n  return valores.reduce((a, b) => a + b, 0);\n}\n\nconst promedioProyectos = promedio('proyectos_evaluados');\nconst promedioModelos   = promedio('modelos_evaluados_criterio');\nconst promedioUnidades  = promedio('unidades_evaluadas');\nconst promedioOpciones  = promedio('opciones_presentadas');\n\nconst totalProyectosEvaluados = sumar('proyectos_evaluados');\nconst totalModelosEvaluados   = sumar('modelos_evaluados_criterio');\nconst totalUnidadesEvaluadas  = sumar('unidades_evaluadas');\nconst totalOpcionesPresentadas = sumar('opciones_presentadas');\n\n// --- ESTADÍSTICAS DETALLADAS (min/max/mediana por métrica) ---\nfunction estadisticas(campo) {\n  const valores = filas.map(f => numField(f, campo)).filter(v => v !== null).sort((a, b) => a - b);\n  if (valores.length === 0) return { minimo: null, maximo: null, mediana: null };\n  const mid = Math.floor(valores.length / 2);\n  const mediana = valores.length % 2 !== 0\n    ? valores[mid]\n    : Math.round(((valores[mid - 1] + valores[mid]) / 2) * 100) / 100;\n  return {\n    minimo: valores[0],\n    maximo: valores[valores.length - 1],\n    mediana: mediana\n  };\n}\n\nconst estadisticasProyectos = estadisticas('proyectos_evaluados');\nconst estadisticasModelos   = estadisticas('modelos_evaluados_criterio');\nconst estadisticasUnidades  = estadisticas('unidades_evaluadas');\nconst estadisticasOpciones  = estadisticas('opciones_presentadas');\n\n// --- DISTRIBUCIÓN DE SOLICITUDES POR LEAD ---\nconst conteoSolicitudesPorLeadTemp = {};\nfor (const f of filas) {\n  conteoSolicitudesPorLeadTemp[f.lead_id] = (conteoSolicitudesPorLeadTemp[f.lead_id] || 0) + 1;\n}\nconst solicitudesPorLeadValores = Object.values(conteoSolicitudesPorLeadTemp);\nconst leadsConUnaSolicitud = solicitudesPorLeadValores.filter(n => n === 1).length;\nconst leadsConVariasSolicitudes = solicitudesPorLeadValores.filter(n => n > 1).length;\nconst maxSolicitudesDeUnMismoLead = solicitudesPorLeadValores.length > 0\n  ? Math.max(...solicitudesPorLeadValores)\n  : null;\n\n// --- PROFUNDIDAD DEL BOT vs. LO QUE ALCANZARÍA UN HUMANO ---\n// Base de comparación: modelos_evaluados_criterio = el total de modelos\n// que el bot revisó y que SÍ cumplían lo esencial pedido (operación,\n// tipología, dormitorios) — NO es lo mismo que opciones_presentadas\n// (esas son solo las pocas tarjetas finales que se le muestran al\n// cliente; tanto el bot como un humano terminarían mostrando pocas).\n// Lo que diferencia es cuánto se revisó ANTES de llegar a esas pocas.\nconst vecesMasModelosEvaluados = (promedioModelos != null && modelosQueRevisariaUnHumano > 0)\n  ? Math.round((promedioModelos / modelosQueRevisariaUnHumano) * 10) / 10\n  : null;\n\n// --- TIEMPO Y COSTO (TOTAL DEL MES) ---\n// Tiempo fijo y realista por solicitud, no dependiente de cuántos\n// modelos evaluó el bot.\nconst segundosTotales = totalSolicitudes * minutosPorSolicitudHumano * 60;\nconst horasAhorradas = Math.round((segundosTotales / 3600) * 100) / 100;\nconst costoEquivalenteBob = Math.round(horasAhorradas * costoHoraBob * 100) / 100;\n\n// --- TIEMPO Y COSTO PROMEDIO POR LEAD ---\nconst horasPromedioPorLead = leadsUnicos > 0\n  ? Math.round((horasAhorradas / leadsUnicos) * 100) / 100\n  : null;\nconst costoPromedioPorLeadBob = leadsUnicos > 0\n  ? Math.round((costoEquivalenteBob / leadsUnicos) * 100) / 100\n  : null;\n\n// --- DESGLOSE POR LEAD ---\nconst porLeadMap = {};\nfor (const f of filas) {\n  const proyectos = numField(f, 'proyectos_evaluados') || 0;\n  const modelos   = numField(f, 'modelos_evaluados_criterio') || 0;\n\n  if (!porLeadMap[f.lead_id]) {\n    porLeadMap[f.lead_id] = {\n      lead_id: f.lead_id,\n      total_solicitudes: 0,\n      proyectos_evaluados_total: 0,\n      modelos_evaluados_total: 0\n    };\n  }\n  const l = porLeadMap[f.lead_id];\n  l.total_solicitudes++;\n  l.proyectos_evaluados_total += proyectos;\n  l.modelos_evaluados_total += modelos;\n}\n\nconst porLead = Object.values(porLeadMap).map(l => {\n  const horas = Math.round((l.total_solicitudes * minutosPorSolicitudHumano / 60) * 100) / 100;\n  return {\n    lead_id: l.lead_id,\n    total_solicitudes: l.total_solicitudes,\n    proyectos_evaluados_total: l.proyectos_evaluados_total,\n    modelos_evaluados_total: l.modelos_evaluados_total,\n    horas_ahorradas: horas,\n    ahorro_equivalente_bob: Math.round(horas * costoHoraBob * 100) / 100\n  };\n}).sort((a, b) => b.ahorro_equivalente_bob - a.ahorro_equivalente_bob);\n\nreturn [{\n  json: {\n    tipo_stats: 'suggester',\n    clasificacion_ahorro: 'directo',\n    scale_mode: 'per_lead',\n    // ========================================================\n    // RESUMEN EJECUTIVO — orden que sigue la lógica del cálculo:\n    // volumen -> supuesto de tiempo -> horas -> costo/hora -> costo total\n    // ========================================================\n    resumen_ejecutivo: {\n      leads_atendidos: leadsUnicos,\n      solicitudes_procesadas: totalSolicitudes,\n      minutos_que_tomaria_a_un_humano_por_solicitud: minutosPorSolicitudHumano,\n      horas_ahorradas: horasAhorradas,\n      costo_por_hora_de_un_asistente_humano_bob: costoHoraBob,\n      ahorro_equivalente_bob: costoEquivalenteBob,\n      modelos_promedio_evaluados_por_bot_por_solicitud: promedioModelos,\n      modelos_que_revisaria_un_humano_en_ese_mismo_tiempo: modelosQueRevisariaUnHumano,\n      veces_mas_modelos_evaluados_que_un_humano: vecesMasModelosEvaluados\n    },\n\n    // ========================================================\n    // DETALLE TÉCNICO — para verificar los números de arriba\n    // ========================================================\n    detalle_tecnico: {\n      resultados: {\n        coincidencias: conteoResultados.coincidencias,\n        sin_coincidencia: conteoResultados.sin_coincidencia,\n        invalidas: conteoResultados.invalidas,\n        porcentaje_coincidencias_exactas: porcentajeCoincidenciasExactas\n      },\n      promedios_evaluados: {\n        proyectos_promedio: promedioProyectos,\n        modelos_promedio: promedioModelos,\n        unidades_promedio: promedioUnidades,\n        opciones_promedio: promedioOpciones\n      },\n      totales_evaluados: {\n        proyectos_evaluados_total: totalProyectosEvaluados,\n        modelos_evaluados_total: totalModelosEvaluados,\n        unidades_evaluadas_total: totalUnidadesEvaluadas,\n        opciones_presentadas_total: totalOpcionesPresentadas\n      },\n      estadisticas_por_metrica: {\n        proyectos_evaluados: estadisticasProyectos,\n        modelos_evaluados_criterio: estadisticasModelos,\n        unidades_evaluadas: estadisticasUnidades,\n        opciones_presentadas: estadisticasOpciones\n      },\n      distribucion_solicitudes_por_lead: {\n        leads_con_una_sola_solicitud: leadsConUnaSolicitud,\n        leads_con_varias_solicitudes: leadsConVariasSolicitudes,\n        max_solicitudes_de_un_mismo_lead: maxSolicitudesDeUnMismoLead\n      },\n      supuestos_usados: {\n        minutos_que_tomaria_a_un_humano_por_solicitud: minutosPorSolicitudHumano,\n        modelos_que_revisaria_un_humano_en_ese_mismo_tiempo: modelosQueRevisariaUnHumano,\n        salario_mensual_de_un_asistente_humano_bob: salarioMensualBob,\n        horas_de_trabajo_por_semana: horasSemana\n      },\n      promedio_por_lead: {\n        solicitudes_por_lead: solicitudesPorLead,\n        horas_promedio_por_lead: horasPromedioPorLead,\n        costo_promedio_por_lead_bob: costoPromedioPorLeadBob\n      },\n      desglose_por_lead: porLead\n    }\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -752
+      ],
+      "id": "a7e88ce4-3059-4f7b-8ccf-9bcff04c4673",
+      "name": "Suggester Stats"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// ESTADÍSTICAS PROPERTY DETAILS + TIEMPO AHORRADO\n// ============================================================\n// Entrada: filas de \"Property Details Calls\"\n// Lee los parámetros del nodo \"Set | Details Params\"\n//\n// Tiempo = (proyectos_compilados × segundos_por_proyecto)\n//        + (unidades_compiladas × segundos_por_unidad)\n// Cada solicitud contribuye según lo que realmente compiló, no un\n// tiempo fijo — a diferencia de Suggester, aquí el conteo por\n// solicitud es naturalmente pequeño y no infla el número.\n// ============================================================\n\nconst params = $('Set | All Params').first().json;\n\nconst segundosPorProyecto = Number(params.segundos_por_proyecto_para_details);\nconst segundosPorUnidad = Number(params.segundos_por_unidad_para_details);\n\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\n\nfunction numField(f, campo) {\n  const v = f[campo];\n  if (v === null || v === undefined || v === '') return null;\n  const n = Number(v);\n  return Number.isNaN(n) ? null : n;\n}\n\nconst filas = items.map(i => i.json);\n\n// --- LEADS ÚNICOS ---\nconst leadsSet = new Set(filas.map(f => f.lead_id));\nconst leadsUnicos = leadsSet.size;\nconst totalSolicitudes = filas.length;\nconst solicitudesPorLead = leadsUnicos > 0\n  ? Math.round((totalSolicitudes / leadsUnicos) * 100) / 100\n  : null;\n\n// --- RESPONSE_TYPE (distribución) ---\nconst conteoResponseType = {};\nfor (const f of filas) {\n  const key = f.response_type || 'desconocido';\n  conteoResponseType[key] = (conteoResponseType[key] || 0) + 1;\n}\n\n// --- PROMEDIOS Y TOTALES ---\nfunction promedio(campo) {\n  const valores = filas.map(f => numField(f, campo)).filter(v => v !== null);\n  if (valores.length === 0) return null;\n  const suma = valores.reduce((a, b) => a + b, 0);\n  return Math.round((suma / valores.length) * 100) / 100;\n}\nfunction sumar(campo) {\n  const valores = filas.map(f => numField(f, campo)).filter(v => v !== null);\n  return valores.reduce((a, b) => a + b, 0);\n}\n\nconst promedioProyectos = promedio('proyectos_compilados');\nconst promedioUnidades  = promedio('unidades_compiladas');\nconst promedioListadosIndep = promedio('listados_independientes_compilados');\n\nconst totalProyectosCompilados = sumar('proyectos_compilados');\nconst totalUnidadesCompiladas  = sumar('unidades_compiladas');\nconst totalListadosIndep = sumar('listados_independientes_compilados');\n\n// --- TIEMPO Y COSTO (TOTAL DEL MES) ---\nlet segundosTotales = 0;\nfor (const f of filas) {\n  const proyectos = numField(f, 'proyectos_compilados') || 0;\n  const unidades = numField(f, 'unidades_compiladas') || 0;\n  segundosTotales += (proyectos * segundosPorProyecto) + (unidades * segundosPorUnidad);\n}\nconst horasAhorradas = Math.round((segundosTotales / 3600) * 100) / 100;\nconst ahorroEquivalenteBob = Math.round(horasAhorradas * costoHoraBob * 100) / 100;\n\n// --- PROMEDIO POR LEAD ---\nconst horasPromedioPorLead = leadsUnicos > 0\n  ? Math.round((horasAhorradas / leadsUnicos) * 100) / 100\n  : null;\nconst ahorroPromedioPorLeadBob = leadsUnicos > 0\n  ? Math.round((ahorroEquivalenteBob / leadsUnicos) * 100) / 100\n  : null;\n\n// --- DESGLOSE POR LEAD ---\nconst porLeadMap = {};\nfor (const f of filas) {\n  const proyectos = numField(f, 'proyectos_compilados') || 0;\n  const unidades = numField(f, 'unidades_compiladas') || 0;\n  const segundos = (proyectos * segundosPorProyecto) + (unidades * segundosPorUnidad);\n\n  if (!porLeadMap[f.lead_id]) {\n    porLeadMap[f.lead_id] = {\n      lead_id: f.lead_id,\n      total_solicitudes: 0,\n      proyectos_compilados_total: 0,\n      unidades_compiladas_total: 0,\n      segundos_totales: 0\n    };\n  }\n  const l = porLeadMap[f.lead_id];\n  l.total_solicitudes++;\n  l.proyectos_compilados_total += proyectos;\n  l.unidades_compiladas_total += unidades;\n  l.segundos_totales += segundos;\n}\nconst porLead = Object.values(porLeadMap).map(l => {\n  const horas = Math.round((l.segundos_totales / 3600) * 100) / 100;\n  return {\n    lead_id: l.lead_id,\n    total_solicitudes: l.total_solicitudes,\n    proyectos_compilados_total: l.proyectos_compilados_total,\n    unidades_compiladas_total: l.unidades_compiladas_total,\n    horas_ahorradas: horas,\n    ahorro_equivalente_bob: Math.round(horas * costoHoraBob * 100) / 100\n  };\n}).sort((a, b) => b.ahorro_equivalente_bob - a.ahorro_equivalente_bob);\n\nreturn [{\n  json: {\n    tipo_stats: 'details',\n    clasificacion_ahorro: 'directo',\n    scale_mode: 'per_lead',\n    // ========================================================\n    // RESUMEN EJECUTIVO — orden: volumen -> supuestos de tiempo -> horas -> costo\n    // ========================================================\n    resumen_ejecutivo: {\n      leads_atendidos: leadsUnicos,\n      solicitudes_procesadas: totalSolicitudes,\n      segundos_que_tomaria_a_un_humano_por_proyecto: segundosPorProyecto,\n      segundos_que_tomaria_a_un_humano_por_unidad: segundosPorUnidad,\n      horas_ahorradas: horasAhorradas,\n      costo_por_hora_de_un_asistente_humano_bob: costoHoraBob,\n      ahorro_equivalente_bob: ahorroEquivalenteBob,\n      proyectos_promedio_compilados_por_solicitud: promedioProyectos,\n      unidades_promedio_compiladas_por_solicitud: promedioUnidades\n    },\n\n    // ========================================================\n    // DETALLE TÉCNICO\n    // ========================================================\n    detalle_tecnico: {\n      response_type: conteoResponseType,\n      promedios: {\n        proyectos_promedio: promedioProyectos,\n        unidades_promedio: promedioUnidades,\n        listados_independientes_promedio: promedioListadosIndep\n      },\n      totales: {\n        proyectos_compilados_total: totalProyectosCompilados,\n        unidades_compiladas_total: totalUnidadesCompiladas,\n        listados_independientes_compilados_total: totalListadosIndep\n      },\n      supuestos_usados: {\n        segundos_por_proyecto: segundosPorProyecto,\n        segundos_por_unidad: segundosPorUnidad,\n        salario_mensual_de_un_asistente_humano_bob: salarioMensualBob,\n        horas_de_trabajo_por_semana: horasSemana\n      },\n      promedio_por_lead: {\n        solicitudes_por_lead: solicitudesPorLead,\n        horas_promedio_por_lead: horasPromedioPorLead,\n        ahorro_promedio_por_lead_bob: ahorroPromedioPorLeadBob\n      },\n      desglose_por_lead: porLead\n    }\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -560
+      ],
+      "id": "03c00bf8-8d3a-41af-9ce0-f6df03790cea",
+      "name": "Details Stats"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// ESTADÍSTICAS SCHEDULER + TIEMPO AHORRADO\n// ============================================================\n// Entrada: filas de \"Scheduler Calls\"\n// Lee los parámetros del nodo \"Set | Scheduler Params\"\n//\n// Tiempo FIJO por solicitud (no depende de ningún conteo, a\n// diferencia de Suggester/Details) — coordinar una cita por chat\n// toma más o menos lo mismo sin importar cuántos datos se intercambien.\n// ============================================================\n\nconst params = $('Set | All Params').first().json;\n\nconst minutosPorSolicitudHumano = Number(params.minutos_por_solicitud_humano_para_scheduler);\n\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\n\nconst filas = items.map(i => i.json);\n\n// --- LEADS ÚNICOS ---\nconst leadsSet = new Set(filas.map(f => f.lead_id));\nconst leadsUnicos = leadsSet.size;\nconst totalSolicitudes = filas.length;\nconst solicitudesPorLead = leadsUnicos > 0\n  ? Math.round((totalSolicitudes / leadsUnicos) * 100) / 100\n  : null;\n\n// --- MODALIDAD (distribución) ---\nconst conteoModalidad = {};\nfor (const f of filas) {\n  const key = f.modality || 'desconocido';\n  conteoModalidad[key] = (conteoModalidad[key] || 0) + 1;\n}\n\n// --- CITAS EFECTIVAMENTE CONFIRMADAS (con start_at real) ---\nconst citasConFecha = filas.filter(f => f.tiene_start_at === true).length;\nconst citasSinFecha = totalSolicitudes - citasConFecha;\nconst citasEliminadas = filas.filter(f => f.evento_eliminado === true).length;\n\n// --- TIEMPO Y COSTO (TOTAL DEL MES) ---\nconst segundosTotales = totalSolicitudes * minutosPorSolicitudHumano * 60;\nconst horasAhorradas = Math.round((segundosTotales / 3600) * 100) / 100;\nconst ahorroEquivalenteBob = Math.round(horasAhorradas * costoHoraBob * 100) / 100;\n\n// --- PROMEDIO POR LEAD ---\nconst horasPromedioPorLead = leadsUnicos > 0\n  ? Math.round((horasAhorradas / leadsUnicos) * 100) / 100\n  : null;\nconst ahorroPromedioPorLeadBob = leadsUnicos > 0\n  ? Math.round((ahorroEquivalenteBob / leadsUnicos) * 100) / 100\n  : null;\n\n// --- DESGLOSE POR LEAD ---\nconst porLeadMap = {};\nfor (const f of filas) {\n  if (!porLeadMap[f.lead_id]) {\n    porLeadMap[f.lead_id] = {\n      lead_id: f.lead_id,\n      total_solicitudes: 0\n    };\n  }\n  porLeadMap[f.lead_id].total_solicitudes++;\n}\nconst porLead = Object.values(porLeadMap).map(l => {\n  const horas = Math.round((l.total_solicitudes * minutosPorSolicitudHumano / 60) * 100) / 100;\n  return {\n    lead_id: l.lead_id,\n    total_solicitudes: l.total_solicitudes,\n    horas_ahorradas: horas,\n    ahorro_equivalente_bob: Math.round(horas * costoHoraBob * 100) / 100\n  };\n}).sort((a, b) => b.ahorro_equivalente_bob - a.ahorro_equivalente_bob);\n\nreturn [{\n  json: {\n    tipo_stats: 'scheduler',\n    clasificacion_ahorro: 'directo',\n    scale_mode: 'per_lead',\n    // ========================================================\n    // RESUMEN EJECUTIVO\n    // ========================================================\n    resumen_ejecutivo: {\n      leads_atendidos: leadsUnicos,\n      solicitudes_procesadas: totalSolicitudes,\n      minutos_que_tomaria_a_un_humano_por_solicitud: minutosPorSolicitudHumano,\n      horas_ahorradas: horasAhorradas,\n      costo_por_hora_de_un_asistente_humano_bob: costoHoraBob,\n      ahorro_equivalente_bob: ahorroEquivalenteBob\n    },\n\n    // ========================================================\n    // DETALLE TÉCNICO\n    // ========================================================\n    detalle_tecnico: {\n      modalidad: conteoModalidad,\n      citas_con_fecha_confirmada: citasConFecha,\n      citas_sin_fecha_confirmada: citasSinFecha,\n      citas_eliminadas: citasEliminadas,\n      supuestos_usados: {\n        minutos_que_tomaria_a_un_humano_por_solicitud: minutosPorSolicitudHumano,\n        salario_mensual_de_un_asistente_humano_bob: salarioMensualBob,\n        horas_de_trabajo_por_semana: horasSemana\n      },\n      promedio_por_lead: {\n        solicitudes_por_lead: solicitudesPorLead,\n        horas_promedio_por_lead: horasPromedioPorLead,\n        ahorro_promedio_por_lead_bob: ahorroPromedioPorLeadBob\n      },\n      desglose_por_lead: porLead\n    }\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -368
+      ],
+      "id": "db234ce0-a7bf-4e7e-9af5-a909eac4da16",
+      "name": "Scheduler Stats"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1f2a3b4-1111-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "target_user_id",
+              "value": 8,
+              "type": "number"
+            },
+            {
+              "id": "e1f2a3b4-2222-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "period_start",
+              "value": "2026-06-01",
+              "type": "string"
+            },
+            {
+              "id": "e1f2a3b4-3333-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "period_end",
+              "value": "2026-07-01",
+              "type": "string"
+            },
+            {
+              "id": "e1f2a3b4-4444-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "leads_interacted_proyectados",
+              "value": 700,
+              "type": "number"
+            },
+            {
+              "id": "e1f2a3b4-5555-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "salario_mensual_asistente_bob",
+              "value": 2900,
+              "type": "number"
+            },
+            {
+              "id": "e1f2a3b4-6666-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "horas_semana",
+              "value": 42.5,
+              "type": "number"
+            },
+            {
+              "id": "e1f2a3b4-7777-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "minutos_por_solicitud_humano_para_suggester",
+              "value": 2.5,
+              "type": "number"
+            },
+            {
+              "id": "e1f2a3b4-8888-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "modelos_que_revisaria_un_humano_para_suggester",
+              "value": 5,
+              "type": "number"
+            },
+            {
+              "id": "e1f2a3b4-9999-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "segundos_por_proyecto_para_details",
+              "value": 60,
+              "type": "number"
+            },
+            {
+              "id": "e1f2a3b4-aaaa-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "segundos_por_unidad_para_details",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "e1f2a3b4-bbbb-4a5b-8c9d-0e1f2a3b4c5d",
+              "name": "minutos_por_solicitud_humano_para_scheduler",
+              "value": 0.6,
+              "type": "number"
+            },
+            {
+              "id": "574d00cb-1fb6-4bb0-9ca8-8c30d7e18242",
+              "name": "avg_write_speed_chars_per_sec",
+              "value": "3.5",
+              "type": "string"
+            },
+            {
+              "id": "819a8bc0-c9ed-42aa-8b35-a9780a49a45e",
+              "name": "avg_read_speed_chars_per_sec",
+              "value": "15",
+              "type": "string"
+            },
+            {
+              "id": "4524e3a2-305d-4b17-acd7-d581c8a9440b",
+              "name": "avg_seconds_per_doc_sent",
+              "value": "30",
+              "type": "string"
+            },
+            {
+              "id": "dc2aac36-d8dc-46cd-be7a-111009135fdd",
+              "name": "segundos_por_registro_lead",
+              "value": 10,
+              "type": "number"
+            },
+            {
+              "id": "ea8b3e2e-96bd-4250-b030-bfd6419cf4bd",
+              "name": "horas_idle_para_interaccion_resumen",
+              "value": 4,
+              "type": "number"
+            },
+            {
+              "id": "4212fa8c-cbab-45b4-a460-406d276e0d92",
+              "name": "segundos_por_actualizacion_resumen_interaccion",
+              "value": 60,
+              "type": "number"
+            },
+            {
+              "id": "c01ba003-ed46-41ff-ba8b-41bb2492ca2a",
+              "name": "segundos_por_movimiento_embudo",
+              "value": 15,
+              "type": "number"
+            },
+            {
+              "id": "1a707947-c7e5-4d88-8357-a75065c436b4",
+              "name": "minutos_por_proyecto_inventario",
+              "value": 30,
+              "type": "number"
+            },
+            {
+              "id": "c35d17f0-e4c7-4cc9-8958-d8840fb8a92c",
+              "name": "minutos_por_listing_independiente_inventario",
+              "value": 5,
+              "type": "number"
+            },
+            {
+              "id": "245c66f3-f9e4-4589-8eee-a6f671a00ecc",
+              "name": "minutos_revision_disponibilidad_proyecto",
+              "value": 5,
+              "type": "number"
+            },
+            {
+              "id": "bcbb0ce3-1f83-480a-b2ea-c0cb85b5f252",
+              "name": "dias_ciclo_revision_disponibilidad_proyecto",
+              "value": 14,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1168,
+        -560
+      ],
+      "id": "61abb1fb-101a-42de-b013-425c66f0b7f1",
+      "name": "Set | All Params"
+    },
+    {
+      "parameters": {
+        "content": "## Note\nThese Call counts are global not scoped only to the Interacted Lead Base, the final code node however does scope for the calculation"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -688,
+        -944
+      ],
+      "typeVersion": 1,
+      "id": "71055bae-470f-4357-8d6c-58d3271545e7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Bot Workload Calls — Leads (CTWA/MM/Active) with Bot & Lead Reply */\n\nWITH raw_messages AS (\n  SELECT\n    cm.id,\n    cm.lead_id,\n    COALESCE(cm.chat_id, '__lead_' || cm.lead_id::text) AS chat_key,\n    LOWER(TRIM(cm.tipo_emisor)) AS sender_type,\n    cm.tipo_mensaje,\n    cm.message_class,\n    cm.plataforma_origen,\n    cm.content,\n    COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) AS msg_at,\n    NULLIF(\n      TRIM(\n        REGEXP_REPLACE(\n          COALESCE(cm.content, ''),\n          '\\[[^\\]]*\\]',\n          '',\n          'g'\n        )\n      ),\n      ''\n    ) AS clean_content\n  FROM public.chat_messages cm\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n),\n\nprospecto_state AS (\n  SELECT\n    p.lead_id,\n    BOOL_OR(p.bot_estado = 'Activo') AS is_active,\n    BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\n\nlead_flags AS (\n  SELECT\n    rm.lead_id,\n    BOOL_OR(NULLIF(TRIM(COALESCE(rm.content, '')), '') IS NOT NULL) AS has_convo,\n    BOOL_OR(NULLIF(TRIM(COALESCE(rm.content, '')), '') IS NOT NULL AND rm.sender_type = 'bot') AS has_bot,\n    BOOL_OR(NULLIF(TRIM(COALESCE(rm.content, '')), '') IS NOT NULL AND rm.sender_type = 'prospecto') AS has_prospecto,\n    BOOL_OR(rm.plataforma_origen ILIKE '%CTWA%') AS has_ctwa,\n    BOOL_OR(rm.message_class = 'Campaña') AS has_campana\n  FROM raw_messages rm\n  GROUP BY rm.lead_id\n),\n\ntarget_leads AS (\n  SELECT lf.lead_id\n  FROM lead_flags lf\n  INNER JOIN prospecto_state ps\n    ON ps.lead_id = lf.lead_id\n  WHERE lf.has_convo\n    AND (\n      lf.has_ctwa\n      OR lf.has_campana\n      OR COALESCE(ps.is_active, false)\n    )\n    AND lf.has_bot\n    AND lf.has_prospecto\n    AND COALESCE(ps.phone_blacklisted, false) = false\n),\n\nordered_messages AS (\n  SELECT\n    rm.*,\n    ROW_NUMBER() OVER (\n      PARTITION BY rm.lead_id, rm.chat_key\n      ORDER BY rm.msg_at, rm.id\n    ) AS message_seq\n  FROM raw_messages rm\n  INNER JOIN target_leads tl\n    ON tl.lead_id = rm.lead_id\n),\n\nhandler_context AS (\n  SELECT\n    om.*,\n    MAX(om.message_seq) FILTER (\n      WHERE om.sender_type IN ('bot', 'usuario')\n    ) OVER (\n      PARTITION BY om.lead_id, om.chat_key\n      ORDER BY om.message_seq\n      ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING\n    ) AS previous_handler_seq\n  FROM ordered_messages om\n),\n\nmessage_features AS (\n  SELECT\n    hc.*,\n    prev.sender_type AS previous_handler_type,\n    COALESCE(CHAR_LENGTH(hc.clean_content), 0) AS clean_characters,\n    COALESCE(CHAR_LENGTH(hc.clean_content), 0) > 0 AS is_workload_message,\n\n    (\n      hc.sender_type = 'bot'\n      AND LOWER(COALESCE(hc.tipo_mensaje, '')) = 'media'\n      AND hc.content ~* '\\[(brochure|pricelist) sent'\n    ) AS is_doc_sent,\n\n    (\n      hc.sender_type = 'bot'\n      AND LOWER(COALESCE(hc.tipo_mensaje, '')) = 'media'\n      AND hc.content ~* '\\[brochure sent'\n    ) AS is_brochure_sent,\n\n    (\n      hc.sender_type = 'bot'\n      AND LOWER(COALESCE(hc.tipo_mensaje, '')) = 'media'\n      AND hc.content ~* '\\[pricelist sent'\n    ) AS is_pricelist_sent,\n\n    hc.message_class = 'Campaña' AS is_campana,\n\n    (\n      COALESCE(CHAR_LENGTH(hc.clean_content), 0) > 0\n      AND hc.sender_type = 'prospecto'\n      AND COALESCE(prev.sender_type, 'bot') = 'bot'\n    ) AS is_incoming_read_by_bot\n\n  FROM handler_context hc\n  LEFT JOIN ordered_messages prev\n    ON prev.lead_id = hc.lead_id\n   AND prev.chat_key = hc.chat_key\n   AND prev.message_seq = hc.previous_handler_seq\n)\n\nSELECT\n  mf.lead_id,\n\n  COUNT(*) FILTER (WHERE mf.is_workload_message) AS total_messages,\n  COALESCE(SUM(mf.clean_characters) FILTER (WHERE mf.is_workload_message), 0) AS total_characters,\n\n  COUNT(*) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type = 'prospecto'\n  ) AS incoming_messages,\n\n  COALESCE(SUM(mf.clean_characters) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type = 'prospecto'\n  ), 0) AS incoming_characters,\n\n  COUNT(*) FILTER (WHERE mf.is_incoming_read_by_bot) AS incoming_messages_bot_read,\n  COALESCE(SUM(mf.clean_characters) FILTER (WHERE mf.is_incoming_read_by_bot), 0) AS incoming_characters_bot_read,\n\n  COUNT(*) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type IN ('bot', 'usuario')\n  ) AS outgoing_messages,\n\n  COALESCE(SUM(mf.clean_characters) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type IN ('bot', 'usuario')\n  ), 0) AS outgoing_characters,\n\n  COUNT(*) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type = 'bot'\n  ) AS outgoing_messages_bot,\n\n  COALESCE(SUM(mf.clean_characters) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type = 'bot'\n  ), 0) AS outgoing_characters_bot,\n\n  COUNT(*) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type = 'usuario'\n  ) AS outgoing_messages_user,\n\n  COALESCE(SUM(mf.clean_characters) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type = 'usuario'\n  ), 0) AS outgoing_characters_user,\n\n  COUNT(*) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type = 'bot'\n      AND mf.is_campana\n  ) AS outgoing_messages_bot_masivos,\n\n  COALESCE(SUM(mf.clean_characters) FILTER (\n    WHERE mf.is_workload_message\n      AND mf.sender_type = 'bot'\n      AND mf.is_campana\n  ), 0) AS outgoing_characters_bot_masivos,\n\n  COUNT(*) FILTER (WHERE mf.is_doc_sent) AS docs_sent,\n  COUNT(*) FILTER (WHERE mf.is_brochure_sent) AS brochures_sent,\n  COUNT(*) FILTER (WHERE mf.is_pricelist_sent) AS pricelists_sent\n\nFROM message_features mf\nGROUP BY mf.lead_id\nORDER BY mf.lead_id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        -176
+      ],
+      "id": "f642b4fa-643b-4314-aad0-74a066f20c46",
+      "name": "Bot Workload Calls",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// BOT WORKLOAD STATS + TIEMPO AHORRADO\n// ============================================================\n\nconst params = $('Set | All Params').first().json;\n\nconst writeSpeed = Number(params.avg_write_speed_chars_per_sec);\nconst readSpeed = Number(params.avg_read_speed_chars_per_sec);\nconst secondsPerDoc = Number(params.avg_seconds_per_doc_sent);\n\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\n\nfunction n(v) {\n  const x = Number(v);\n  return Number.isFinite(x) ? x : 0;\n}\n\nfunction round(v, d = 2) {\n  const m = Math.pow(10, d);\n  return Math.round(v * m) / m;\n}\n\nfunction pct(num, den) {\n  return den > 0 ? round((num / den) * 100, 1) : null;\n}\n\nconst filas = items.map(i => i.json);\n\nconst porLead = filas.map(f => {\n  const outgoingCharactersBot = n(f.outgoing_characters_bot);\n  const incomingCharactersBotRead = n(f.incoming_characters_bot_read);\n  const docsSent = n(f.docs_sent);\n\n  const writeSeconds = writeSpeed > 0 ? outgoingCharactersBot / writeSpeed : 0;\n  const readSeconds = readSpeed > 0 ? incomingCharactersBotRead / readSpeed : 0;\n  const docSeconds = docsSent * secondsPerDoc;\n\n  const totalSeconds = writeSeconds + readSeconds + docSeconds;\n  const horas = totalSeconds / 3600;\n\n  return {\n    lead_id: f.lead_id,\n\n    total_messages: n(f.total_messages),\n    total_characters: n(f.total_characters),\n\n    incoming_messages: n(f.incoming_messages),\n    incoming_characters: n(f.incoming_characters),\n\n    incoming_messages_bot_read: n(f.incoming_messages_bot_read),\n    incoming_characters_bot_read: incomingCharactersBotRead,\n\n    outgoing_messages: n(f.outgoing_messages),\n    outgoing_characters: n(f.outgoing_characters),\n\n    outgoing_messages_bot: n(f.outgoing_messages_bot),\n    outgoing_characters_bot: outgoingCharactersBot,\n\n    outgoing_messages_user: n(f.outgoing_messages_user),\n    outgoing_characters_user: n(f.outgoing_characters_user),\n\n    outgoing_messages_bot_masivos: n(f.outgoing_messages_bot_masivos),\n    outgoing_characters_bot_masivos: n(f.outgoing_characters_bot_masivos),\n\n    docs_sent: docsSent,\n    brochures_sent: n(f.brochures_sent),\n    pricelists_sent: n(f.pricelists_sent),\n\n    segundos_escritura_bot: round(writeSeconds, 2),\n    segundos_lectura_bot: round(readSeconds, 2),\n    segundos_docs: round(docSeconds, 2),\n    bot_workload_seconds_total: round(totalSeconds, 2),\n\n    horas_ahorradas: round(horas, 2),\n    ahorro_equivalente_bob: round(horas * costoHoraBob, 2)\n  };\n}).sort((a, b) => b.ahorro_equivalente_bob - a.ahorro_equivalente_bob);\n\nconst totals = porLead.reduce((acc, l) => {\n  for (const [k, v] of Object.entries(l)) {\n    if (typeof v === 'number') acc[k] = (acc[k] || 0) + v;\n  }\n  return acc;\n}, {});\n\nconst leadsUnicos = porLead.length;\nconst horasAhorradas = round((totals.bot_workload_seconds_total || 0) / 3600, 2);\nconst ahorroEquivalenteBob = round(horasAhorradas * costoHoraBob, 2);\n\nconst botShareOutgoingPct = pct(\n  totals.outgoing_messages_bot || 0,\n  totals.outgoing_messages || 0\n);\n\nconst botReadShareIncomingPct = pct(\n  totals.incoming_messages_bot_read || 0,\n  totals.incoming_messages || 0\n);\n\nconst docsPer100Leads = leadsUnicos > 0\n  ? round(((totals.docs_sent || 0) / leadsUnicos) * 100, 1)\n  : null;\n\nconst avgBotMessagesPerLead = leadsUnicos > 0\n  ? round((totals.outgoing_messages_bot || 0) / leadsUnicos, 2)\n  : null;\n\nconst avgSecondsPerLead = leadsUnicos > 0\n  ? round((totals.bot_workload_seconds_total || 0) / leadsUnicos, 1)\n  : null;\n\nreturn [{\n  json: {\n    tipo_stats: 'bot_workload',\n\nresumen_ejecutivo: {\n  leads_atendidos: leadsUnicos,\n\n  outgoing_messages_bot: totals.outgoing_messages_bot || 0,\n  outgoing_characters_bot: totals.outgoing_characters_bot || 0,\n\n  incoming_messages_bot_read: totals.incoming_messages_bot_read || 0,\n  incoming_characters_bot_read: totals.incoming_characters_bot_read || 0,\n\n  docs_sent: totals.docs_sent || 0,\n  brochures_sent: totals.brochures_sent || 0,\n  pricelists_sent: totals.pricelists_sent || 0,\n\n  horas_escritura_bot: round((totals.segundos_escritura_bot || 0) / 3600, 2),\n  horas_lectura_bot: round((totals.segundos_lectura_bot || 0) / 3600, 2),\n  horas_envio_docs: round((totals.segundos_docs || 0) / 3600, 2),\n\n  horas_ahorradas: horasAhorradas,\n  costo_por_hora_de_un_asistente_humano_bob: costoHoraBob,\n  ahorro_equivalente_bob: ahorroEquivalenteBob\n},\n\ndatos_interesantes: {\n  porcentaje_de_mensajes_salientes_respondidos_por_bot: botShareOutgoingPct,\n  porcentaje_de_mensajes_entrantes_leidos_por_bot: botReadShareIncomingPct,\n  mensajes_bot_promedio_por_lead_interacted: avgBotMessagesPerLead,\n  minutos_promedio_ahorrados_por_lead_interacted: avgSecondsPerLead != null\n    ? round(avgSecondsPerLead / 60, 2)\n    : null,\n  documentos_enviados_por_100_leads: docsPer100Leads\n},\n\n    detalle_tecnico: {\n      supuestos_usados: {\n        velocidad_escritura_humana_chars_por_segundo: writeSpeed,\n        velocidad_lectura_humana_chars_por_segundo: readSpeed,\n        segundos_por_documento_enviado: secondsPerDoc,\n        salario_mensual_de_un_asistente_humano_bob: salarioMensualBob,\n        horas_de_trabajo_por_semana: horasSemana\n      },\n\n      totales: {\n        total_messages: totals.total_messages || 0,\n        total_characters: totals.total_characters || 0,\n\n        incoming_messages: totals.incoming_messages || 0,\n        incoming_characters: totals.incoming_characters || 0,\n\n        incoming_messages_bot_read: totals.incoming_messages_bot_read || 0,\n        incoming_characters_bot_read: totals.incoming_characters_bot_read || 0,\n\n        outgoing_messages: totals.outgoing_messages || 0,\n        outgoing_characters: totals.outgoing_characters || 0,\n\n        outgoing_messages_bot: totals.outgoing_messages_bot || 0,\n        outgoing_characters_bot: totals.outgoing_characters_bot || 0,\n\n        outgoing_messages_user: totals.outgoing_messages_user || 0,\n        outgoing_characters_user: totals.outgoing_characters_user || 0,\n\n        docs_sent: totals.docs_sent || 0,\n        brochures_sent: totals.brochures_sent || 0,\n        pricelists_sent: totals.pricelists_sent || 0\n      },\n\n      desglose_por_lead: porLead\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -176
+      ],
+      "id": "d47fdf2c-b48f-4790-8e9d-3615efd3db74",
+      "name": "Bot Workload Stats"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Lead Registration Calls ? mismo universo que Interacted Leads Base */\nWITH scoped_msgs AS (\n  SELECT cm.lead_id, LOWER(TRIM(cm.tipo_emisor)) AS sender_type, cm.message_class, cm.plataforma_origen,\n    NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL AS has_content\n  FROM public.chat_messages cm\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n),\nlead_flags AS (\n  SELECT lead_id,\n    BOOL_OR(has_content AND sender_type = 'prospecto') AS tiene_msg_prospecto,\n    BOOL_OR(has_content AND sender_type = 'bot') AS tiene_msg_bot,\n    BOOL_OR(has_content) AS has_convo,\n    BOOL_OR(plataforma_origen ILIKE '%CTWA%') AS has_ctwa,\n    BOOL_OR(message_class = 'Campa?a') AS has_campana\n  FROM scoped_msgs GROUP BY lead_id\n),\nprospecto_state AS (\n  SELECT p.lead_id, BOOL_OR(p.bot_estado = 'Activo') AS is_active,\n    BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\ntarget_leads AS (\n  SELECT lf.lead_id\n  FROM lead_flags lf\n  INNER JOIN prospecto_state ps ON ps.lead_id = lf.lead_id\n  WHERE lf.has_convo\n    AND (lf.has_ctwa OR lf.has_campana OR COALESCE(ps.is_active, false))\n    AND lf.tiene_msg_prospecto\n    AND lf.tiene_msg_bot\n    AND COALESCE(ps.phone_blacklisted, false) = false\n)\nSELECT tl.lead_id, 1 AS registros_lead\nFROM target_leads tl\nORDER BY tl.lead_id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        16
+      ],
+      "id": "6c0085f7-a8d2-40a7-b19a-6af52e8d18fa",
+      "name": "Lead Registration Calls",
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Set | All Params').first().json;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\n\nconst segundosPorRegistro = n(params.segundos_por_registro_lead);\nconst filas = items.map(i => i.json);\nconst leadsSet = new Set(filas.map(f => f.lead_id));\nconst totalRegistros = filas.length;\nconst horasAhorradas = round((totalRegistros * segundosPorRegistro) / 3600, 2);\nconst ahorroEquivalenteBob = round(horasAhorradas * costoHoraBob, 2);\nconst porLead = [...leadsSet].map(lead_id => ({ lead_id, total_registros: 1, horas_ahorradas: round(segundosPorRegistro / 3600, 4), ahorro_equivalente_bob: round((segundosPorRegistro / 3600) * costoHoraBob, 2) }));\nreturn [{ json: { tipo_stats: 'lead_registration', clasificacion_ahorro: 'directo', scale_mode: 'per_lead', resumen_ejecutivo: { leads_atendidos: leadsSet.size, registros_procesados: totalRegistros, segundos_que_tomaria_a_un_humano_por_registro: segundosPorRegistro, horas_ahorradas: horasAhorradas, costo_por_hora_de_un_asistente_humano_bob: costoHoraBob, ahorro_equivalente_bob: ahorroEquivalenteBob }, detalle_tecnico: { supuestos_usados: { segundos_por_registro: segundosPorRegistro, salario_mensual_de_un_asistente_humano_bob: salarioMensualBob, horas_de_trabajo_por_semana: horasSemana }, desglose_por_lead: porLead } }}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        16
+      ],
+      "id": "35ecb932-d2b8-4ff9-a59e-87009b1a39a0",
+      "name": "Lead Registration Stats"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Summary Interaction Calls ? agrupa mensajes en interacciones por inactividad */\nWITH scoped_msgs AS (\n  SELECT cm.lead_id, LOWER(TRIM(cm.tipo_emisor)) AS sender_type, cm.message_class, cm.plataforma_origen,\n    NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL AS has_content\n  FROM public.chat_messages cm\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n),\nlead_flags AS (\n  SELECT lead_id,\n    BOOL_OR(has_content AND sender_type = 'prospecto') AS tiene_msg_prospecto,\n    BOOL_OR(has_content AND sender_type = 'bot') AS tiene_msg_bot,\n    BOOL_OR(has_content) AS has_convo,\n    BOOL_OR(plataforma_origen ILIKE '%CTWA%') AS has_ctwa,\n    BOOL_OR(message_class = 'Campa?a') AS has_campana\n  FROM scoped_msgs GROUP BY lead_id\n),\nprospecto_state AS (\n  SELECT p.lead_id, BOOL_OR(p.bot_estado = 'Activo') AS is_active,\n    BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\ntarget_leads AS (\n  SELECT lf.lead_id\n  FROM lead_flags lf\n  INNER JOIN prospecto_state ps ON ps.lead_id = lf.lead_id\n  WHERE lf.has_convo\n    AND (lf.has_ctwa OR lf.has_campana OR COALESCE(ps.is_active, false))\n    AND lf.tiene_msg_prospecto\n    AND lf.tiene_msg_bot\n    AND COALESCE(ps.phone_blacklisted, false) = false\n),\nraw_messages AS (\n  SELECT cm.id, cm.lead_id, COALESCE(cm.chat_id, '__lead_' || cm.lead_id::text) AS chat_key,\n    LOWER(TRIM(cm.tipo_emisor)) AS sender_type,\n    COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) AS msg_at,\n    NULLIF(TRIM(COALESCE(cm.content, '')), '') AS clean_content\n  FROM public.chat_messages cm\n  INNER JOIN target_leads tl ON tl.lead_id = cm.lead_id\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n    AND NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL\n),\nordered_messages AS (\n  SELECT rm.*, LAG(rm.msg_at) OVER (PARTITION BY rm.lead_id, rm.chat_key ORDER BY rm.msg_at, rm.id) AS prev_msg_at\n  FROM raw_messages rm\n),\nmarked AS (\n  SELECT om.*,\n    CASE WHEN om.prev_msg_at IS NULL THEN 1\n         WHEN om.msg_at - om.prev_msg_at > ({{ $('Set | All Params').first().json.horas_idle_para_interaccion_resumen }}::numeric * interval '1 hour') THEN 1\n         ELSE 0 END AS starts_new_interaction\n  FROM ordered_messages om\n),\nsessionized AS (\n  SELECT m.*, SUM(starts_new_interaction) OVER (PARTITION BY m.lead_id, m.chat_key ORDER BY m.msg_at, m.id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS interaction_number\n  FROM marked m\n),\ninteractions AS (\n  SELECT lead_id, chat_key, interaction_number, MIN(msg_at) AS interaction_start_at, MAX(msg_at) AS interaction_end_at,\n    COUNT(*) AS total_messages,\n    COUNT(*) FILTER (WHERE sender_type = 'prospecto') AS prospecto_messages,\n    COUNT(*) FILTER (WHERE sender_type IN ('bot', 'usuario')) AS handler_messages\n  FROM sessionized\n  GROUP BY lead_id, chat_key, interaction_number\n)\nSELECT * FROM interactions\nWHERE prospecto_messages > 0\nORDER BY interaction_start_at DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        208
+      ],
+      "id": "5483f228-c4d7-4566-8041-d7cdb2a4f9a4",
+      "name": "Summary Interaction Calls",
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Set | All Params').first().json;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\n\nconst segundosPorInteraccion = n(params.segundos_por_actualizacion_resumen_interaccion);\nconst idleHours = n(params.horas_idle_para_interaccion_resumen);\nconst filas = items.map(i => i.json);\nconst leadsSet = new Set(filas.map(f => f.lead_id));\nconst totalInteracciones = filas.length;\nconst horasAhorradas = round((totalInteracciones * segundosPorInteraccion) / 3600, 2);\nconst ahorroEquivalenteBob = round(horasAhorradas * costoHoraBob, 2);\nconst porLeadMap = {};\nfor (const f of filas) { const id = f.lead_id; porLeadMap[id] ||= { lead_id: id, total_interacciones: 0, total_messages: 0, prospecto_messages: 0, handler_messages: 0 }; porLeadMap[id].total_interacciones++; porLeadMap[id].total_messages += n(f.total_messages); porLeadMap[id].prospecto_messages += n(f.prospecto_messages); porLeadMap[id].handler_messages += n(f.handler_messages); }\nconst porLead = Object.values(porLeadMap).map(l => ({ ...l, horas_ahorradas: round((l.total_interacciones * segundosPorInteraccion) / 3600, 4), ahorro_equivalente_bob: round(((l.total_interacciones * segundosPorInteraccion) / 3600) * costoHoraBob, 2) }));\nreturn [{ json: { tipo_stats: 'summary_updates', clasificacion_ahorro: 'adicional', scale_mode: 'per_lead', resumen_ejecutivo: { leads_atendidos: leadsSet.size, interacciones_procesadas: totalInteracciones, horas_idle_para_nueva_interaccion: idleHours, segundos_que_tomaria_a_un_humano_por_actualizacion: segundosPorInteraccion, horas_ahorradas: horasAhorradas, costo_por_hora_de_un_asistente_humano_bob: costoHoraBob, ahorro_equivalente_bob: ahorroEquivalenteBob }, detalle_tecnico: { supuestos_usados: { horas_idle_para_nueva_interaccion: idleHours, segundos_por_actualizacion_resumen: segundosPorInteraccion, salario_mensual_de_un_asistente_humano_bob: salarioMensualBob, horas_de_trabajo_por_semana: horasSemana }, desglose_por_lead: porLead } }}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        208
+      ],
+      "id": "d1e77c47-db96-4ef9-a77b-386e61823a88",
+      "name": "Summary Interaction Stats"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Pipeline Move Calls ? movimientos de etapa inferidos desde uso de herramientas */\nWITH scoped_msgs AS (\n  SELECT cm.lead_id, LOWER(TRIM(cm.tipo_emisor)) AS sender_type, cm.message_class, cm.plataforma_origen,\n    NULLIF(TRIM(COALESCE(cm.content, '')), '') IS NOT NULL AS has_content\n  FROM public.chat_messages cm\n  WHERE cm.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND cm.lead_id IS NOT NULL\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND COALESCE(cm.mensaje_enviado_el, cm.registro_creado_el) < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n),\nlead_flags AS (\n  SELECT lead_id,\n    BOOL_OR(has_content AND sender_type = 'prospecto') AS tiene_msg_prospecto,\n    BOOL_OR(has_content AND sender_type = 'bot') AS tiene_msg_bot,\n    BOOL_OR(has_content) AS has_convo,\n    BOOL_OR(plataforma_origen ILIKE '%CTWA%') AS has_ctwa,\n    BOOL_OR(message_class = 'Campa?a') AS has_campana\n  FROM scoped_msgs GROUP BY lead_id\n),\nprospecto_state AS (\n  SELECT p.lead_id, BOOL_OR(p.bot_estado = 'Activo') AS is_active,\n    BOOL_OR(men.normalized_phone IS NOT NULL) AS phone_blacklisted\n  FROM public.prospectos p\n  LEFT JOIN public.metric_excluded_numbers men\n    ON men.normalized_phone = regexp_replace(p.prospecto_numero_whatsapp::text, '[^0-9]', '', 'g')\n   AND men.is_active = true\n  WHERE p.lead_id IS NOT NULL\n  GROUP BY p.lead_id\n),\ntarget_leads AS (\n  SELECT lf.lead_id\n  FROM lead_flags lf\n  INNER JOIN prospecto_state ps ON ps.lead_id = lf.lead_id\n  WHERE lf.has_convo\n    AND (lf.has_ctwa OR lf.has_campana OR COALESCE(ps.is_active, false))\n    AND lf.tiene_msg_prospecto\n    AND lf.tiene_msg_bot\n    AND COALESCE(ps.phone_blacklisted, false) = false\n),\nscoped_log AS (\n  SELECT z.id, z.created_at, z.execution_id, z.lead_id, z.tool_name, z.merge_output\n  FROM public.z_execution_log z\n  INNER JOIN target_leads tl ON tl.lead_id = z.lead_id\n  WHERE z.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND z.execution_type = 'prod'\n    AND z.tool_name IN ('needs_property_match', 'needs_property_details', 'needs_scheduling')\n    AND z.created_at >= '{{ $('Set | All Params').first().json.period_start }}'::timestamp\n    AND z.created_at < '{{ $('Set | All Params').first().json.period_end }}'::timestamp\n),\nrequerimiento_moves AS (\n  SELECT lead_id, MIN(created_at) AS move_at, 'to_requerimiento' AS move_type\n  FROM scoped_log\n  WHERE tool_name IN ('needs_property_match', 'needs_property_details')\n  GROUP BY lead_id\n),\nscheduler_elements AS (\n  SELECT sl.*, elem\n  FROM scoped_log sl\n  CROSS JOIN LATERAL jsonb_array_elements(sl.merge_output->'data') AS elem\n  WHERE sl.tool_name = 'needs_scheduling' AND elem ? sl.tool_name\n),\nreunion_moves AS (\n  SELECT lead_id, MIN(created_at) AS move_at, 'to_reunion_agendada' AS move_type\n  FROM scheduler_elements\n  WHERE (elem -> tool_name ->> 'start_at') IS NOT NULL\n    AND NULLIF(elem -> tool_name ->> 'event_deleted', '') IS NULL\n  GROUP BY lead_id\n)\nSELECT * FROM requerimiento_moves\nUNION ALL\nSELECT * FROM reunion_moves\nORDER BY move_at DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        400
+      ],
+      "id": "63b53509-54a0-4976-b9bf-2d93e0e87259",
+      "name": "Pipeline Move Calls",
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Set | All Params').first().json;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\n\nconst segundosPorMovimiento = n(params.segundos_por_movimiento_embudo);\nconst filas = items.map(i => i.json);\nconst leadsSet = new Set(filas.map(f => f.lead_id));\nconst conteoPorTipo = {};\nfor (const f of filas) conteoPorTipo[f.move_type || 'desconocido'] = (conteoPorTipo[f.move_type || 'desconocido'] || 0) + 1;\nconst totalMovimientos = filas.length;\nconst horasAhorradas = round((totalMovimientos * segundosPorMovimiento) / 3600, 2);\nconst ahorroEquivalenteBob = round(horasAhorradas * costoHoraBob, 2);\nconst porLeadMap = {};\nfor (const f of filas) { const id = f.lead_id; porLeadMap[id] ||= { lead_id: id, total_movimientos: 0, to_requerimiento: 0, to_reunion_agendada: 0 }; porLeadMap[id].total_movimientos++; if (f.move_type === 'to_requerimiento') porLeadMap[id].to_requerimiento++; if (f.move_type === 'to_reunion_agendada') porLeadMap[id].to_reunion_agendada++; }\nconst porLead = Object.values(porLeadMap).map(l => ({ ...l, horas_ahorradas: round((l.total_movimientos * segundosPorMovimiento) / 3600, 4), ahorro_equivalente_bob: round(((l.total_movimientos * segundosPorMovimiento) / 3600) * costoHoraBob, 2) }));\nreturn [{ json: { tipo_stats: 'pipeline_moves', clasificacion_ahorro: 'adicional', scale_mode: 'per_lead', resumen_ejecutivo: { leads_atendidos: leadsSet.size, movimientos_procesados: totalMovimientos, movimientos_por_tipo: conteoPorTipo, segundos_que_tomaria_a_un_humano_por_movimiento: segundosPorMovimiento, horas_ahorradas: horasAhorradas, costo_por_hora_de_un_asistente_humano_bob: costoHoraBob, ahorro_equivalente_bob: ahorroEquivalenteBob }, detalle_tecnico: { supuestos_usados: { segundos_por_movimiento_embudo: segundosPorMovimiento, salario_mensual_de_un_asistente_humano_bob: salarioMensualBob, horas_de_trabajo_por_semana: horasSemana }, desglose_por_lead: porLead } }}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        400
+      ],
+      "id": "e655e5a0-d046-4416-93dd-deb616cd9b88",
+      "name": "Pipeline Move Stats"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Inventory Ops Calls ? creaci?n de inventario + revisi?n quincenal de disponibilidad */\nWITH params AS (\n  SELECT '{{ $('Set | All Params').first().json.period_start }}'::timestamp AS period_start,\n         '{{ $('Set | All Params').first().json.period_end }}'::timestamp AS period_end,\n         {{ $('Set | All Params').first().json.dias_ciclo_revision_disponibilidad_proyecto }}::numeric AS revision_cycle_days\n),\nperiod AS (\n  SELECT EXTRACT(EPOCH FROM (period_end - period_start)) / 86400.0 AS period_days, revision_cycle_days FROM params\n),\nprojects_scope AS (\n  SELECT p.id FROM public.projects p\n  WHERE p.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n),\nstandalone_listings_scope AS (\n  SELECT l.id FROM public.listings l\n  WHERE l.user_id = {{ $('Set | All Params').first().json.target_user_id }}\n    AND l.record_status = 1\n    AND l.listing_project_id IS NULL\n),\ncounts AS (\n  SELECT (SELECT COUNT(*) FROM projects_scope)::numeric AS project_count,\n         (SELECT COUNT(*) FROM standalone_listings_scope)::numeric AS standalone_listing_count,\n         (SELECT period_days FROM period) AS period_days,\n         (SELECT revision_cycle_days FROM period) AS revision_cycle_days\n)\nSELECT 'project_creation' AS inventory_work_type, project_count AS units, project_count, standalone_listing_count, period_days, revision_cycle_days FROM counts\nUNION ALL\nSELECT 'standalone_listing_creation' AS inventory_work_type, standalone_listing_count AS units, project_count, standalone_listing_count, period_days, revision_cycle_days FROM counts\nUNION ALL\nSELECT 'project_availability_revision' AS inventory_work_type,\n  CASE WHEN revision_cycle_days > 0 THEN project_count * (period_days / revision_cycle_days) ELSE 0 END AS units,\n  project_count, standalone_listing_count, period_days, revision_cycle_days\nFROM counts;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        592
+      ],
+      "id": "df95d5b7-2358-427e-bca0-2eccb4c5f760",
+      "name": "Inventory Ops Calls",
+      "credentials": {
+        "postgres": {
+          "id": "foWpPHDvtwPGvWqR",
+          "name": "Capital - Supabase Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $('Set | All Params').first().json;\nconst SEMANAS_POR_MES = 4.33;\nconst salarioMensualBob = Number(params.salario_mensual_asistente_bob);\nconst horasSemana = Number(params.horas_semana);\nconst horasMes = horasSemana * SEMANAS_POR_MES;\nconst costoHoraBob = Math.round((salarioMensualBob / horasMes) * 100) / 100;\nfunction n(v){ const x = Number(v); return Number.isFinite(x) ? x : 0; }\nfunction round(v,d=2){ const m=Math.pow(10,d); return Math.round(n(v)*m)/m; }\n\nconst minutosPorProyecto = n(params.minutos_por_proyecto_inventario);\nconst minutosPorListing = n(params.minutos_por_listing_independiente_inventario);\nconst minutosRevisionProyecto = n(params.minutos_revision_disponibilidad_proyecto);\nconst filas = items.map(i => i.json);\nconst byType = Object.fromEntries(filas.map(f => [f.inventory_work_type, f]));\nconst projectCreationUnits = n(byType.project_creation?.units);\nconst listingCreationUnits = n(byType.standalone_listing_creation?.units);\nconst revisionUnits = n(byType.project_availability_revision?.units);\nconst projectCount = n(filas[0]?.project_count);\nconst standaloneListingCount = n(filas[0]?.standalone_listing_count);\nconst periodDays = n(filas[0]?.period_days);\nconst revisionCycleDays = n(filas[0]?.revision_cycle_days);\nconst minutosCreacionProyectos = projectCreationUnits * minutosPorProyecto;\nconst minutosCreacionListings = listingCreationUnits * minutosPorListing;\nconst minutosRevision = revisionUnits * minutosRevisionProyecto;\nconst horasCreacionInventario = round((minutosCreacionProyectos + minutosCreacionListings) / 60, 2);\nconst horasRevisionDisponibilidadMes = round(minutosRevision / 60, 2);\nconst horasTotalReferencia = round(horasCreacionInventario + horasRevisionDisponibilidadMes, 2);\nreturn [{ json: { tipo_stats: 'inventory_ops', clasificacion_ahorro: 'adicional', scale_mode: 'inventory_not_lead_scaled', resumen_ejecutivo: { proyectos_en_db: projectCount, listings_independientes_activos: standaloneListingCount, revisiones_de_disponibilidad_equivalentes_en_periodo: round(revisionUnits, 2), minutos_por_proyecto_inventario: minutosPorProyecto, minutos_por_listing_independiente_inventario: minutosPorListing, minutos_revision_disponibilidad_por_proyecto: minutosRevisionProyecto, ciclo_revision_disponibilidad_dias: revisionCycleDays, horas_creacion_inventario: horasCreacionInventario, horas_revision_disponibilidad_mes: horasRevisionDisponibilidadMes, horas_ahorradas: horasTotalReferencia, costo_por_hora_de_un_asistente_humano_bob: costoHoraBob, ahorro_equivalente_bob: round(horasTotalReferencia * costoHoraBob, 2), ahorro_recurrente_mes_bob: round(horasRevisionDisponibilidadMes * costoHoraBob, 2), ahorro_setup_inventario_bob: round(horasCreacionInventario * costoHoraBob, 2) }, detalle_tecnico: { nota: 'Creaci?n de inventario es valor tipo setup. Revisi?n de disponibilidad es recurrente mensual y no se escala por leads.', supuestos_usados: { minutos_por_proyecto_inventario: minutosPorProyecto, minutos_por_listing_independiente_inventario: minutosPorListing, minutos_revision_disponibilidad_por_proyecto: minutosRevisionProyecto, dias_ciclo_revision_disponibilidad_proyecto: revisionCycleDays, period_days: periodDays, salario_mensual_de_un_asistente_humano_bob: salarioMensualBob, horas_de_trabajo_por_semana: horasSemana }, desglose_inventario: { project_creation: { units: projectCreationUnits, minutos: round(minutosCreacionProyectos, 2) }, standalone_listing_creation: { units: listingCreationUnits, minutos: round(minutosCreacionListings, 2) }, project_availability_revision: { units: round(revisionUnits, 2), minutos: round(minutosRevision, 2) } } } }}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        592
+      ],
+      "id": "91d28f85-c6a0-4665-88f3-8dc04a5a7fe6",
+      "name": "Inventory Ops Stats"
+    }
+  ],
+  "connections": {
+    "When clicking 'Execute workflow'": {
+      "main": [
+        [
+          {
+            "node": "Set | All Params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Stats": {
+      "main": [
+        [
+          {
+            "node": "Projection - Total Ahorro Interacted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Suggester Calls": {
+      "main": [
+        [
+          {
+            "node": "Suggester Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Property Details Calls1": {
+      "main": [
+        [
+          {
+            "node": "Details Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scheduler Calls": {
+      "main": [
+        [
+          {
+            "node": "Scheduler Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interacted Leads Base": {
+      "main": [
+        [
+          {
+            "node": "Suggester Calls",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Property Details Calls1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Scheduler Calls",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Bot Workload Calls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Suggester Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Details Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Stats",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Scheduler Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Stats",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Set | All Params": {
+      "main": [
+        [
+          {
+            "node": "Interacted Leads Base",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Lead Registration Calls",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Summary Interaction Calls",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Pipeline Move Calls",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Inventory Ops Calls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bot Workload Calls": {
+      "main": [
+        [
+          {
+            "node": "Bot Workload Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bot Workload Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Stats",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Lead Registration Calls": {
+      "main": [
+        [
+          {
+            "node": "Lead Registration Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summary Interaction Calls": {
+      "main": [
+        [
+          {
+            "node": "Summary Interaction Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pipeline Move Calls": {
+      "main": [
+        [
+          {
+            "node": "Pipeline Move Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inventory Ops Calls": {
+      "main": [
+        [
+          {
+            "node": "Inventory Ops Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Registration Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Stats",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Summary Interaction Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Stats",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Pipeline Move Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Stats",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "Inventory Ops Stats": {
+      "main": [
+        [
+          {
+            "node": "Merge Stats",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9b5f247ad8db8a992c1e686364d875b751075fb4e9b814f6e145e7149c72cdc3"
+  }
+}
