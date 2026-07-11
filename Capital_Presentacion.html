@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -1704,6 +1704,16 @@
     </div>
   </div></section>
 
+  <!-- 8 CONTACT -->
+  <section class="slide"><div class="inner" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+    <img src="capital_logo_clean.svg" alt="Capital Logo" style="width: 180px; margin-bottom: 20px;">
+    <h2 style="font-size: clamp(32px, 4vw, 46px);">Contáctanos al 60028633 o</h2>
+    <p class="lede" style="text-align: center; max-width: 100%; margin-top: 10px; font-size: clamp(18px, 2vw, 24px);">Escanea el código QR para enviarnos un mensaje.</p>
+    <div style="margin-top: 40px; background: white; padding: 25px; border-radius: 24px; box-shadow: var(--shadow); display: inline-block; border: 1px solid var(--line);">
+      <img src="qr.png" alt="Código QR" style="width: 380px; height: 380px; display: block;">
+    </div>
+  </div></section>
+
 </div>
 
 <div class="nav"><button class="arrow" id="prev">‹</button><div class="dots" id="dots"></div><button class="arrow" id="next">›</button></div>
@@ -2099,13 +2109,15 @@ const timePanels=[...valueEl.querySelectorAll('.time-panel')];
 const timeSwitchDots=[...valueEl.querySelectorAll('.time-switch i')];
 const timeMax=timePanels.length||1;
 let timeStep=1;
-const lastIdx=slides.length-1;
+const lastIdx=slides.length-2; // slide 7 CLOSE
+const contactIdx=slides.length-1; // slide 8 CONTACT
 const extraSlideIdxs=slides.map((_,i)=>i).filter(i=>i>valueIdx&&i<lastIdx-1);
 function makeNavStops(){
   const stops=[{slide:0}];
   for(let step=1;step<=visibleValueMax;step++)stops.push({slide:valueIdx,valueStep:step});
   if(extrasVisible)extraSlideIdxs.forEach(i=>stops.push({slide:i}));
   if(lastIdx>0)stops.push({slide:lastIdx});
+  stops.push({slide:contactIdx});
   navStops=stops;
   dots.innerHTML='';
   navStops.forEach(stop=>{
@@ -2134,7 +2146,7 @@ function goStop(stop){
   updateNavDots();
 }
 function nextVisibleSlide(dir){
-  const ordered=[0,valueIdx,...(extrasVisible?extraSlideIdxs:[]),lastIdx].filter((v,i,a)=>a.indexOf(v)===i);
+  const ordered=[0,valueIdx,...(extrasVisible?extraSlideIdxs:[]),lastIdx,contactIdx].filter((v,i,a)=>a.indexOf(v)===i);
   const pos=ordered.indexOf(cur);
   if(pos<0)return cur;
   return ordered[Math.max(0,Math.min(ordered.length-1,pos+dir))];
