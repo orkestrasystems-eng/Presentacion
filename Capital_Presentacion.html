@@ -47,7 +47,7 @@
     border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer}
   .iconbtn svg{width:17px;height:17px}.iconbtn:hover{border-color:var(--green);color:var(--green-d)}
   .iconbtn.on{background:#E4F1E9;border-color:#CBE2D4;color:var(--green-d)}
-  .note-topbtn{display:none;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);
+  .note-topbtn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);
     font:inherit;font-size:12.5px;font-weight:750;padding:6px 11px;border-radius:8px;cursor:pointer;color:var(--ink)}
   .note-topbtn.show{display:inline-flex}
   .note-topbtn:hover{border-color:var(--green);color:var(--green-d)}
@@ -705,6 +705,43 @@
   .note-group h4{font-size:11px;font-weight:850;letter-spacing:.09em;text-transform:uppercase;color:var(--green-d);margin-bottom:6px}
   .note-group p{font-size:12.5px;line-height:1.42;color:var(--slate);margin:0}
   .note-group b{color:var(--ink);font-weight:800}
+  .notes-hub{width:min(560px,calc(100vw - 44px));padding:18px}
+  .notes-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 0 12px}
+  .notes-tabs button{border:1px solid var(--line);background:#F7F5F0;color:var(--slate);border-radius:9px;
+    padding:8px 10px;font-size:12px;font-weight:850;cursor:pointer}
+  .notes-tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  .notes-view{display:none}.notes-view.on{display:block}
+  .notes-headrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+  .notes-title{font-size:13px;font-weight:850;color:var(--ink);letter-spacing:-.01em}
+  .notes-editbtn{border:1px solid var(--line);background:#fff;color:var(--green-d);border-radius:8px;
+    padding:6px 10px;font:inherit;font-size:12px;font-weight:850;cursor:pointer}
+  .notes-editbtn:hover{border-color:var(--green)}
+  .notes-read{border:1px solid var(--line);background:linear-gradient(180deg,#fff,#FBFAF6);border-radius:14px;
+    padding:12px;max-height:calc(100vh - 184px);overflow:auto;box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+  .note-stack{display:flex;flex-direction:column;gap:12px}
+  .note-section-block{border:1px solid #E8E0D2;background:#FAF8F2;border-radius:13px;padding:12px;box-shadow:0 10px 22px rgba(15,42,34,.05)}
+  .note-section-block.note-section-plain{background:#fff;border-color:#ECE6DC}
+  .note-section-title{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--green-d);
+    margin:0 0 10px}
+  .note-section-title:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+  .note-card{border:1px solid #E6DFD2;background:rgba(255,255,255,.86);border-radius:11px;padding:11px 12px;margin-top:9px}
+  .note-card:first-of-type{margin-top:0}
+  .note-card-plain{background:#fff}
+  .note-subtitle{font-size:13.5px;font-weight:900;color:var(--ink);margin:0 0 8px;letter-spacing:-.01em}
+  .note-minihead{display:inline-flex;margin:4px 0 7px;border:1px solid #CBE2D4;background:#EAF4EE;color:var(--green-d);
+    border-radius:999px;padding:4px 9px;font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+  .note-minihead.pre{border-color:#E0D8C9;background:#F3F0E8;color:#746B5C}
+  .note-bullet{position:relative;margin:7px 0;padding-left:18px;font-size:13.5px;line-height:1.5;color:var(--slate)}
+  .note-bullet:before{content:"";position:absolute;left:2px;top:.74em;width:6px;height:6px;border-radius:50%;background:var(--green-d)}
+  .note-number{font-size:13.5px;line-height:1.45;color:var(--ink);font-weight:800;margin:7px 0}
+  .note-textline{font-size:13.5px;line-height:1.5;color:var(--slate);margin:7px 0}
+  .note-speaker{display:inline-flex;margin-left:4px;border:1px solid #CBE2D4;background:#E4F1E9;color:var(--green-d);
+    border-radius:999px;padding:1px 7px;font-size:10px;font-weight:850;letter-spacing:.04em;vertical-align:1px}
+  .notes-view.editing .notes-read{display:none}
+  .notes-edit{display:none;width:100%;min-height:360px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:#fff;
+    padding:12px 13px;font:inherit;font-size:14px;line-height:1.5;color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+  .notes-view.editing .notes-edit{display:block}
+  .notes-edit:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(45,153,100,.12)}
   .app-story{width:100%;text-align:center}
   .app-story .vs-line{margin-left:auto;margin-right:auto}
   .app-story h2{font-size:clamp(30px,3.5vw,44px);line-height:1.05;letter-spacing:-.03em;margin-top:8px}
@@ -712,6 +749,41 @@
   .app-bridge h2{font-size:clamp(38px,5vw,64px);line-height:1.02;letter-spacing:-.035em}
   .app-bridge p{font-size:clamp(17px,1.8vw,22px);line-height:1.42;color:var(--slate);max-width:58ch;margin:20px auto 0}
   .app-bridge em{font-style:normal;color:var(--green-d)}
+  .bridge-step .app-bridge{max-width:1000px}
+  .bridge-step .app-bridge h2{font-size:clamp(52px,6.4vw,82px);line-height:.98;max-width:18ch;margin:0 auto}
+  .bridge-step .app-bridge p{font-size:clamp(24px,2.55vw,32px);line-height:1.34;max-width:48ch;margin-top:28px}
+  .app-story-step{justify-content:flex-start;padding-top:2px}
+  .app-story-step .app-story{width:min(1180px,calc(100vw - 96px));transform:translateY(-82px)}
+  .app-story-step .vs-tag{font-size:12px;padding:6px 15px}
+  .app-story-step .ops-grid{gap:20px;margin-top:22px}
+  .app-story-step .ops-card{min-height:230px}
+  .app-story-step .ops-head{height:52px;font-size:16px;padding:0 18px}
+  .app-story-step .ops-head .value-ico{width:35px;height:35px;border-radius:10px}
+  .app-story-step .ops-head .value-ico svg{width:20px;height:20px}
+  .app-story-step .ops-body{padding:18px}
+  .app-story-step .lead-head{font-size:11px;padding:10px 13px}
+  .app-story-step .lead-row{font-size:14.5px;padding:14px 13px}
+  .app-story-step .lead-av{width:36px;height:36px;font-size:13px}
+  .app-story-step .lead-name{font-size:15.5px}
+  .app-story-step .lead-phone{font-size:12.5px}
+  .app-story-step .mini-pill{font-size:12.5px;padding:4px 10px}
+  .app-story-step .summary-box{padding:17px 18px}
+  .app-story-step .summary-person .lead-name{font-size:16px}
+  .app-story-step .summary-person .lead-phone{font-size:13px}
+  .app-story-step .summary-title{font-size:13px}
+  .app-story-step .summary-text{font-size:17.5px;line-height:1.32}
+  .app-story-step .pipeline-mini{gap:11px}
+  .app-story-step .pipe-title{font-size:12.5px}
+  .app-story-step .pipe-card{min-height:100px;padding:12px}
+  .app-story-step .pipe-name{font-size:14px}
+  .app-story-step .pipe-meta{font-size:12.5px}
+  .app-story-step .gcal-top{padding:11px 13px}
+  .app-story-step .gcal-range{font-size:14.5px}
+  .app-story-step .gcal-tabs span{font-size:11.5px;padding:4px 9px}
+  .app-story-step .gcal-grid{grid-template-columns:52px repeat(3,1fr);min-height:134px}
+  .app-story-step .gcal-time{font-size:12px;padding:10px 8px}
+  .app-story-step .gcal-dh{font-size:12px;padding:7px 0}
+  .app-story-step .gcal-event{font-size:12.5px;line-height:1.24;padding:9px 10px}
   .ops-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px;text-align:left}
   .ops-card{background:var(--card);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);
     overflow:hidden;min-height:162px;display:flex;flex-direction:column}
@@ -775,6 +847,21 @@
   .time-mini-total{background:var(--ink);color:#fff;border-radius:16px;padding:18px 20px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
     box-shadow:0 18px 40px rgba(15,42,34,.22)}
   .time-mini-total b{font-size:18px;line-height:1.1}.time-mini-total span{font-size:34px;font-weight:850;color:#9DE1BA;white-space:nowrap}
+  .value-time-step{justify-content:flex-start}
+  .value-time-step .time-proof{width:min(1180px,calc(100vw - 104px));grid-template-columns:minmax(0,1.08fr) minmax(420px,.92fr);gap:42px;align-items:start;transform:translateY(-28px)}
+  .value-time-step .time-proof-copy{padding-top:52px}
+  .value-time-step .time-proof-copy h2{font-size:clamp(38px,4.65vw,58px);line-height:1.02;max-width:17ch}
+  .value-time-step .time-proof-copy p{font-size:clamp(19px,1.85vw,24px);line-height:1.38;max-width:39ch;margin-top:20px}
+  .value-time-step .time-proof-note{font-size:14px;padding:9px 14px;margin-top:24px}
+  .value-time-step .time-carousel{min-height:394px}
+  .value-time-step .time-panel{gap:11px}
+  .value-time-step .time-mini-section{font-size:12px;margin:3px 4px 2px}
+  .value-time-step .time-mini-row{border-radius:14px;padding:15px 18px}
+  .value-time-step .time-mini-row b{font-size:16.5px}
+  .value-time-step .time-mini-row span{font-size:26px}
+  .value-time-step .time-mini-total{border-radius:18px;padding:20px 22px}
+  .value-time-step .time-mini-total b{font-size:20px}
+  .value-time-step .time-mini-total span{font-size:39px}
   .impact-slide{width:100%;display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:22px;align-items:center}
   .impact-copy h2{font-size:clamp(28px,3.4vw,40px);line-height:1.04;max-width:18ch}
   .impact-copy p{font-size:14.5px;line-height:1.45;color:var(--slate);margin-top:12px;max-width:41ch}
@@ -822,6 +909,25 @@
   .mono-eq-row.total .mono-symbol{background:#DDF4E6}.mono-eq-row.total .mono-eq-val{color:var(--green-d);font-size:30px}
   .mono-eq-row.final{margin-top:8px;padding:16px 8px;background:var(--ink);border-radius:14px;color:#fff;border-bottom:0}
   .mono-eq-row.final .mono-symbol{background:rgba(157,225,186,.14);color:#9DE1BA}.mono-eq-row.final strong,.mono-eq-row.final .mono-eq-val{color:#fff}.mono-eq-row.final small{color:#CDEBD9}
+  .mono-econ-step{justify-content:flex-start}
+  .mono-econ-step .mono-slide{width:min(1180px,calc(100vw - 104px));grid-template-columns:minmax(0,.94fr) minmax(560px,1.06fr);gap:42px;align-items:start;transform:translateY(-30px)}
+  .mono-econ-step .vs-tag{font-size:12px;padding:6px 15px}
+  .mono-econ-step .mono-copy h2{font-size:clamp(42px,4.9vw,61px);line-height:1.01;max-width:17ch;margin-top:18px}
+  .mono-econ-step .mono-editor{gap:18px;margin-top:36px}
+  .mono-econ-step .mono-edit-card{min-height:142px;padding:24px 22px;border-radius:17px}
+  .mono-econ-step .mono-edit-card label{font-size:12.5px;margin-bottom:15px}
+  .mono-econ-step .mono-edit-wrap input{font-size:46px}
+  .mono-econ-step .mono-select-wrap select{font-size:38px;padding:16px 46px 16px 18px}
+  .mono-econ-step .mono-edit-wrap span{font-size:16px}
+  .mono-econ-step .mono-equation{padding:24px;border-radius:20px}
+  .mono-econ-step .mono-eq-row{grid-template-columns:48px minmax(0,1fr) auto;gap:15px;padding:13px 0}
+  .mono-econ-step .mono-symbol{width:38px;height:38px;border-radius:11px;font-size:21px}
+  .mono-econ-step .mono-eq-row strong{font-size:16.5px}
+  .mono-econ-step .mono-eq-row small{font-size:12.5px}
+  .mono-econ-step .mono-eq-val{font-size:25px}
+  .mono-econ-step .mono-eq-row.total{margin:8px -10px 0;padding:16px 10px}
+  .mono-econ-step .mono-eq-row.total .mono-eq-val{font-size:34px}
+  .mono-econ-step .mono-eq-row.final{margin-top:9px;padding:18px 10px}
   .time-focus{max-width:860px;margin:0 auto;text-align:center}
   .time-focus .vs-tag{margin-bottom:16px}
   .time-focus h2{font-size:clamp(30px,4vw,48px);line-height:1.08;max-width:22ch;margin:0 auto}
@@ -836,6 +942,13 @@
   .vtile .value-ico{margin:0 auto 16px;width:48px;height:48px;border-radius:14px}
   .vtile .value-ico svg{width:25px;height:25px}
   .vtile b{font-size:16px;color:var(--ink);display:block;line-height:1.22;letter-spacing:-.01em}
+  .extras-step .vs-tag{font-size:12px;padding:6px 15px}
+  .extras-step .vs-line{font-size:clamp(24px,2.65vw,34px);line-height:1.3;max-width:46ch;margin-top:24px}
+  .extras-step .vtiles{grid-template-columns:repeat(5,minmax(190px,1fr));gap:20px;width:min(1180px,calc(100vw - 104px));margin-top:44px}
+  .extras-step .vtile{min-height:240px;padding:40px 20px 37px}
+  .extras-step .vtile .value-ico{width:68px;height:68px;border-radius:18px;margin-bottom:23px}
+  .extras-step .vtile .value-ico svg{width:36px;height:36px}
+  .extras-step .vtile b{font-size:25px;line-height:1.14}
   .time-proof-note{display:inline-flex;margin-top:18px;background:#E4F1E9;color:var(--green-d);border:1px solid #CBE2D4;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:850}
   .vres{background:var(--ink);border-radius:20px;padding:40px 48px;color:#fff;max-width:740px;
     box-shadow:0 22px 48px rgba(15,42,34,.24);margin-top:8px;text-align:center}
@@ -890,6 +1003,24 @@
   <button class="iconbtn" id="toggleExtras" type="button" title="Mostrar slides extra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
   <button class="abtn" id="openAudit">Auditar datos</button>
 </div>
+
+<aside class="notes-panel notes-hub" id="notesHub">
+  <div class="notes-top"><b>Notas</b><button class="notes-close" id="closeNotesHub" type="button">×</button></div>
+  <div class="notes-tabs">
+    <button class="on" type="button" data-notes-tab="slide">Esta slide</button>
+    <button type="button" data-notes-tab="general">Presentación</button>
+  </div>
+  <div class="notes-view on" data-notes-view="slide">
+    <div class="notes-headrow"><div class="notes-title" id="slideNotesTitle">Resumen de esta slide</div><button class="notes-editbtn" type="button" data-edit-notes="slide">Editar</button></div>
+    <div class="notes-read" id="slideNotesRead"></div>
+    <textarea class="notes-edit" id="slideNotesEditor" spellcheck="false"></textarea>
+  </div>
+  <div class="notes-view" data-notes-view="general">
+    <div class="notes-headrow"><div class="notes-title">Presentación completa</div><button class="notes-editbtn" type="button" data-edit-notes="general">Editar</button></div>
+    <div class="notes-read" id="generalNotesRead"></div>
+    <textarea class="notes-edit" id="generalNotesEditor" spellcheck="false"></textarea>
+  </div>
+</aside>
 
 <div class="deck" id="deck">
 
@@ -949,16 +1080,15 @@
           <div class="note-group"><h4>Agenda reunión</h4><p>Después de proponer la reunión, coordina horario y deja los datos listos: ubicación por Maps o link virtual, según corresponda.</p></div>
         </aside>
       </div>
-      <div class="vstep">
+      <div class="vstep bridge-step">
         <div class="app-bridge">
           <h2>Capital no solo <em>responde</em></h2>
           <p>Mientras que la conversación de WhatsApp se desarrolla, el Asistente IA también registra, resume, mueve el embudo y agenda en la app.</p>
         </div>
       </div>
-      <div class="vstep">
+      <div class="vstep app-story-step">
         <div class="app-story">
           <span class="vs-tag">App Capital</span>
-          <div class="vs-line">La conversación se convierte en operación comercial actualizada.</div>
           <div class="ops-grid">
             <div class="ops-card">
               <div class="ops-head"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19a6.5 6.5 0 0 1 13 0"/></svg></div>Registra el lead</div>
@@ -1009,7 +1139,7 @@
           </div>
         </div>
       </div>
-      <div class="vstep">
+      <div class="vstep extras-step">
         <span class="vs-tag">Adicionalmente</span>
         <div class="vs-line">Apps y servicios complementarios, <b>diseñados junto a agentes inmobiliarios</b> para resolver problemas cotidianos de su proceso comercial.</div>
         <div class="vtiles">
@@ -1017,10 +1147,10 @@
           <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/><path d="M8 4v16"/><path d="M16 4v16"/></svg></div><b>Generación de inventario</b></div>
           <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.4-4.4"/></svg></div><b>Buscador multisitio</b></div>
           <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><b>Seguimientos a un clic</b></div>
-          <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="4" rx="1"/><rect x="12" y="9" width="3" height="7" rx="1"/><rect x="17" y="6" width="3" height="10" rx="1"/></svg></div><b>Métricas y dashboards</b></div>
+          <div class="vtile"><div class="value-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="12" width="3" height="4" rx="1"/><rect x="12" y="9" width="3" height="7" rx="1"/><rect x="17" y="6" width="3" height="10" rx="1"/></svg></div><b>Métricas</b></div>
         </div>
       </div>
-      <div class="vstep">
+      <div class="vstep value-time-step">
         <div class="time-proof">
           <div class="time-proof-copy">
             <span class="vs-tag">Ahorro de tiempo</span>
@@ -1058,7 +1188,7 @@
           </div>
         </div>
       </div>
-      <div class="vstep">
+      <div class="vstep mono-econ-step">
         <div class="mono-slide">
           <div class="mono-copy">
             <span class="vs-tag">Ejemplo económico</span>
@@ -2012,24 +2142,250 @@ function nextVisibleSlide(dir){
 function timeApply(){
   timePanels.forEach((el,i)=>el.classList.toggle('on',i===timeStep-1));
   timeSwitchDots.forEach((d,i)=>d.classList.toggle('on',i===timeStep-1));
+  renderNotesHub();
 }
 timeSwitchDots.forEach((d,i)=>d.onclick=()=>{timeStep=i+1;timeApply();});
 function valueApply(){
   valueSteps.forEach((el,i)=>{el.classList.toggle('on',i===valueStep-1);el.classList.toggle('prevstep',i<valueStep-1);});
   valueDots.forEach((d,i)=>{d.style.display=i<visibleValueMax?'':'none';d.classList.toggle('on',i<valueStep&&i<visibleValueMax);});
   const h=$('#vHint');if(h)h.classList.toggle('gone',valueStep>1);
-  const nb=$('#openValueNotesTop');if(nb)nb.classList.toggle('show',cur===valueIdx&&(valueStep===2||valueStep===monoValueStep));
+  const nb=$('#openValueNotesTop');if(nb)nb.classList.add('show');
   document.body.classList.toggle('mono-economic-step',cur===valueIdx&&valueStep===monoValueStep);
   if(valueStep===timeValueStep)timeApply();
   updateNavDots();
-  if(valueStep!==2&&valueStep!==monoValueStep)closeValueNotes();}
+  if(valueStep!==2&&valueStep!==monoValueStep)closeValueNotes();
+  renderNotesHub();}
 function closeValueNotes(){[$('#valueNotes'),$('#monoNotes')].filter(Boolean).forEach(n=>n.classList.remove('open'));}
+const DEFAULT_SLIDE_NOTES={
+  "value-2":{title:"Slide 3 · Flujo habitual",text:`Notas Pre-existentes:
+- Apertura: Del primer mensaje a una reunión agendada, sin desconcentrar al agente inmobiliario.
+- Lectura del diagrama: Este es el flujo habitual de la conversación, no una regla rígida. El asistente IA puede adelantar o repetir pasos según lo que pregunte el prospecto.
+- Cómo referirnos al sistema: Decir que el asistente IA recibe la información y la gestiona. No decir "nosotros lo hacemos". Las opciones, precios y documentos vienen de la base de datos de Capital, no de una gestión manual nuestra.
+- Control del agente: El agente inmobiliario puede intervenir en cualquier momento: pausar o desactivar el bot, responder él mismo y reactivarlo después. El asistente no pierde contexto y también lee los mensajes enviados por el agente.
+- Prospecto por WhatsApp: El lead puede entrar por Click to WhatsApp desde Facebook, Instagram u otra red social; por GCP / formulario, donde nosotros lo contactamos; o de forma orgánica.
+- Recibe lead: El asistente IA toma el primer mensaje y abre la conversación sin esperar a que el agente humano esté disponible.
+- Califica intención: Pregunta lo esencial: tipo de operación compra o alquiler, tipología casa o departamento, dormitorios y fecha de entrega.
+- Orienta opciones: Filtra la base de datos de Capital. Aunque puede haber unas 54 opciones válidas, recomienda solo 3 mejores para no agobiar al cliente y abrir espacio a la reunión.
+- Informa detalles: Si el lead pregunta por amenities, precios, ubicación o un proyecto específico, responde desde la base de datos de Capital. Cuando corresponde, también envía brochures o documentos.
+- Agenda reunión: Después de proponer la reunión, coordina horario y deja los datos listos: ubicación por Maps o link virtual, según corresponda.`},
+  "value-5":{title:"Slide 6 · Aplicaciones y capacidades",text:"Notas Nuevas:\n- Nunca olvida realizar un seguimiento ni deja desatendido a un cliente. (SORIA)\n- Habla únicamente con base en el inventario disponible, sin inventar información ni \"alucinar\". (SORIA)"},
+  "value-7":{title:"Slide 8 · Ejercicio económico",text:"Notas Pre-existentes:\n- Supuesto de comisión: El ejercicio usa una comisión de una punta de 2% y descuenta 6% para REMAX Bolivia sobre la comisión del agente."},
+  "close":{title:"Última slide · Cierre y garantía",text:"Notas Nuevas:\n- Queremos que tomes una decisión informada, no apresurada. Por eso, el primer mes es reembolsable. (JOSÉ)"}
+};
+const DEFAULT_GENERAL_NOTES=`PRESENTACIÓN
+
+Slide 3 — Flujo habitual
+Notas Pre-existentes:
+- Apertura: Del primer mensaje a una reunión agendada, sin desconcentrar al agente inmobiliario.
+- Lectura del diagrama: Este es el flujo habitual de la conversación, no una regla rígida.
+- Cómo referirnos al sistema: El asistente IA recibe la información y la gestiona. Las opciones, precios y documentos vienen de la base de datos de Capital.
+- Control del agente: El agente puede intervenir, pausar o desactivar el bot, responder él mismo y reactivarlo después.
+- Prospecto por WhatsApp: El lead puede entrar por Click to WhatsApp, GCP / formulario u orgánico.
+- Recibe lead: El asistente toma el primer mensaje y abre la conversación sin esperar al agente humano.
+- Califica intención: Pregunta tipo de operación, tipología, dormitorios y fecha de entrega.
+- Orienta opciones: Filtra la base de datos de Capital y recomienda las mejores opciones para no agobiar al cliente.
+- Informa detalles: Responde desde la base de datos de Capital y puede enviar brochures o documentos.
+- Agenda reunión: Coordina horario y deja ubicación por Maps o link virtual.
+
+Slide 6 — Aplicaciones y capacidades
+Notas Nuevas:
+- Nunca olvida realizar un seguimiento ni deja desatendido a un cliente. (SORIA)
+- Habla únicamente con base en el inventario disponible, sin inventar información ni "alucinar". (SORIA)
+
+DEMO
+Después de la Slide 6 se pasa directamente a la demostración.
+
+1. WhatsApp oficial
+- Mostrar que el sistema trabaja con el WhatsApp oficial utilizado como herramienta diaria por el agente inmobiliario. (CARLOS)
+
+2. Conversaciones siempre en contexto
+- Atiende las 24 horas, los 7 días de la semana, sin turnos ni días libres. (SORIA)
+- Demostrar que el sistema recuerda y comprende el contexto completo de la conversación con cada cliente. (CARLOS)
+- Mostrar el funcionamiento de las reacciones.
+- Explicar la pausa automática de 15 minutos cuando interviene una persona.
+
+3. Seguimientos automáticos
+- Mostrar que no requiere flujos complejos para realizar seguimientos. (CARLOS)
+- Demostrar cómo el sistema retoma una conversación y hace seguimiento al cliente de manera natural.
+
+4. Mensajes masivos
+- Mostrar la funcionalidad para el envío de mensajes masivos. (CARLOS)
+- Explicar claramente qué funciones están incluidas en el servicio y cuáles representan un costo adicional.
+- Presentar esta función dentro del módulo Plataforma – Seguimiento.
+
+5. Aplicación con CRM automático
+- Mostrar cómo la aplicación registra y organiza automáticamente a los clientes. (CARLOS)
+- Enfatizar que el agente no necesita cambiar radicalmente su forma de trabajar ni asumir una carga operativa adicional.
+- Resaltar el bajo esfuerzo o sacrificio requerido por parte del cliente para comenzar a utilizar la solución.
+
+6. Mapa comercial
+- Mostrar el mapa comercial dentro de la aplicación. (SORIA)
+- Explicar cómo esta herramienta brinda mayor orden, control y profesionalismo en la atención de cara al cliente.
+
+Ejercicio económico
+Notas Pre-existentes:
+- Supuesto de comisión: El ejercicio usa una comisión de una punta de 2% y descuenta 6% para REMAX Bolivia sobre la comisión del agente.
+
+REGRESO A LA PRESENTACIÓN
+
+Última slide — Cierre y garantía
+Notas Nuevas:
+- Queremos que tomes una decisión informada, no apresurada. Por eso, el primer mes es reembolsable. (JOSÉ)
+
+PREPARACIÓN PREVIA A LA DEMO
+1. Eliminar la conversación previa con "la mamá".
+2. Revisar por qué el contacto o registro fue creado con estado inactivo.
+3. Verificar que el WhatsApp oficial esté correctamente conectado.
+4. Preparar una conversación que permita mostrar:
+- El mantenimiento del contexto.
+- Las reacciones.
+- La pausa automática de 15 minutos.
+- Los seguimientos automáticos.
+5. Confirmar que el CRM y el mapa comercial tengan información visible para la demostración.`;
+const NOTES_STORE_KEY="capitalPresentationNotes.v2";
+let notesTab="slide";
+let notesEditMode={slide:false,general:false};
+let notesStore=loadNotesStore();
+function normalizeNotesText(text){
+  let next=String(text||"").replace(/Notas existentes/g,"Notas Pre-existentes");
+  const atiendeLine="- Atiende las 24 horas, los 7 días de la semana, sin turnos ni días libres. (SORIA)";
+  const hasConversationSection=/2\. Conversaciones siempre en contexto/.test(next);
+  next=next.replace(/Notas Nuevas:\s*\n- Atiende las 24 horas, los 7 días de la semana, sin turnos ni días libres\. \(SORIA\)\n*/g,"");
+  next=next.replace(/^- Atiende las 24 horas, los 7 días de la semana, sin turnos ni días libres\. \(SORIA\)\n*/m,"");
+  next=next.replace(/Notas Nuevas:\s*\n\s*Notas Pre-existentes:/g,"Notas Pre-existentes:");
+  if(hasConversationSection&&!next.includes(atiendeLine)){
+    next=next.replace(/(2\. Conversaciones siempre en contexto\n)/,`$1${atiendeLine}\n`);
+  }
+  if(!/Notas Nuevas:\s*\n- Nunca olvida realizar un seguimiento/.test(next)){
+    next=next.replace(/^(- Nunca olvida realizar un seguimiento[^\n]*)/m,"Notas Nuevas:\n$1");
+  }
+  if(!/Notas Nuevas:\s*\n- Queremos que tomes una decisión informada/.test(next)){
+    next=next.replace(/^(- Queremos que tomes una decisión informada[^\n]*)/m,"Notas Nuevas:\n$1");
+  }
+  if(!/Ejercicio económico\nNotas Pre-existentes:\s*\n- Supuesto/.test(next)){
+    next=next.replace(/Ejercicio económico\n(- Supuesto)/,"Ejercicio económico\nNotas Pre-existentes:\n$1");
+  }
+  next=next.replace(/-\s+Notas Pre-existentes:\n\s+-\s+/g,"Notas Pre-existentes:\n- ");
+  return next;
+}
+function normalizeNotesStore(store){
+  const next=store||{slides:{},general:{text:DEFAULT_GENERAL_NOTES}};
+  next.slides=next.slides||{};
+  Object.keys(next.slides).forEach(k=>{
+    next.slides[k]={...next.slides[k],text:normalizeNotesText(next.slides[k].text)};
+  });
+  if(next.general)next.general={...next.general,text:normalizeNotesText(next.general.text)};
+  return next;
+}
+function loadNotesStore(){
+  try{
+    const raw=localStorage.getItem(NOTES_STORE_KEY);
+    if(raw)return normalizeNotesStore(JSON.parse(raw));
+  }catch(e){}
+  return normalizeNotesStore({slides:{},general:{text:DEFAULT_GENERAL_NOTES}});
+}
+function saveNotesStore(){localStorage.setItem(NOTES_STORE_KEY,JSON.stringify(notesStore));}
+function getNotesKey(){
+  if(cur===valueIdx)return `value-${valueStep}`;
+  if(cur===lastIdx)return "close";
+  return `slide-${cur+1}`;
+}
+function getNotesTitle(key){
+  if(DEFAULT_SLIDE_NOTES[key])return DEFAULT_SLIDE_NOTES[key].title;
+  if(cur===0)return "Portada";
+  if(cur===valueIdx)return `Propuesta de valor · paso ${valueStep}`;
+  return `Slide ${cur+1}`;
+}
+function getSlideNote(key){
+  const base=DEFAULT_SLIDE_NOTES[key]||{text:""};
+  return {...base,...(notesStore.slides[key]||{})};
+}
+function notesEscape(v){return String(v||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function notesInline(v){
+  return notesEscape(v).replace(/\((SORIA|CARLOS|JOSÉ)\)/g,'<span class="note-speaker">$1</span>');
+}
+function renderPrettyNotes(text){
+  const lines=String(text||"").split(/\r?\n/);
+  let html="",sectionOpen=false,cardOpen=false;
+  const closeCard=()=>{if(cardOpen){html+="</div>";cardOpen=false;}};
+  const closeSection=()=>{closeCard();if(sectionOpen){html+="</section>";sectionOpen=false;}};
+  const ensureSection=()=>{if(!sectionOpen){html+='<section class="note-section-block note-section-plain">';sectionOpen=true;}};
+  const openSection=title=>{closeSection();html+=`<section class="note-section-block"><div class="note-section-title">${notesInline(title)}</div>`;sectionOpen=true;};
+  const openCard=(title,plain=false)=>{
+    ensureSection();
+    closeCard();
+    html+=`<div class="note-card${plain?" note-card-plain":""}">`;
+    if(title)html+=`<div class="note-subtitle">${notesInline(title.replace(/:$/,""))}</div>`;
+    cardOpen=true;
+  };
+  const ensureCard=()=>{if(!cardOpen)openCard("",true);};
+  lines.forEach(raw=>{
+    const line=raw.trim();
+    if(!line){return;}
+    if(/^[A-ZÁÉÍÓÚÑ0-9 ]{4,}$/.test(line)){
+      openSection(line);
+    }else if(/^(Slide|Última slide|Ejercicio económico)|^\d+\.\s+/.test(line)){
+      openCard(line);
+    }else if(/^Notas Nuevas/i.test(line)){
+      ensureCard();
+      html+=`<div class="note-minihead">${notesInline(line.replace(/:$/,""))}</div>`;
+    }else if(/^Notas Pre-existentes/i.test(line)){
+      ensureCard();
+      html+=`<div class="note-minihead pre">${notesInline(line.replace(/:$/,""))}</div>`;
+    }else if(/^\d+\.\s+/.test(line)){
+      ensureCard();
+      html+=`<div class="note-number">${notesInline(line)}</div>`;
+    }else if(/^-\s+/.test(line)){
+      ensureCard();
+      html+=`<div class="note-bullet">${notesInline(line.replace(/^-\s+/,""))}</div>`;
+    }else{
+      ensureCard();
+      html+=`<div class="note-textline">${notesInline(line)}</div>`;
+    }
+  });
+  closeSection();
+  return html?`<div class="note-stack">${html}</div>`:'<div class="note-stack"><section class="note-section-block note-section-plain"><div class="note-card note-card-plain"><div class="note-textline">Sin notas para esta slide.</div></div></section></div>';
+}
+function renderNotesHub(){
+  const hub=$("#notesHub");if(!hub)return;
+  const key=getNotesKey();
+  const note=getSlideNote(key);
+  const title=$("#slideNotesTitle"),editor=$("#slideNotesEditor"),read=$("#slideNotesRead");
+  if(title)title.textContent=getNotesTitle(key);
+  if(editor&&document.activeElement!==editor)editor.value=note.text||"";
+  if(read)read.innerHTML=renderPrettyNotes(note.text||"");
+  const general=notesStore.general||{text:DEFAULT_GENERAL_NOTES};
+  const geditor=$("#generalNotesEditor"),gread=$("#generalNotesRead");
+  if(geditor&&document.activeElement!==geditor)geditor.value=general.text||DEFAULT_GENERAL_NOTES;
+  if(gread)gread.innerHTML=renderPrettyNotes(general.text||DEFAULT_GENERAL_NOTES);
+  $$(".notes-tabs button").forEach(b=>b.classList.toggle("on",b.dataset.notesTab===notesTab));
+  $$(".notes-view").forEach(v=>v.classList.toggle("on",v.dataset.notesView===notesTab));
+  $$(".notes-view").forEach(v=>v.classList.toggle("editing",!!notesEditMode[v.dataset.notesView]));
+  $$("[data-edit-notes]").forEach(b=>b.textContent=notesEditMode[b.dataset.editNotes]?"Listo":"Editar");
+}
 const openValueNotesTop=$('#openValueNotesTop');
 if(openValueNotesTop)openValueNotesTop.onclick=()=>{
-  const panel=valueStep===monoValueStep?$('#monoNotes'):$('#valueNotes');
-  [$('#valueNotes'),$('#monoNotes')].filter(Boolean).forEach(n=>{if(n!==panel)n.classList.remove('open');});
-  panel.classList.toggle('open');
+  closeValueNotes();
+  renderNotesHub();
+  $('#notesHub')?.classList.toggle('open');
 };
+$('#closeNotesHub')?.addEventListener('click',()=>$('#notesHub')?.classList.remove('open'));
+$$(".notes-tabs button").forEach(b=>b.addEventListener("click",()=>{notesTab=b.dataset.notesTab;renderNotesHub();}));
+$$("[data-edit-notes]").forEach(b=>b.addEventListener("click",()=>{
+  notesEditMode[b.dataset.editNotes]=!notesEditMode[b.dataset.editNotes];
+  renderNotesHub();
+}));
+$('#slideNotesEditor')?.addEventListener('input',e=>{
+  const key=getNotesKey(),note=getSlideNote(key);
+  notesStore.slides[key]={...note,text:e.target.value};
+  $('#slideNotesRead').innerHTML=renderPrettyNotes(e.target.value);
+  saveNotesStore();
+});
+$('#generalNotesEditor')?.addEventListener('input',e=>{
+  notesStore.general={...(notesStore.general||{}),text:e.target.value};
+  $('#generalNotesRead').innerHTML=renderPrettyNotes(e.target.value);
+  saveNotesStore();
+});
 const closeValueNotesBtn=$('#closeValueNotes');
 if(closeValueNotesBtn)closeValueNotesBtn.onclick=closeValueNotes;
 const closeMonoNotesBtn=$('#closeMonoNotes');
@@ -2043,9 +2399,10 @@ function go(i){const prev=cur;cur=Math.max(0,Math.min(slides.length-1,i));
   slides.forEach((s,j)=>{s.classList.toggle('active',j===cur);s.classList.toggle('prev',j<cur);});
   updateNavDots();
   $('#cur').textContent=cur+1;
-  const nb=$('#openValueNotesTop');if(nb)nb.classList.toggle('show',cur===valueIdx&&(valueStep===2||valueStep===monoValueStep));
+  const nb=$('#openValueNotesTop');if(nb)nb.classList.add('show');
   document.body.classList.toggle('mono-economic-step',cur===valueIdx&&valueStep===monoValueStep);
   if(cur!==valueIdx)closeValueNotes();
+  renderNotesHub();
   const sp=steppers.find(s=>s.idx===cur);
   if(sp&&prev!==cur){sp.set(prev>cur?sp.max():1);}}
 function nav(dir){
