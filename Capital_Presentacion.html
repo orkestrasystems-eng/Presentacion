@@ -910,7 +910,7 @@
   .mono-eq-row.final{margin-top:8px;padding:16px 8px;background:var(--ink);border-radius:14px;color:#fff;border-bottom:0}
   .mono-eq-row.final .mono-symbol{background:rgba(157,225,186,.14);color:#9DE1BA}.mono-eq-row.final strong,.mono-eq-row.final .mono-eq-val{color:#fff}.mono-eq-row.final small{color:#CDEBD9}
   .mono-econ-step{justify-content:flex-start}
-  .mono-econ-step .mono-slide{width:min(1180px,calc(100vw - 104px));grid-template-columns:minmax(0,.94fr) minmax(560px,1.06fr);gap:42px;align-items:start;transform:translateY(-30px)}
+  .mono-econ-step .mono-slide{width:min(1180px,calc(100vw - 104px));grid-template-columns:minmax(0,.94fr) minmax(560px,1.06fr);gap:42px;align-items:start;transform:translateY(-65px)}
   .mono-econ-step .vs-tag{font-size:12px;padding:6px 15px}
   .mono-econ-step .mono-copy h2{font-size:clamp(42px,4.9vw,61px);line-height:1.01;max-width:17ch;margin-top:18px}
   .mono-econ-step .mono-editor{gap:18px;margin-top:36px}
@@ -2013,7 +2013,7 @@ function render(){
   $('#ve_hsaved').textContent=hrs(projHours)+' h';
   $('#ve_val').textContent=fmtBob(laborEquiv);
   const fmtUsd=v=>money(v,Math.abs(v)<100?2:0)+' USD';
-  const monoServiceUsd=185;
+  const monoServiceUsd=195;
   const monoCommissionUsd=I.mono_price_usd*I.mono_commission_pct;
   const monoAgentCommissionUsd=monoCommissionUsd*I.mono_agent_range_pct;
   const monoRemaxUsd=monoAgentCommissionUsd*I.mono_remax_pct;
