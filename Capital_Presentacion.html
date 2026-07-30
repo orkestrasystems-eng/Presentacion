@@ -2013,7 +2013,7 @@ function render(){
   $('#ve_hsaved').textContent=hrs(projHours)+' h';
   $('#ve_val').textContent=fmtBob(laborEquiv);
   const fmtUsd=v=>money(v,Math.abs(v)<100?2:0)+' USD';
-  const monoServiceUsd=185;
+  const monoServiceUsd=195;
   const monoCommissionUsd=I.mono_price_usd*I.mono_commission_pct;
   const monoAgentCommissionUsd=monoCommissionUsd*I.mono_agent_range_pct;
   const monoRemaxUsd=monoAgentCommissionUsd*I.mono_remax_pct;
