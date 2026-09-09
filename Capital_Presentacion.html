@@ -373,7 +373,43 @@
   .callout b{color:var(--green-d)}
   /* PRICING PACKAGES */
   .pricing-slide .inner{max-width:1180px}
-  .promo-banner{margin-top:13px;background:#E9F4EE;border:1px solid #BFE2CD;border-radius:14px;
+  /* Bloque unico: un producto, tres tamanos. El techo verde declara lo que NO
+     cambia entre planes (CRM completo + analisis de IA ilimitado); las tres
+     columnas de abajo son tamanos del mismo producto, no productos distintos.
+     Por eso van dentro de un solo contenedor y no como tarjetas sueltas. */
+  .plan-block{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:22px;
+    box-shadow:var(--shadow);overflow:hidden}
+  .plan-roof{background:var(--green-d);color:#fff;padding:24px 26px 26px;text-align:center}
+  .roof-lbl{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(255,255,255,.7)}
+  .roof-main{margin-top:11px;display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap}
+  .roof-item{font-size:clamp(17px,2vw,24px);font-weight:820;letter-spacing:-.01em;color:#fff;line-height:1.15}
+  .roof-plus{font-size:clamp(20px,2.2vw,28px);font-weight:300;color:rgba(255,255,255,.55);line-height:1}
+  .plan-cols{display:grid;grid-template-columns:repeat(3,1fr)}
+  .plan-col{padding:26px 26px 22px;border-left:1px solid var(--line)}
+  .plan-col:first-child{border-left:0}
+  .plan-col.feat{background:#F6FAF7;box-shadow:inset 3px 0 0 #DCEDE2,inset -3px 0 0 #DCEDE2}
+  .plan-name{font-size:22px;font-weight:850;letter-spacing:-.01em;color:var(--ink)}
+  .plan-cap{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--slate);margin-top:16px}
+  .plan-meter{margin-top:9px;background:#F3F0E8;border-radius:13px;display:flex}
+  .plan-col.feat .plan-meter{background:#EAF4EC}
+  .plan-half{flex:1;padding:13px 8px;text-align:center;border-left:1px solid rgba(15,42,34,.09)}
+  .plan-half:first-child{border-left:0}
+  .plan-half b{display:block;font-size:24px;font-weight:850;color:var(--green-d);
+    font-variant-numeric:tabular-nums;line-height:1}
+  .plan-half span{display:block;font-size:9.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--slate);margin-top:6px}
+  .plan-prices{margin-top:24px;border-top:1px solid var(--line)}
+  .plan-row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;
+    border-bottom:1px solid var(--line)}
+  .plan-row:last-child{border-bottom:none;padding-bottom:0}
+  .plan-row .lbl{font-size:15.5px;color:var(--slate);font-weight:700}
+  .plan-row .val{font-size:25px;font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .plan-row .val small{font-size:12.5px;color:var(--slate);font-weight:700;margin-left:3px}
+  @media(max-width:900px){.plan-cols{grid-template-columns:1fr}
+    .plan-col{border-left:0;border-top:1px solid var(--line)}}
+  .promo-banner{margin-top:22px;background:#E9F4EE;border:1px solid #BFE2CD;border-radius:14px;
     padding:10px 20px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
   .promo-badge{width:30px;height:30px;border-radius:50%;background:var(--green-d);color:#fff;
     display:flex;align-items:center;justify-content:center;font-weight:850;font-size:15px;flex:0 0 auto}
@@ -383,22 +419,6 @@
   .promo-text{font-size:16px;color:var(--ink);font-weight:650}
   .promo-pill{display:inline-flex;background:var(--green-d);color:#fff;font-weight:850;padding:4px 14px;
     border-radius:999px;margin:0 3px;font-size:16px;font-variant-numeric:tabular-nums}
-  .pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:13px}
-  @media(max-width:900px){.pkg-grid{grid-template-columns:1fr}}
-  .pkg-card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
-    padding:20px 20px 16px;display:flex;flex-direction:column}
-  .pkg-card.feat{border-color:#BFE2CD;box-shadow:0 1px 3px rgba(15,42,34,.06),0 18px 40px rgba(31,122,82,.16)}
-  .pkg-name{font-size:21px;font-weight:850;letter-spacing:-.01em;color:var(--ink)}
-  .pkg-stats{display:flex;gap:9px;margin-top:12px}
-  .pkg-stat{flex:1;background:#F3F0E8;border-radius:11px;padding:9px 7px;text-align:center}
-  .pkg-stat b{display:block;font-size:21px;font-weight:850;color:var(--green-d);font-variant-numeric:tabular-nums;line-height:1}
-  .pkg-stat span{display:block;font-size:10px;font-weight:750;letter-spacing:.03em;text-transform:uppercase;color:var(--slate);margin-top:5px}
-  .pkg-prices{margin-top:13px;border-top:1px solid var(--line)}
-  .pkg-price-row{display:flex;justify-content:space-between;align-items:baseline;padding:11px 2px;border-bottom:1px solid var(--line)}
-  .pkg-price-row:last-child{border-bottom:none}
-  .pkg-price-row .lbl{font-size:15.5px;color:var(--slate);font-weight:700}
-  .pkg-price-row .val{font-size:24px;font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
-  .pkg-price-row .val small{font-size:12.5px;color:var(--slate);font-weight:700;margin-left:3px}
   /* CONTACT */
   .contact-inner{display:flex;flex-direction:column;align-items:center;text-align:center}
   .contact-logo{width:clamp(56px,8vh,96px);margin-bottom:clamp(10px,1.6vh,18px);display:block}
@@ -1695,53 +1715,66 @@
     <div class="calc-note"><span class="calc-info">i</span><span>Dato clave: este es el resultado neto mensual antes de considerar expansión de volumen o mejoras en conversión.</span></div>
   </div></section>
 
-  <!-- 7 PRICING · Paquetes y planes -->
+  <!-- 7 PRICING · Un producto, tres tamaños -->
   <section class="slide pricing-slide"><div class="inner">
-    <h2>Elegí el <em>paquete</em> a tu medida</h2>
-    <p class="lede">Cada paquete incluye un volumen estimado de leads y mensajes. El precio mensual depende del tipo de cliente.</p>
+    <h2>Un solo producto, <em>tres tamaños</em></h2>
+    <p class="lede">Lo que pagás es el sistema completo. Entre planes solo cambia cuántos clientes puede atender la IA cada mes.</p>
+    <div class="plan-block">
+      <div class="plan-roof">
+        <div class="roof-lbl">Incluido en los tres planes</div>
+        <div class="roof-main">
+          <span class="roof-item">CRM completo</span>
+          <span class="roof-plus">+</span>
+          <span class="roof-item">Análisis de IA ilimitado</span>
+        </div>
+      </div>
+      <div class="plan-cols">
+        <div class="plan-col">
+          <div class="plan-name">Básico</div>
+          <div class="plan-cap">Capacidad de atención</div>
+          <div class="plan-meter">
+            <div class="plan-half"><b>300</b><span>Leads / mes</span></div>
+            <div class="plan-half"><b>3250</b><span>Mensajes / mes</span></div>
+          </div>
+          <div class="plan-prices">
+            <div class="plan-row"><span class="lbl">Individual</span><span class="val">165<small>USD/mes</small></span></div>
+            <div class="plan-row"><span class="lbl">Duo</span><span class="val">150<small>USD/mes</small></span></div>
+            <div class="plan-row"><span class="lbl">Grupo</span><span class="val">120<small>USD/mes</small></span></div>
+          </div>
+        </div>
+        <div class="plan-col feat">
+          <div class="plan-name">Plus</div>
+          <div class="plan-cap">Capacidad de atención</div>
+          <div class="plan-meter">
+            <div class="plan-half"><b>600</b><span>Leads / mes</span></div>
+            <div class="plan-half"><b>6500</b><span>Mensajes / mes</span></div>
+          </div>
+          <div class="plan-prices">
+            <div class="plan-row"><span class="lbl">Individual</span><span class="val">195<small>USD/mes</small></span></div>
+            <div class="plan-row"><span class="lbl">Duo</span><span class="val">180<small>USD/mes</small></span></div>
+            <div class="plan-row"><span class="lbl">Grupo</span><span class="val">150<small>USD/mes</small></span></div>
+          </div>
+        </div>
+        <div class="plan-col">
+          <div class="plan-name">Pro</div>
+          <div class="plan-cap">Capacidad de atención</div>
+          <div class="plan-meter">
+            <div class="plan-half"><b>1200</b><span>Leads / mes</span></div>
+            <div class="plan-half"><b>13000</b><span>Mensajes / mes</span></div>
+          </div>
+          <div class="plan-prices">
+            <div class="plan-row"><span class="lbl">Individual</span><span class="val">275<small>USD/mes</small></span></div>
+            <div class="plan-row"><span class="lbl">Duo</span><span class="val">260<small>USD/mes</small></span></div>
+            <div class="plan-row"><span class="lbl">Grupo</span><span class="val">230<small>USD/mes</small></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="promo-banner">
       <span class="promo-badge">%</span>
       <span class="promo-label">Promoción de bienvenida</span>
       <span class="promo-div"></span>
       <span class="promo-text">El primer mes cuesta solo <span class="promo-pill">150 USD</span> en cualquier plan.</span>
-    </div>
-    <div class="pkg-grid">
-      <div class="pkg-card">
-        <div class="pkg-name">Básico</div>
-        <div class="pkg-stats">
-          <div class="pkg-stat"><b>300</b><span>Leads / mes</span></div>
-          <div class="pkg-stat"><b>3250</b><span>Mensajes / mes</span></div>
-        </div>
-        <div class="pkg-prices">
-          <div class="pkg-price-row"><span class="lbl">Precio Individual</span><span class="val">165<small>USD/mes</small></span></div>
-          <div class="pkg-price-row"><span class="lbl">Precio Duo</span><span class="val">150<small>USD/mes</small></span></div>
-          <div class="pkg-price-row"><span class="lbl">Precio Grupo</span><span class="val">120<small>USD/mes</small></span></div>
-        </div>
-      </div>
-      <div class="pkg-card feat">
-        <div class="pkg-name">Plus</div>
-        <div class="pkg-stats">
-          <div class="pkg-stat"><b>600</b><span>Leads / mes</span></div>
-          <div class="pkg-stat"><b>6500</b><span>Mensajes / mes</span></div>
-        </div>
-        <div class="pkg-prices">
-          <div class="pkg-price-row"><span class="lbl">Precio Individual</span><span class="val">195<small>USD/mes</small></span></div>
-          <div class="pkg-price-row"><span class="lbl">Precio Duo</span><span class="val">180<small>USD/mes</small></span></div>
-          <div class="pkg-price-row"><span class="lbl">Precio Grupo</span><span class="val">150<small>USD/mes</small></span></div>
-        </div>
-      </div>
-      <div class="pkg-card">
-        <div class="pkg-name">Pro</div>
-        <div class="pkg-stats">
-          <div class="pkg-stat"><b>1200</b><span>Leads / mes</span></div>
-          <div class="pkg-stat"><b>13000</b><span>Mensajes / mes</span></div>
-        </div>
-        <div class="pkg-prices">
-          <div class="pkg-price-row"><span class="lbl">Precio Individual</span><span class="val">275<small>USD/mes</small></span></div>
-          <div class="pkg-price-row"><span class="lbl">Precio Duo</span><span class="val">260<small>USD/mes</small></span></div>
-          <div class="pkg-price-row"><span class="lbl">Precio Grupo</span><span class="val">230<small>USD/mes</small></span></div>
-        </div>
-      </div>
     </div>
   </div></section>
 
