@@ -410,14 +410,20 @@
   /* AUDIT */
   .scrim{position:fixed;inset:0;background:rgba(15,42,34,.4);opacity:0;pointer-events:none;transition:.2s;z-index:50}
   .scrim.open{opacity:1;pointer-events:auto}
-  .panel{position:fixed;top:0;right:0;height:100%;width:min(540px,94vw);background:var(--paper);z-index:60;
-    transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);
-    box-shadow:-12px 0 40px rgba(0,0,0,.15);display:flex;flex-direction:column}
-  .panel.open{transform:translateX(0)}
+  /* Dialogo centrado. Antes era un cajon lateral (right:0 + translateX(100%)):
+     estando cerrado quedaba fuera de pantalla pero su box-shadow apuntaba hacia
+     dentro (-12px 0 40px) y ensuciaba el borde derecho de todas las laminas.
+     Con opacity:0 + visibility:hidden la sombra no se pinta cuando esta cerrado. */
+  .panel{position:fixed;top:50%;left:50%;width:min(560px,92vw);max-height:86vh;background:var(--paper);z-index:60;
+    border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    transform:translate(-50%,-50%) scale(.97);opacity:0;visibility:hidden;
+    transition:transform .26s cubic-bezier(.4,0,.2,1),opacity .22s ease,visibility .26s;
+    box-shadow:0 24px 60px rgba(15,42,34,.26);display:flex;flex-direction:column}
+  .panel.open{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible}
   .ptop{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line)}
   .ptop h3{font-size:16px;font-weight:850}.ptop p{font-size:11.5px;color:var(--slate);margin-top:2px}
   .pclose{border:0;background:#ECE8DE;width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:16px}
-  .pbody{overflow:auto;padding:8px 20px 40px}
+  .pbody{overflow:auto;min-height:0;padding:8px 20px 40px}
   .ph{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--green-d);font-weight:800;margin:18px 0 7px}
   table.aud{width:100%;border-collapse:collapse;font-size:12.5px}
   table.aud td{padding:9px 5px;border-bottom:1px solid var(--line);vertical-align:middle}
