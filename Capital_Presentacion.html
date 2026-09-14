@@ -386,7 +386,7 @@
   .roof-item{font-size:clamp(17px,2vw,24px);font-weight:820;letter-spacing:-.01em;color:#fff;line-height:1.15}
   .roof-plus{font-size:clamp(20px,2.2vw,28px);font-weight:300;color:rgba(255,255,255,.55);line-height:1}
   .plan-cols{display:grid;grid-template-columns:repeat(3,1fr)}
-  .plan-col{padding:26px 26px 22px;border-left:1px solid var(--line)}
+  .plan-col{padding:26px;border-left:1px solid var(--line)}
   .plan-col:first-child{border-left:0}
   .plan-col.feat{background:#F6FAF7;box-shadow:inset 3px 0 0 #DCEDE2,inset -3px 0 0 #DCEDE2}
   .plan-name{font-size:22px;font-weight:850;letter-spacing:-.01em;color:var(--ink)}
@@ -400,19 +400,18 @@
     font-variant-numeric:tabular-nums;line-height:1}
   .plan-half span{display:block;font-size:9.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;
     color:var(--slate);margin-top:6px}
-  .plan-prices{margin-top:24px;border-top:1px solid var(--line)}
-  .plan-row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;
-    border-bottom:1px solid var(--line)}
-  .plan-row:last-child{border-bottom:none;padding-bottom:0}
-  .plan-row .lbl{font-size:15.5px;color:var(--slate);font-weight:700}
-  .plan-row .val{font-size:25px;font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
-  .plan-row .val small{font-size:12.5px;color:var(--slate);font-weight:700;margin-left:3px}
+  /* Un precio por plan: el numero pasa a ser el protagonista de la columna. */
+  .plan-price{margin-top:24px;padding-top:22px;border-top:1px solid var(--line);
+    font-size:clamp(34px,3.6vw,46px);font-weight:850;letter-spacing:-.025em;line-height:1;
+    color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:center}
+  .plan-price small{font-size:14px;font-weight:700;letter-spacing:0;color:var(--slate);margin-left:6px}
   @media(max-width:900px){.plan-cols{grid-template-columns:1fr}
     .plan-col{border-left:0;border-top:1px solid var(--line)}}
   .promo-banner{margin-top:22px;background:#E9F4EE;border:1px solid #BFE2CD;border-radius:14px;
     padding:10px 20px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
   .promo-badge{width:30px;height:30px;border-radius:50%;background:var(--green-d);color:#fff;
     display:flex;align-items:center;justify-content:center;font-weight:850;font-size:15px;flex:0 0 auto}
+  .promo-badge svg{width:16px;height:16px}
   .promo-label{font-size:14.5px;font-weight:850;letter-spacing:.04em;text-transform:uppercase;
     color:var(--green-d);white-space:nowrap}
   .promo-div{width:1px;height:21px;background:#BFE2CD;flex:0 0 auto}
@@ -1736,11 +1735,7 @@
             <div class="plan-half"><b>300</b><span>Leads / mes</span></div>
             <div class="plan-half"><b>3250</b><span>Mensajes / mes</span></div>
           </div>
-          <div class="plan-prices">
-            <div class="plan-row"><span class="lbl">Individual</span><span class="val">165<small>USD/mes</small></span></div>
-            <div class="plan-row"><span class="lbl">Duo</span><span class="val">150<small>USD/mes</small></span></div>
-            <div class="plan-row"><span class="lbl">Grupo</span><span class="val">120<small>USD/mes</small></span></div>
-          </div>
+          <div class="plan-price">120<small>USD/mes</small></div>
         </div>
         <div class="plan-col feat">
           <div class="plan-name">Plus</div>
@@ -1749,11 +1744,7 @@
             <div class="plan-half"><b>600</b><span>Leads / mes</span></div>
             <div class="plan-half"><b>6500</b><span>Mensajes / mes</span></div>
           </div>
-          <div class="plan-prices">
-            <div class="plan-row"><span class="lbl">Individual</span><span class="val">195<small>USD/mes</small></span></div>
-            <div class="plan-row"><span class="lbl">Duo</span><span class="val">180<small>USD/mes</small></span></div>
-            <div class="plan-row"><span class="lbl">Grupo</span><span class="val">150<small>USD/mes</small></span></div>
-          </div>
+          <div class="plan-price">180<small>USD/mes</small></div>
         </div>
         <div class="plan-col">
           <div class="plan-name">Pro</div>
@@ -1762,19 +1753,15 @@
             <div class="plan-half"><b>1200</b><span>Leads / mes</span></div>
             <div class="plan-half"><b>13000</b><span>Mensajes / mes</span></div>
           </div>
-          <div class="plan-prices">
-            <div class="plan-row"><span class="lbl">Individual</span><span class="val">275<small>USD/mes</small></span></div>
-            <div class="plan-row"><span class="lbl">Duo</span><span class="val">260<small>USD/mes</small></span></div>
-            <div class="plan-row"><span class="lbl">Grupo</span><span class="val">230<small>USD/mes</small></span></div>
-          </div>
+          <div class="plan-price">260<small>USD/mes</small></div>
         </div>
       </div>
     </div>
     <div class="promo-banner">
-      <span class="promo-badge">%</span>
-      <span class="promo-label">Promoción de bienvenida</span>
+      <span class="promo-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M19 8v6M16 11h6"/></svg></span>
+      <span class="promo-label">Promoción de septiembre</span>
       <span class="promo-div"></span>
-      <span class="promo-text">El primer mes cuesta solo <span class="promo-pill">150 USD</span> en cualquier plan.</span>
+      <span class="promo-text">Por cada referido, <span class="promo-pill">20% de descuento</span> en tu siguiente mes.</span>
     </div>
   </div></section>
 
@@ -2046,7 +2033,7 @@ function render(){
   $('#ve_hsaved').textContent=hrs(projHours)+' h';
   $('#ve_val').textContent=fmtBob(laborEquiv);
   const fmtUsd=v=>money(v,Math.abs(v)<100?2:0)+' USD';
-  const monoServiceUsd=195;
+  const monoServiceUsd=180;
   const monoCommissionUsd=I.mono_price_usd*I.mono_commission_pct;
   const monoAgentCommissionUsd=monoCommissionUsd*I.mono_agent_range_pct;
   const monoRemaxUsd=monoAgentCommissionUsd*I.mono_remax_pct;
