@@ -405,6 +405,28 @@
     font-size:clamp(34px,3.6vw,46px);font-weight:850;letter-spacing:-.025em;line-height:1;
     color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:center}
   .plan-price small{font-size:14px;font-weight:700;letter-spacing:0;color:var(--slate);margin-left:6px}
+  /* Plan CRM: tarjeta de entrada a la izquierda; los tres planes de la derecha le
+     suman el asistente que atiende. El "+" entre los dos dice que se acumulan. */
+  .plan-split{display:grid;grid-template-columns:minmax(0,1fr) 46px minmax(0,3fr);align-items:stretch;margin-top:30px}
+  /* las dos tarjetas miden lo mismo: las columnas estiran y el precio baja al fondo, alineado */
+  .plan-split .plan-block{margin-top:0;display:flex;flex-direction:column}
+  .plan-split .plan-cols{flex:1}
+  .plan-split .plan-col{display:flex;flex-direction:column}
+  .plan-split .plan-meter{margin-bottom:24px}
+  .plan-split .plan-price{margin-top:auto}
+  .plan-plus{display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:300;color:var(--slate)}
+  .crm-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
+    overflow:hidden;display:flex;flex-direction:column}
+  .crm-roof{background:#E9F4EE;border-bottom:1px solid #BFE2CD;padding:24px 22px 26px;text-align:center}
+  .crm-roof .roof-lbl{color:var(--green-d);opacity:.8}
+  .crm-roof .roof-item{color:var(--green-d)}
+  .crm-body{padding:26px 22px;display:flex;flex-direction:column;flex:1}
+  .crm-body .plan-price{margin-top:auto}
+  .plan-solo{margin-top:9px;margin-bottom:24px;background:#F3F0E8;border-radius:13px;padding:13px 10px;text-align:center}
+  .plan-solo b{display:block;font-size:15px;font-weight:850;color:var(--ink);line-height:1.15}
+  .plan-solo span{display:block;font-size:9.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--slate);margin-top:6px}
+  @media(max-width:900px){.plan-split{grid-template-columns:1fr}.plan-plus{height:44px}}
   @media(max-width:900px){.plan-cols{grid-template-columns:1fr}
     .plan-col{border-left:0;border-top:1px solid var(--line)}}
   .promo-banner{margin-top:22px;background:#E9F4EE;border:1px solid #BFE2CD;border-radius:14px;
@@ -647,6 +669,8 @@
     transition:opacity .38s ease,transform .38s ease;display:flex;flex-direction:column;align-items:center;justify-content:center}
   .vstep.on{opacity:1;transform:none;pointer-events:auto}
   .vstep.prevstep{transform:translateX(-28px)}
+  /* Paso oculto: sigue en el archivo pero sale del recorrido (ver valueSteps en el JS). */
+  .vstep.vstep-hidden{display:none!important}
   .value-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(300px,.92fr);gap:54px;align-items:center;width:100%}
   .value-slide .eyebrow{margin-bottom:12px}
   .value-slide h2{font-size:clamp(28px,3.2vw,40px);line-height:1.08;letter-spacing:-.03em;
@@ -1208,7 +1232,7 @@
           </div>
         </div>
       </div>
-      <div class="vstep mono-econ-step">
+      <div class="vstep mono-econ-step vstep-hidden">
         <div class="mono-slide">
           <div class="mono-copy">
             <span class="vs-tag">Ejemplo económico</span>
@@ -1714,52 +1738,63 @@
     <div class="calc-note"><span class="calc-info">i</span><span>Dato clave: este es el resultado neto mensual antes de considerar expansión de volumen o mejoras en conversión.</span></div>
   </div></section>
 
-  <!-- 7 PRICING · Un producto, tres tamaños -->
+  <!-- 7 PRICING · CRM + tres planes con IA que atiende -->
   <section class="slide pricing-slide"><div class="inner">
-    <h2>Un solo producto, <em>tres tamaños</em></h2>
-    <p class="lede">Lo que pagás es el sistema completo. Entre planes solo cambia cuántos clientes puede atender la IA cada mes.</p>
-    <div class="plan-block">
-      <div class="plan-roof">
-        <div class="roof-lbl">Incluido en los tres planes</div>
-        <div class="roof-main">
-          <span class="roof-item">CRM completo</span>
-          <span class="roof-plus">+</span>
-          <span class="roof-item">Análisis de IA ilimitado</span>
+    <h2>Empieza con el CRM. <em>Suma la IA</em> que atiende.</h2>
+    <p class="lede">El CRM se llena solo con análisis de IA ilimitado. Con Básico, Plus o Pro, el asistente además atiende a tus clientes por WhatsApp.</p>
+    <div class="plan-split">
+      <div class="crm-card">
+        <div class="crm-roof">
+          <div class="roof-lbl">Nuevo</div>
+          <div class="roof-main"><span class="roof-item">CRM que se llena solo</span></div>
+        </div>
+        <div class="crm-body">
+          <div class="plan-name">CRM</div>
+          <div class="plan-cap">Atención de clientes</div>
+          <div class="plan-solo"><b>Tú conversas</b><span>La IA registra y analiza</span></div>
+          <div class="plan-price">70<small>USD/mes</small></div>
         </div>
       </div>
-      <div class="plan-cols">
-        <div class="plan-col">
-          <div class="plan-name">Básico</div>
-          <div class="plan-cap">Capacidad de atención</div>
-          <div class="plan-meter">
-            <div class="plan-half"><b>300</b><span>Leads / mes</span></div>
-            <div class="plan-half"><b>3250</b><span>Mensajes / mes</span></div>
-          </div>
-          <div class="plan-price">120<small>USD/mes</small></div>
+      <div class="plan-plus">+</div>
+      <div class="plan-block">
+        <div class="plan-roof">
+          <div class="roof-lbl">CRM incluido, y además</div>
+          <div class="roof-main"><span class="roof-item">Asistente IA que atiende por WhatsApp</span></div>
         </div>
-        <div class="plan-col feat">
-          <div class="plan-name">Plus</div>
-          <div class="plan-cap">Capacidad de atención</div>
-          <div class="plan-meter">
-            <div class="plan-half"><b>600</b><span>Leads / mes</span></div>
-            <div class="plan-half"><b>6500</b><span>Mensajes / mes</span></div>
+        <div class="plan-cols">
+          <div class="plan-col">
+            <div class="plan-name">Básico</div>
+            <div class="plan-cap">Asistente IA que atiende</div>
+            <div class="plan-meter">
+              <div class="plan-half"><b>300</b><span>Leads / mes</span></div>
+              <div class="plan-half"><b>3250</b><span>Mensajes / mes</span></div>
+            </div>
+            <div class="plan-price">150<small>USD/mes</small></div>
           </div>
-          <div class="plan-price">180<small>USD/mes</small></div>
-        </div>
-        <div class="plan-col">
-          <div class="plan-name">Pro</div>
-          <div class="plan-cap">Capacidad de atención</div>
-          <div class="plan-meter">
-            <div class="plan-half"><b>1200</b><span>Leads / mes</span></div>
-            <div class="plan-half"><b>13000</b><span>Mensajes / mes</span></div>
+          <div class="plan-col feat">
+            <div class="plan-name">Plus</div>
+            <div class="plan-cap">Asistente IA que atiende</div>
+            <div class="plan-meter">
+              <div class="plan-half"><b>600</b><span>Leads / mes</span></div>
+              <div class="plan-half"><b>6500</b><span>Mensajes / mes</span></div>
+            </div>
+            <div class="plan-price">195<small>USD/mes</small></div>
           </div>
-          <div class="plan-price">260<small>USD/mes</small></div>
+          <div class="plan-col">
+            <div class="plan-name">Pro</div>
+            <div class="plan-cap">Asistente IA que atiende</div>
+            <div class="plan-meter">
+              <div class="plan-half"><b>1200</b><span>Leads / mes</span></div>
+              <div class="plan-half"><b>13000</b><span>Mensajes / mes</span></div>
+            </div>
+            <div class="plan-price">275<small>USD/mes</small></div>
+          </div>
         </div>
       </div>
     </div>
     <div class="promo-banner">
       <span class="promo-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M19 8v6M16 11h6"/></svg></span>
-      <span class="promo-label">Promoción de septiembre</span>
+      <span class="promo-label">Promoción de octubre</span>
       <span class="promo-div"></span>
       <span class="promo-text">Por cada referido, <span class="promo-pill">20% de descuento</span> en tu siguiente mes.</span>
     </div>
@@ -2161,7 +2196,7 @@ function aboutApply(){
 /* pasos dentro de la slide de propuesta de valor */
 const valueEl=document.querySelector('.value-slide');
 const valueIdx=slides.indexOf(valueEl);
-const valueSteps=[...valueEl.querySelectorAll('.vstep')];
+const valueSteps=[...valueEl.querySelectorAll('.vstep:not(.vstep-hidden)')]; // los pasos ocultos no entran al recorrido
 const valueDots=[...valueEl.querySelectorAll('.vdots i')];
 const valueMax=valueSteps.length;
 const visibleValueMax=valueMax-1;
