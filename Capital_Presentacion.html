@@ -385,7 +385,7 @@
   .roof-main{margin-top:11px;display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap}
   .roof-item{font-size:clamp(17px,2vw,24px);font-weight:820;letter-spacing:-.01em;color:#fff;line-height:1.15}
   .roof-plus{font-size:clamp(20px,2.2vw,28px);font-weight:300;color:rgba(255,255,255,.55);line-height:1}
-  .plan-cols{display:grid;grid-template-columns:repeat(3,1fr)}
+  .plan-cols{display:grid;grid-template-columns:repeat(2,1fr)}
   .plan-col{padding:26px;border-left:1px solid var(--line)}
   .plan-col:first-child{border-left:0}
   .plan-col.feat{background:#F6FAF7;box-shadow:inset 3px 0 0 #DCEDE2,inset -3px 0 0 #DCEDE2}
@@ -407,7 +407,7 @@
   .plan-price small{font-size:14px;font-weight:700;letter-spacing:0;color:var(--slate);margin-left:6px}
   /* Plan CRM: tarjeta de entrada a la izquierda; los tres planes de la derecha le
      suman el asistente que atiende. El "+" entre los dos dice que se acumulan. */
-  .plan-split{display:grid;grid-template-columns:minmax(0,3fr) 22px minmax(0,1fr);align-items:stretch;margin-top:30px}
+  .plan-split{display:grid;grid-template-columns:minmax(0,2fr) 22px minmax(0,1fr);align-items:stretch;margin-top:30px}
   /* las dos tarjetas miden lo mismo: las columnas estiran y el precio baja al fondo, alineado */
   .plan-split .plan-block{margin-top:0;display:flex;flex-direction:column}
   .plan-split .plan-cols{flex:1}
@@ -1291,6 +1291,13 @@
   .plan-tres b{font-size:26px;font-weight:850;letter-spacing:-.02em;line-height:1;color:var(--green-d)}
   .plan-tres small{font-size:12px;font-weight:700}
   .plan-split .plan-price,.crm-body .plan-price{justify-content:flex-start;text-align:left}
+  /* Precios (2026-10-30): dos plazos, trimestral (~10 %) y semestral (~20 %), en precio por mes, redondeado a 5. */
+  .plan-tres{display:block;padding:6px 12px}
+  .plan-tres .plan-plazo{display:block;padding:8px 0}
+  .plan-tres .plan-plazo+.plan-plazo{border-top:1px solid #CBE2D4}
+  .plan-tres .plan-plazo span{display:block;width:auto;margin-bottom:5px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+  .plan-tres .plan-plazo b{font-size:22px;font-weight:850;letter-spacing:-.02em;line-height:1;color:var(--green-d);white-space:nowrap}
+  .plan-tres .plan-plazo small{margin-left:5px;font-size:11.5px;font-weight:700}
   /* Planes (3.ª vuelta): cada nota con su flecha al renglón exacto del chat. */
   .dp-chat{display:flex;align-items:center;padding:18px 210px 20px 24px}
   .dp-chat .wa-chat{flex:1;max-width:none;overflow:visible}
@@ -1599,7 +1606,7 @@
                 <div class="pipeline-mini emb">
                   <div class="pipe-col"><div class="emb-col-cab"><svg class="emb-etapa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1"/></svg><span>Conversando</span><em>440</em></div>
                     <div class="emb-card" style="--raya:#0F7C67">
-                      <div class="emb-cab"><div class="emb-nombre"><img class="emb-marca" src="img/macororo-19-icono.png" alt=""><b>María Gutiérrez</b></div><p class="emb-resumen">Depto de 2 dormitorios en Macororó 19 para vivir.</p></div>
+                      <div class="emb-cab"><div class="emb-nombre"><img class="emb-marca" src="img/westgate-icono.png" alt=""><b>María Gutiérrez</b></div><p class="emb-resumen">Depto de 2 dormitorios en Westgate Tower para vivir.</p></div>
                       <div class="emb-pie"><span class="emb-op"><span>Compra</span><i>|</i><b>USD 95k</b></span><span class="emb-iconos"><svg class="emb-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><svg style="color:#D98A0B" class="emb-interes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v2"/><path d="M12 8a4 4 0 0 0-1.645 7.647"/><path d="M2 12h2"/><path d="M20 14.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z"/><path d="m4.93 4.93 1.41 1.41"/><path d="m6.34 17.66-1.41 1.41"/></svg></span></div>
                     </div>
                   </div>
@@ -2275,7 +2282,7 @@
     <div class="calc-note"><span class="calc-info">i</span><span>Dato clave: este es el resultado neto mensual antes de considerar expansión de volumen o mejoras en conversión.</span></div>
   </div></section>
 
-  <!-- 7 PRICING · CRM + tres planes con IA que atiende -->
+  <!-- 7 PRICING · CRM + dos planes con IA que atiende (Pro se quitó el 2026-10-30) -->
   <section class="slide pricing-slide"><div class="inner">
     <div class="precios-tag"><span class="vs-tag">Precios</span></div>
     <div class="plan-split">
@@ -2285,25 +2292,24 @@
         </div>
         <div class="plan-cols">
           <div class="plan-col">
-            <div class="plan-name">Pro</div>
-            <div class="plan-ilim"><b>Ilimitado</b> registro y análisis</div>
-            <div class="plan-leads"><b>~1.850</b> leads / mes</div>
-            <div class="plan-price">275<small>USD/mes</small></div>
-            <div class="plan-tres"><span>Por 3 meses</span><s>275</s><b>250</b><small>USD/mes</small></div>
-          </div>
-          <div class="plan-col">
             <div class="plan-name">Plus</div>
             <div class="plan-ilim"><b>Ilimitado</b> registro y análisis</div>
             <div class="plan-leads"><b>~900</b> leads / mes</div>
             <div class="plan-price">195<small>USD/mes</small></div>
-            <div class="plan-tres"><span>Por 3 meses</span><s>195</s><b>175</b><small>USD/mes</small></div>
+            <div class="plan-tres">
+              <div class="plan-plazo"><span>Trimestral</span><b>175</b><small>USD/mes</small></div>
+              <div class="plan-plazo"><span>Semestral</span><b>155</b><small>USD/mes</small></div>
+            </div>
           </div>
           <div class="plan-col feat">
             <div class="plan-name">Esencial</div>
             <div class="plan-ilim"><b>Ilimitado</b> registro y análisis</div>
             <div class="plan-leads"><b>~450</b> leads / mes</div>
             <div class="plan-price">150<small>USD/mes</small></div>
-            <div class="plan-tres"><span>Por 3 meses</span><s>150</s><b>120</b><small>USD/mes</small></div>
+            <div class="plan-tres">
+              <div class="plan-plazo"><span>Trimestral</span><b>135</b><small>USD/mes</small></div>
+              <div class="plan-plazo"><span>Semestral</span><b>120</b><small>USD/mes</small></div>
+            </div>
           </div>
         </div>
       </div>
@@ -2317,7 +2323,10 @@
           <div class="plan-ilim"><b>Ilimitado</b> registro y análisis</div>
           <div class="plan-leads"><b>Vos conversás</b></div>
           <div class="plan-price">75<small>USD/mes</small></div>
-          <div class="plan-tres"><span>Por 3 meses</span><s>75</s><b>60</b><small>USD/mes</small></div>
+          <div class="plan-tres">
+            <div class="plan-plazo"><span>Trimestral</span><b>70</b><small>USD/mes</small></div>
+            <div class="plan-plazo"><span>Semestral</span><b>60</b><small>USD/mes</small></div>
+          </div>
         </div>
       </div>
     </div>
@@ -2332,7 +2341,7 @@
           <div class="causas">
             <div class="causa"><div class="perdida"><span class="perdida-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg></span><div><b>Datos valiosos</b><p>El perfil de cada prospecto (qué busca, su presupuesto, si es inversionista, si tiene financiamiento) y en qué etapa está.</p></div></div><span class="causa-flecha">→</span><div class="consecuencias"><div class="consecuencia"><b>Remarketing</b><span>Una base a la que volver a escribirle.</span></div><div class="consecuencia"><b>Público para cada propiedad</b><span>Para una propiedad nueva, o una captación que calza con un requerimiento.</span></div></div></div>
             <div class="causa"><div class="perdida"><span class="perdida-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17V9"/><path d="M18 17V5"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-3"/></svg></span><div><b>Métricas</b><p>Cuánto tarda cada prospecto en pasar de etapa, qué seguimientos tienen más respuestas, qué campañas traen más reuniones.</p></div></div><span class="causa-flecha">→</span><div class="consecuencias"><div class="consecuencia"><b>Saber dónde fallás</b><span>En qué etapa se te caen o se traban los prospectos.</span></div><div class="consecuencia"><b>Saber qué funciona</b><span>Poner tu tiempo y tu plata en lo que trae reuniones.</span></div></div></div>
-            <div class="causa"><div class="perdida"><span class="perdida-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg></span><div><b>Rapidez de respuesta</b><p>El primer contacto en minutos, y la IA sigue conversando a cualquier hora.</p></div></div><span class="causa-flecha">→</span><div class="consecuencias"><div class="consecuencia"><b>Clientes que se enfrían</b><span>El prospecto le compra al que contestó primero.</span></div></div></div>
+            <div class="causa"><div class="perdida"><span class="perdida-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg></span><div><b>Rapidez de respuesta</b><p>El primer contacto en minutos, y la IA sigue conversando a cualquier hora.</p></div></div><span class="causa-flecha">→</span><div class="consecuencias"><div class="consecuencia"><b>Clientes que se enfrían</b><span>El prospecto le compra al que contestó primero.</span></div><div class="consecuencia"><b>8× más conversión</b><span>Cuando el primer contacto llega en los primeros 5 minutos. XANT, 2021.</span></div></div></div>
           </div>
         
   </div></section>
@@ -2341,7 +2350,7 @@
   <section class="slide"><div class="inner contact-inner">
     <div class="contact-marca"><img src="capital_logo_clean.svg" alt="" class="contact-logo"><span class="logo-txt">Capital <em>Solutions</em></span></div>
     <h2 class="contact-h">
-      <span style="color: #0f7c67;">Contactanos</span><br>al <span style="color: #0f7c67;">+591 64700143</span> o
+      <span style="color: #0f7c67;">Contactanos</span><br>al <span style="color: #0f7c67;">+591 77355237</span> o
     </h2>
     <p class="lede contact-lede">Escaneá el código QR para mandarnos un mensaje.</p>
     <div class="contact-qr-wrap">
